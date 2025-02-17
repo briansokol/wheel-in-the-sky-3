@@ -1,0 +1,15 @@
+{
+  "name": "@repo/prettier",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./configs": "./configs.js",
+    "./utils": "./utils.js"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "5.2.2",
+    "prettier": "3.5.1",
+    "prettier-plugin-tailwindcss": "0.6.11"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@repo/lint-staged",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./configs": "./configs.js",
+    "./utils": "./utils.js"
+  },
+  "devDependencies": {
+    "lint-staged": "15.4.3"
+  }
+}

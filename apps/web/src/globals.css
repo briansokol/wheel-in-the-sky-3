@@ -1,0 +1,19 @@
+:root {
+  --foreground: #eee;
+  --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
+}
+
+html,
+body {
+  color: var(--foreground);
+  background: var(--background);
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

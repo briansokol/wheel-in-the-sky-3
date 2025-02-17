@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "steoates.autoimport",
+    "aaron-bond.better-comments",
+    "kamikillerto.vscode-colorize",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "github.copilot",
+    "github.copilot-chat",
+    "github.vscode-pull-request-github",
+    "esbenp.prettier-vscode",
+    "gruntfuggly.todo-tree",
+    "vitest.explorer",
+    "stylelint.vscode-stylelint",
+    "ms-edgedevtools.vscode-edge-devtools",
+    "yoavbls.pretty-ts-errors"
+  ]
+}
