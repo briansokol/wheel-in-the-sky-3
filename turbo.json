@@ -17,11 +17,13 @@
       "cache": false,
       "persistent": true
     },
-    "test": {
-      "dependsOn": ["^test"]
-    },
     "test:ci": {
       "dependsOn": ["^test:ci"]
+    },
+    "ncu": {
+      "dependsOn": ["^ncu"],
+      "outputLogs": "full",
+      "cache": false
     }
   }
 }

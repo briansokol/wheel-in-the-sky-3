@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --foreground: #eee;
   --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
@@ -10,6 +14,7 @@ body {
   background-attachment: fixed;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  font-family: 'Quicksand', sans-serif;
 }
 
 @layer utilities {

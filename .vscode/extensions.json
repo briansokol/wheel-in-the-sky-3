@@ -11,8 +11,9 @@
     "esbenp.prettier-vscode",
     "gruntfuggly.todo-tree",
     "vitest.explorer",
-    "stylelint.vscode-stylelint",
     "ms-edgedevtools.vscode-edge-devtools",
-    "yoavbls.pretty-ts-errors"
+    "yoavbls.pretty-ts-errors",
+    "vercel.turbo-vsc",
+    "bradlc.vscode-tailwindcss"
   ]
 }
