@@ -21,6 +21,12 @@ jobs:
                   cache: 'npm'
             - name: Install Dependencies
               run: npm ci
+            - name: Check Dependency Consistency
+              run: npm run sherif
+            - name: Check Types
+              run: npm run check-types
+            - name: Build
+              run: npm run build
             - name: Run Tests
               run: npm run test:ci
             - name: Install Vercel CLI

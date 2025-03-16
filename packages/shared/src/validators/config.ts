@@ -16,7 +16,7 @@ export const serializedConfigSchema = z.object({
 
 export const configFormInputsSchema = z.object({
     id: z.string(),
-    title: z.string().min(1, 'Title is required'),
+    title: z.string(),
     description: z.string(),
     names: z.string().min(1, 'Names are required'),
     randomizeOrder: z.boolean(),

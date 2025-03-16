@@ -41,7 +41,6 @@ export const encodingApi = new Hono()
         }
 
         if (isPageColorTypeGradient(newConfig.pageColorConfig.backgroundColorType)) {
-            console.log('here');
             const pageTheme = getPageGradientTheme(newConfig.pageColorConfig.backgroundColorType);
             newConfig.setBackgroundColor(pageTheme.backgroundColor);
             newConfig.setForegroundColor(pageTheme.foregroundColor);

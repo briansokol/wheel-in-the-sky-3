@@ -11,9 +11,14 @@ export const base = {
     quoteProps: 'consistent',
     overrides: [
         {
-            files: '*.{json,css,scss}',
+            files: '*.{css,scss}',
             options: {
                 tabWidth: 2,
+            },
+            files: '*.{json,jsonc}',
+            options: {
+                tabWidth: 2,
+                trailingComma: 'none',
             },
         },
     ],

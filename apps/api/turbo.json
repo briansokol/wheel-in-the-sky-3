@@ -3,7 +3,7 @@
   "extends": ["//"],
   "tasks": {
     "dev": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "web#build"]
     }
   }
 }

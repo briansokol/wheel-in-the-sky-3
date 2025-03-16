@@ -1,36 +1,17 @@
 {
-    "$schema": "../../node_modules/wrangler/config-schema.json",
-    "name": "api",
-    "main": "src/index.ts",
-    "compatibility_date": "2025-02-04",
-    "compatibility_flags": ["nodejs_compat"],
-    // "vars": {
-    //   "MY_VAR": "my-variable"
-    // },
-    // "kv_namespaces": [
-    //   {
-    //     "binding": "MY_KV_NAMESPACE",
-    //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    //   }
-    // ],
-    // "r2_buckets": [
-    //   {
-    //     "binding": "MY_BUCKET",
-    //     "bucket_name": "my-bucket"
-    //   }
-    // ],
-    // "d1_databases": [
-    //   {
-    //     "binding": "MY_DB",
-    //     "database_name": "my-database",
-    //     "database_id": ""
-    //   }
-    // ],
-    // "ai": {
-    //   "binding": "AI"
-    // },
-    // "observability": {
-    //   "enabled": true,
-    //   "head_sampling_rate": 1
-    // }
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "wheel-in-the-sky",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "single-page-application"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
 }

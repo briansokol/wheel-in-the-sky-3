@@ -1,11 +1,10 @@
 {
   "name": "web",
   "private": true,
-  "version": "3.0.0-SNAPSHOT",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build --outDir=../api/public",
     "lint": "eslint .",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
