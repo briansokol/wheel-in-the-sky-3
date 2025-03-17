@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\")",
     "build": "tsc && tsc-alias",
-    "ncu": "npx ncu --interactive"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.1.0",
@@ -23,6 +23,6 @@
     "concurrently": "9.1.2",
     "tsc-alias": "1.8.11",
     "typescript": "5.8.2",
-    "vitest": "3.0.8"
+    "vitest": "3.0.9"
   }
 }

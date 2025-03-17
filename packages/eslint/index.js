@@ -1,12 +1,13 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import configPrettier from 'eslint-config-prettier';
+import configTurbo from 'eslint-config-turbo/flat';
 import pluginJestDom from 'eslint-plugin-jest-dom';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactRefresh from 'eslint-plugin-react-refresh';
 import pluginTailwind from 'eslint-plugin-tailwindcss';
 import plugnTestingLibrary from 'eslint-plugin-testing-library';
-import pluginTurbo from 'eslint-plugin-turbo';
 import pluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -37,10 +38,8 @@ export const base = [
             'unicorn/prevent-abbreviations': 'off',
         },
     },
+    ...configTurbo,
     {
-        plugins: {
-            turbo: pluginTurbo,
-        },
         rules: {
             'turbo/no-undeclared-env-vars': 'warn',
         },
@@ -81,6 +80,7 @@ export const react = [
             'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
         },
     },
+    ...pluginQuery.configs['flat/recommended'],
     {
         files: ['**/*.test.{js,jsx,ts,tsx}'],
         ...plugnTestingLibrary.configs['flat/dom'],

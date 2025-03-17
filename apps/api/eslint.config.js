@@ -1,3 +1,8 @@
 import { base } from '@repo/eslint';
 
-export default base;
+export default [
+    ...base,
+    {
+        ignores: ['**/public/**'],
+    },
+];

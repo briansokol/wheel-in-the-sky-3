@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+out/
+
+# Turborepo-specific
+.turbo/
+
+# Cache directories
+.cache/
+
+# Test coverage
+coverage/
+
+# Logs
+*.log
+
+# Environment variables
+.env*
+!.env.example
+
+# Editor-specific files
+.vscode/
+.idea/

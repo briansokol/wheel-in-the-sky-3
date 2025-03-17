@@ -24,11 +24,6 @@
     },
     "test:ci": {
       "dependsOn": ["^test:ci"]
-    },
-    "ncu": {
-      "dependsOn": ["^ncu"],
-      "outputLogs": "full",
-      "cache": false
     }
   }
 }
