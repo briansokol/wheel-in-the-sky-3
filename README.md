@@ -1,84 +1,72 @@
-# Turborepo starter
+# Wheel in the Sky 3
 
-This Turborepo starter is maintained by the Turborepo core team.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
+Wheel in the Sky is a wheel-based random selection tool.
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+This application is a monorepo managed by [Turborepo](https://turbo.build/repo/docs).
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- `web`: A [React](https://react.dev/)-based web application bundled with [Vite](https://vite.dev/).
+- `api`: A [Hono](https://hono.dev/) application shell.
+- `@repo/api-handlers`: [Hono](https://hono.dev/) route handlers that are imported into the `api` application. Also exports a client library to the `web` application.
+- `@repo/eslint`: Composable shared [ESLint] configurations for the project.
+- `@repo/lint-staged`: [lint-staged](https://github.com/lint-staged/lint-staged) configurations shared to each package.
+- `@repo/prettier`: [Prettier](https://prettier.io/) configurations for frontend and backend work.
+- `@repo/shared`: Includes additional code that is used by the frontend and backend, including enums, types, and [Zod](https://zod.dev/) validators.
 
-### Utilities
+Each package/app uses [TypeScript](https://www.typescriptlang.org/).
 
-This Turborepo has some additional tools already setup for you:
+### Development
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Turborepo is able to watch each package and rebuild relevant packages based on changes.
 
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
+#### Running a Local Dev Server
 
 To develop all apps and packages, run the following command:
 
 ```
-cd my-turborepo
-pnpm dev
+npm run dev
 ```
 
-### Remote Caching
+This will build relevant packages and start the web app at [localhost:5173](http://localhost:5173/) and the api at [localhost:8787](http://localhost:8787/).
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+#### Running Unit Tests
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+To run unit tests in watch-mode using [Vitest](https://vitest.dev/), run the following command:
 
 ```
-cd my-turborepo
-npx turbo login
+npm run test
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+#### Updating Dependencies
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+With the following command, you can run [npm-check-updates](https://github.com/raineorshine/npm-check-updates) sequentially over each repo. This will provide a console UI to update dependencies.
 
 ```
-npx turbo link
+npm run ncu
 ```
 
-## Useful Links
+### Release Process
 
-Learn more about the power of Turborepo:
+Any code committed into the `main` branch will be released to production. Code must be thoroughly checked before being merged to `main`. If a check fails at any stage, the process must be halted until the issue is resolved.
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+#### Committing Changes
+
+Using lint-staged, each commit will run these step locally, which much pass before you can push your changes:
+
+- Lint: Runs ESLint on all staged files.
+- Prettier: Formats all staged files.
+- Vitest: Runs relavant unit tests for staged files.
+
+#### Pull Requests
+
+Push a branch and open a pull request. Github Actions will run these steps:
+
+- [Sherif](https://github.com/QuiiBz/sherif): Detect if dependencies between packages no longer match.
+- Check Types: Ensure there are no TypeScript errors in the branch.
+- Build: Build every package and app, stopping if there are errors.
+- Test: Run all unit tests and report coverage.
+
+#### Deploying
+
+Merge your pull request. Github Actions will do the same steps again as it did for your feature branch. Additionally, if all steps pass, it will deploy the update to [CloudFlare](https://www.cloudflare.com/).

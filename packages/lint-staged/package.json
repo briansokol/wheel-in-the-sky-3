@@ -7,9 +7,6 @@
     "./configs": "./configs.js",
     "./utils": "./utils.js"
   },
-  "scripts": {
-    "ncu": "npx ncu --interactive"
-  },
   "devDependencies": {
     "lint-staged": "15.5.0"
   }
