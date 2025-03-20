@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.1.0",
-    "nanoid": "5.1.4",
+    "nanoid": "5.1.5",
     "react": "19.0.0",
     "zod": "3.24.2"
   },

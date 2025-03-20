@@ -3,6 +3,6 @@ import { base } from '@repo/eslint';
 export default [
     ...base,
     {
-        ignores: ['**/public/**'],
+        ignores: ['**/public/**', 'worker-configuration.d.ts'],
     },
 ];
