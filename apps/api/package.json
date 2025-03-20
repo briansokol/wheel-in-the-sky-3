@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "lint": "eslint .",
+    "types": "wrangler types && cp worker-configuration.d.ts ../../packages/api-handlers/worker-configuration.d.ts",
     "deploy": "wrangler deploy --minify"
   },
   "exports": {
@@ -15,7 +16,8 @@
     "hono": "4.7.4"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250317.0",
+    "@types/node": "22.13.10",
+    "cp": "0.2.0",
     "wrangler": "4.0.0"
   }
 }

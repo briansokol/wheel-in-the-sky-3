@@ -3,7 +3,7 @@ import { env } from 'hono/adapter';
 import { cors } from 'hono/cors';
 import { encodingApi } from '@/server/encoding.js';
 
-export const app = new Hono().basePath('/api');
+export const app = new Hono<{ Bindings: Env }>().basePath('/api');
 
 app.use(
     '*',
@@ -22,5 +22,10 @@ app.use(
         maxAge: 86400,
     })
 );
+
+app.notFound((c) => {
+    const { ASSETS } = env(c);
+    return ASSETS.fetch(c.req.url);
+});
 
 export const routes = app.route('/config', encodingApi);
