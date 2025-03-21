@@ -1,6 +1,10 @@
 # Wheel in the Sky 3
 
-Wheel in the Sky is a wheel-based random selection tool.
+**Wheel in the Sky** is a wheel-based random selection tool. This is the 3rd major rewrite of the app.
+
+Commits to the main branch are deployed to [wheel-in-the-sky.bri-9c5.workers.dev](https://wheel-in-the-sky.bri-9c5.workers.dev).
+
+You can find the previous version of the wheel at [wheelinthesky.app](https://wheelinthesky.app). This new wheel will replace the previous one when it's complete.
 
 ### Apps and Packages
 
