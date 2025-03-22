@@ -1,6 +1,6 @@
 import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
-import { useDocumentTitle } from '@uidotdev/usehooks';
+import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
 import { useContext, useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
@@ -80,6 +80,8 @@ export default function WheelPage() {
     );
     useSetDocumentBackgroundColor(bgColor);
     useSetDocumentForegroundColor(fgColor);
+
+    useLockBodyScroll();
 
     return (
         !isPending &&
