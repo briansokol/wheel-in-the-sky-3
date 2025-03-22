@@ -1,0 +1,9 @@
+# This is a CODEOWNERS file for GitHub
+
+# It defines which team members are responsible for code in this repository
+
+# For more info see: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+
+- @briansokol
