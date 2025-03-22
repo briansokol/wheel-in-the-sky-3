@@ -5,11 +5,13 @@ import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_FOREGROUND_COLOR, INVERSE_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
 import { PageColorType } from '@repo/shared/enums/page-colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
+import { Viewport } from '@repo/shared/types/viewport';
 import { buildPageColorConfig, buildWheelColorConfig } from '@repo/shared/utils/configs';
 import { FC, useContext, useEffect, useMemo } from 'react';
 import { Wheel } from '@/components/wheel';
 import { RotationContext } from '@/contexts/rotation';
 import { useBgColor, useFgColor } from '@/hooks/colors';
+import { useCurrentViewport } from '@/hooks/viewport';
 import { calculateStartingRotation } from '@/utils/math';
 
 interface WheelPreviewProps {
@@ -41,6 +43,8 @@ export const WheelPreview: FC<WheelPreviewProps> = ({
     showNames,
     height,
 }) => {
+    const viewport = useCurrentViewport();
+
     const { setRotation } = useContext(RotationContext);
 
     const [config, wheelManager] = useMemo(() => {
@@ -81,6 +85,24 @@ export const WheelPreview: FC<WheelPreviewProps> = ({
         showNames,
     ]);
 
+    const shortTitle = useMemo(() => {
+        let maxLength = 0;
+        switch (viewport) {
+            case Viewport.S:
+                maxLength = 30;
+                break;
+            case Viewport.M:
+                maxLength = 55;
+                break;
+            case Viewport.L:
+            case Viewport.XL:
+            case Viewport.XXL:
+                maxLength = 90;
+                break;
+        }
+        return title.length > maxLength ? `${title.substring(0, maxLength)}...` : title;
+    }, [title, viewport]);
+
     useEffect(() => {
         if (setRotation && wheelManager) {
             setRotation(calculateStartingRotation(wheelManager?.segments?.length ?? 0));
@@ -98,7 +120,7 @@ export const WheelPreview: FC<WheelPreviewProps> = ({
                         className="flex translate-y-8 items-center justify-center text-xl transition-all"
                         style={{ color: fgColor }}
                     >
-                        {title}
+                        {shortTitle}
                     </div>
                     <div className="flex size-full translate-y-28 items-center justify-center transition-all">
                         <Wheel wheelManager={wheelManager} radius="70%" isStatic={true} />

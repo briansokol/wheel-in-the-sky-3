@@ -10,11 +10,7 @@ app.use(
     cors({
         origin: (origin, c) => {
             const { APP_ENV } = env(c);
-            return APP_ENV === 'local'
-                ? 'http://localhost:5173'
-                : origin.endsWith('wheel-in-the-sky.bri-9c5.workers.dev')
-                  ? origin
-                  : undefined;
+            return APP_ENV === 'local' || origin.endsWith('wheel-in-the-sky.bri-9c5.workers.dev') ? origin : undefined;
         },
         allowMethods: ['POST', 'GET'],
         allowHeaders: ['Content-Type', 'Accept-Encoding'],

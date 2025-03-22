@@ -1,5 +1,6 @@
 import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
+import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
 import { useContext, useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
@@ -20,9 +21,6 @@ export default function WheelPage() {
         navigate('/config/v3/new');
     }
 
-    // TODO: Implement useDocumentTitle
-    // useDocumentTitle(`The page description`);
-
     const { rotation, setRotation } = useContext(RotationContext);
     const { segment, setSegment, hasWinner } = useContext(SegmentContext);
 
@@ -37,6 +35,8 @@ export default function WheelPage() {
             setWheelManager(newWheelManager);
         }
     }, [decodedConfig]);
+
+    useDocumentTitle(decodedConfig?.title ? `${decodedConfig.title} | Wheel in the Sky` : 'Wheel in the Sky');
 
     useEffect(() => {
         if (setRotation !== undefined && wheelManager !== undefined) {
@@ -80,6 +80,8 @@ export default function WheelPage() {
     );
     useSetDocumentBackgroundColor(bgColor);
     useSetDocumentForegroundColor(fgColor);
+
+    useLockBodyScroll();
 
     return (
         !isPending &&
