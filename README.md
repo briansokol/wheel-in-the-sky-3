@@ -24,21 +24,51 @@ Each package/app uses [TypeScript](https://www.typescriptlang.org/).
 
 Turborepo is able to watch each package and rebuild relevant packages based on changes.
 
+#### Environment Setup
+
+In order to run a local dev server, you'll need to create some environment files. These should not be committed into the repo.
+
+Create the file `apps/api/.dev.vars` and add these contents:
+
+```env
+APP_ENV=local
+```
+
+Create the file `apps/web/.env.local` and add these contents:
+
+```env
+VITE_APP_ENV=local
+```
+
+To install dependencies, run:
+
+```bash
+npm install
+```
+
 #### Running a Local Dev Server
 
-To develop all apps and packages, run the following command:
+To build the app in watch-mode and run dev server, run the following command:
 
-```
+```bash
 npm run dev
 ```
 
 This will build relevant packages and start the web app at [localhost:5173](http://localhost:5173/) and the api at [localhost:8787](http://localhost:8787/).
 
+If it's your first time running the app locally, you may get an error. Trying running a full build first (it's an issue with the order that Turbo creates files, I'll probably fix it eventually):
+
+```bash
+npm run build
+```
+
+You should only need to do this once. You should be able to run the `dev` command without issue from then on.
+
 #### Running Unit Tests
 
 To run unit tests in watch-mode using [Vitest](https://vitest.dev/), run the following command:
 
-```
+```bash
 npm run test
 ```
 
@@ -46,7 +76,7 @@ npm run test
 
 With the following command, you can run [npm-check-updates](https://github.com/raineorshine/npm-check-updates) sequentially over each repo. This will provide a console UI to update dependencies.
 
-```
+```bash
 npm run ncu
 ```
 
