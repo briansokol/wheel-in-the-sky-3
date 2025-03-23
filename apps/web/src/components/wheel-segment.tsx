@@ -1,5 +1,5 @@
 import { Segment } from '@repo/shared/classes/segment';
-import { type CSSProperties, type FC, useMemo } from 'react';
+import { type CSSProperties, type FC, memo, useMemo } from 'react';
 
 interface WheelSegmentProps {
     segment: Segment;
@@ -38,3 +38,5 @@ export const WheelSegment: FC<WheelSegmentProps> = ({ segment }) => {
         </div>
     );
 };
+
+export const MemoizedWheelSegment = memo(WheelSegment);

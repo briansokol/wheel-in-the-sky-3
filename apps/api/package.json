@@ -16,8 +16,8 @@
     "hono": "4.7.5"
   },
   "devDependencies": {
-    "@types/node": "22.13.10",
+    "@types/node": "22.13.11",
     "cp": "0.2.0",
-    "wrangler": "4.2.0"
+    "wrangler": "4.4.0"
   }
 }
