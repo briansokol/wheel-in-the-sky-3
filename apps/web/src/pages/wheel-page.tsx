@@ -11,7 +11,10 @@ import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
 import { useBgColor, useFgColor, useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig } from '@/hooks/config';
+import { useViewportWidth } from '@/hooks/viewport';
 import { calculateStartingRotation } from '@/utils/math';
+
+const WHEEL_PADDING = 20; // Padding of one side, applied to both sides
 
 export default function WheelPage() {
     const navigate = useNavigate();
@@ -37,6 +40,7 @@ export default function WheelPage() {
     }, [decodedConfig]);
 
     useDocumentTitle(decodedConfig?.title ? `${decodedConfig.title} | Wheel in the Sky` : 'Wheel in the Sky');
+    const viewportWidth = useViewportWidth();
 
     useEffect(() => {
         if (setRotation !== undefined && wheelManager !== undefined) {
@@ -89,8 +93,10 @@ export default function WheelPage() {
         segment && (
             <div className="mt-16 flex items-center justify-center">
                 <div className="flex flex-col items-center text-center">
-                    {wheelManager?.config?.title && <h2>{wheelManager?.config?.title}</h2>}
-                    <h1 className="flex items-center justify-center space-x-2 text-center text-4xl font-bold">
+                    {wheelManager?.config?.title && (
+                        <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>
+                    )}
+                    <p className="flex items-center justify-center space-x-2 text-center text-xl font-bold sm:text-4xl">
                         {hasWinner && (
                             <span role="img" aria-label="Party Horn Emoji">
                                 <GiPartyPopper />
@@ -104,9 +110,14 @@ export default function WheelPage() {
                                 <GiPartyPopper />
                             </span>
                         )}
-                    </h1>
-                    <FaChevronDown className="mx-auto text-4xl" />
-                    <Wheel wheelManager={wheelManager} radius="500px" />
+                    </p>
+                    <FaChevronDown className="mx-auto text-xl sm:text-4xl" />
+                    <Wheel
+                        wheelManager={wheelManager}
+                        radius={
+                            viewportWidth < 500 + WHEEL_PADDING * 2 ? `${viewportWidth - WHEEL_PADDING * 2}px` : '500px'
+                        }
+                    />
                 </div>
             </div>
         )

@@ -1,12 +1,11 @@
 import { Breakpoint, Viewport } from '@repo/shared/types/viewport';
-import { throttle } from 'es-toolkit';
 import { useEffect, useState } from 'react';
 
 export function useCurrentViewport() {
     const [viewport, setViewport] = useState<Viewport>(Viewport.XXL);
 
     useEffect(() => {
-        const handleResize = throttle(() => {
+        const handleResize = () => {
             if (window.innerWidth < Breakpoint.S) {
                 setViewport(Viewport.S);
             } else if (window.innerWidth < Breakpoint.M) {
@@ -18,7 +17,7 @@ export function useCurrentViewport() {
             } else {
                 setViewport(Viewport.XXL);
             }
-        }, 500);
+        };
 
         handleResize();
 
@@ -30,4 +29,22 @@ export function useCurrentViewport() {
     }, []);
 
     return viewport;
+}
+
+export function useViewportWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return width;
 }

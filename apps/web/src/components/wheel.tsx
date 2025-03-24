@@ -29,15 +29,15 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
     const [rotationBlur, setRotationBlur] = useState(0);
     const [willChange, setWillChange] = useState(false);
 
-    const mousePos = useRef<Coordinates>({ x: 0, y: 0 });
+    const pointerPos = useRef<Coordinates>({ x: 0, y: 0 });
     const rotationDirection = useRef<RotationDirection>(RotationDirection.None);
-    const startMousePos = useRef<Coordinates>({ x: 0, y: 0 });
-    const prevMousePos = useRef<Coordinates>({ x: 0, y: 0 });
-    const prevMouseAngle = useRef(0);
+    const startPointerPos = useRef<Coordinates>({ x: 0, y: 0 });
+    const prevPointerPos = useRef<Coordinates>({ x: 0, y: 0 });
+    const prevPointerAngle = useRef(0);
     const rotationDifference = useRef(0);
     const rotationSpeed = useRef(0);
     const easing = useRef(Easing.Out);
-    const mouseDown = useRef(false);
+    const pointerDown = useRef(false);
     const quickClick = useRef(false);
     const frameId = useRef<number>(undefined);
     const wheelRef: RefObject<HTMLDivElement | null> = useRef(null);
@@ -48,11 +48,11 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
                 event,
                 InteractionSource.Mouse,
                 frameId,
-                mouseDown,
-                mousePos,
+                pointerDown,
+                pointerPos,
                 quickClick,
                 rotationDifference,
-                startMousePos,
+                startPointerPos,
                 rotation,
                 setHasWinner,
                 setRotationBlur,
@@ -68,11 +68,11 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
                 event,
                 InteractionSource.Touch,
                 frameId,
-                mouseDown,
-                mousePos,
+                pointerDown,
+                pointerPos,
                 quickClick,
                 rotationDifference,
-                startMousePos,
+                startPointerPos,
                 rotation,
                 setHasWinner,
                 setRotationBlur,
@@ -87,10 +87,10 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
             handlePointerMove(
                 event,
                 InteractionSource.Mouse,
-                mouseDown,
-                mousePos,
-                prevMouseAngle,
-                prevMousePos,
+                pointerDown,
+                pointerPos,
+                prevPointerAngle,
+                prevPointerPos,
                 rotationDifference,
                 rotationDirection,
                 rotationSpeed,
@@ -103,10 +103,10 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
             handlePointerMove(
                 event,
                 InteractionSource.Touch,
-                mouseDown,
-                mousePos,
-                prevMouseAngle,
-                prevMousePos,
+                pointerDown,
+                pointerPos,
+                prevPointerAngle,
+                prevPointerPos,
                 rotationDifference,
                 rotationDirection,
                 rotationSpeed,
@@ -133,11 +133,11 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
                 InteractionSource.Mouse,
                 easing,
                 frameId,
-                mouseDown,
+                pointerDown,
                 quickClick,
                 rotationDirection,
                 rotationSpeed,
-                startMousePos,
+                startPointerPos,
                 setHasWinner,
                 setRotationBlur,
                 setWillChange,
@@ -150,11 +150,11 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
                 InteractionSource.Touch,
                 easing,
                 frameId,
-                mouseDown,
+                pointerDown,
                 quickClick,
                 rotationDirection,
                 rotationSpeed,
-                startMousePos,
+                startPointerPos,
                 setHasWinner,
                 setRotationBlur,
                 setWillChange,
