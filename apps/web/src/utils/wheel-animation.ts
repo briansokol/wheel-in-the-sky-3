@@ -1,24 +1,92 @@
 import { type WheelManager } from '@repo/shared/classes/wheel-manager';
-import { type Coordinates, Easing, RotationDirection } from '@repo/shared/types/wheel';
-import { type Dispatch, type MouseEvent as ReactMouseEvent, type RefObject, type SetStateAction } from 'react';
+import { type Coordinates, Easing, InteractionSource, RotationDirection } from '@repo/shared/types/wheel';
+import {
+    type Dispatch,
+    type MouseEvent as ReactMouseEvent,
+    type TouchEvent as ReactTouchEvent,
+    type RefObject,
+    type SetStateAction,
+} from 'react';
 
 const MAX_SPEED = 30;
 const MIN_SPEED = 0.1;
 const MAX_BLUR = 10;
 
-export function getMouseAngle(mousePos: Coordinates, wheelRef: RefObject<HTMLDivElement | null>): number {
+/**
+ * Calculates the angle between the mouse/touch position and the center of the wheel
+ * @param pointerPos - The coordinates of the mouse or touch point
+ * @param wheelRef - Reference to the wheel element
+ * @returns The angle in degrees
+ */
+export function getPointerAngle(pointerPos: Coordinates, wheelRef: RefObject<HTMLDivElement | null>): number {
     const wheelPosition = wheelRef?.current?.getBoundingClientRect();
 
     if (!wheelPosition) {
         return 0;
     }
 
-    const diffX = wheelPosition.left + wheelPosition.width / 2 - mousePos.x;
-    const diffY = wheelPosition.top + wheelPosition.height / 2 - mousePos.y;
+    const diffX = wheelPosition.left + wheelPosition.width / 2 - pointerPos.x;
+    const diffY = wheelPosition.top + wheelPosition.height / 2 - pointerPos.y;
 
     return (Math.atan2(diffY, diffX) * 180) / Math.PI + 180;
 }
 
+/**
+ * Extracts coordinates from a mouse event
+ * @param event - The mouse event
+ * @returns Coordinates object with x and y properties
+ */
+export function getCoordinatesFromMouseEvent(event: MouseEvent | ReactMouseEvent): Coordinates {
+    return { x: event.clientX, y: event.clientY };
+}
+
+/**
+ * Extracts coordinates from a touch event
+ * @param event - The touch event
+ * @returns Coordinates object with x and y properties
+ */
+export function getCoordinatesFromTouchEvent(event: TouchEvent | ReactTouchEvent): Coordinates {
+    if (event.touches.length === 0) {
+        // Use changedTouches for touchend events
+        return event.changedTouches.length > 0
+            ? { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY }
+            : { x: 0, y: 0 };
+    }
+    return { x: event.touches[0].clientX, y: event.touches[0].clientY };
+}
+
+/**
+ * Extracts coordinates from a pointer event
+ * @param event - The pointer event (mouse or touch)
+ * @param interactionSource - The source of the interaction (mouse or touch)
+ * @returns Coordinates object with x and y properties
+ */
+export function getCoordinatesFromPointerEvent(
+    event: TouchEvent | ReactTouchEvent | MouseEvent | ReactMouseEvent,
+    interactionSource: InteractionSource
+): Coordinates | null {
+    let coordinates: Coordinates | null = null;
+
+    if (interactionSource === InteractionSource.Mouse) {
+        coordinates = getCoordinatesFromMouseEvent(event as MouseEvent);
+    } else if (interactionSource === InteractionSource.Touch) {
+        coordinates = getCoordinatesFromTouchEvent(event as TouchEvent);
+    }
+
+    return coordinates;
+}
+
+/**
+ * Animates the wheel rotation with easing
+ * @param easing - Reference to the current easing type
+ * @param frameId - Reference to the animation frame ID
+ * @param rotationDirection - Reference to the current rotation direction
+ * @param rotationSpeed - Reference to the current rotation speed
+ * @param setHasWinner - Function to set whether there is a winner
+ * @param setRotationBlur - Function to set the rotation blur effect
+ * @param setWillChange - Function to set CSS will-change property
+ * @param wheelManager - The wheel manager instance
+ */
 export function animate(
     easing: RefObject<Easing>,
     frameId: RefObject<number | undefined>,
@@ -74,30 +142,57 @@ export function animate(
     }
 }
 
-export function handleMouseDown(
-    event: ReactMouseEvent<HTMLDivElement, MouseEvent>,
+/**
+ * Handles mouse down or touch start events on the wheel
+ * @param event - The mouse or touch event
+ * @param interactionSource - The source of the interaction (mouse or touch)
+ * @param coordinates - The coordinates of the mouse or touch point
+ * @param frameId - Reference to the animation frame ID
+ * @param pointerDown - Reference tracking if mouse/touch is down
+ * @param pointerPos - Reference to the current mouse/touch position
+ * @param quickClick - Reference tracking if it's a quick click/tap
+ * @param rotationDifference - Reference to the rotation difference
+ * @param startPointerPos - Reference to the starting mouse/touch position
+ * @param rotation - Current wheel rotation
+ * @param setHasWinner - Function to set whether there is a winner
+ * @param setRotationBlur - Function to set the rotation blur effect
+ * @param setWillChange - Function to set CSS will-change property
+ * @param wheelRef - Reference to the wheel element
+ */
+export function handlePointerDown(
+    event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
+    interactionSource: InteractionSource,
     frameId: RefObject<number | undefined>,
-    mouseDown: RefObject<boolean>,
-    mousePos: RefObject<Coordinates>,
+    pointerDown: RefObject<boolean>,
+    pointerPos: RefObject<Coordinates>,
     quickClick: RefObject<boolean>,
     rotationDifference: RefObject<number>,
-    startMousePos: RefObject<Coordinates>,
+    startPointerPos: RefObject<Coordinates>,
     rotation: number,
     setHasWinner: Dispatch<SetStateAction<boolean>> | undefined,
     setRotationBlur: Dispatch<SetStateAction<number>>,
     setWillChange: Dispatch<SetStateAction<boolean>>,
     wheelRef: RefObject<HTMLDivElement | null>
 ): void {
+    // Prevent default to avoid scrolling while spinning the wheel
+    event.preventDefault();
+
+    const coordinates = getCoordinatesFromPointerEvent(event, interactionSource);
+
+    if (!coordinates) {
+        return;
+    }
+
     setWillChange(true);
     quickClick.current = true;
     setRotationBlur(0);
     setTimeout(() => {
         quickClick.current = false;
     }, 500);
-    mouseDown.current = true;
-    rotationDifference.current = rotation - getMouseAngle(mousePos.current, wheelRef);
-    mousePos.current = { x: event.clientX, y: event.clientY };
-    startMousePos.current = { x: event.clientX, y: event.clientY };
+    pointerDown.current = true;
+    rotationDifference.current = rotation - getPointerAngle(pointerPos.current, wheelRef);
+    pointerPos.current = coordinates;
+    startPointerPos.current = coordinates;
     if (frameId.current) {
         cancelAnimationFrame(frameId.current);
         frameId.current = undefined;
@@ -107,23 +202,50 @@ export function handleMouseDown(
     }
 }
 
-export function handleMouseUp(
-    event: MouseEvent,
+/**
+ * Handles mouse up or touch end events
+ * @param event - The mouse or touch event
+ * @param interactionSource - The source of the interaction (mouse or touch)
+ * @param easing - Reference to the current easing type
+ * @param frameId - Reference to the animation frame ID
+ * @param pointerDown - Reference tracking if mouse/touch is down
+ * @param quickClick - Reference tracking if it's a quick click/tap
+ * @param rotationDirection - Reference to the current rotation direction
+ * @param rotationSpeed - Reference to the current rotation speed
+ * @param startPointerPos - Reference to the starting mouse/touch position
+ * @param setHasWinner - Function to set whether there is a winner
+ * @param setRotationBlur - Function to set the rotation blur effect
+ * @param setWillChange - Function to set CSS will-change property
+ * @param wheelManager - The wheel manager instance
+ */
+export function handlePointerUp(
+    event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
+    interactionSource: InteractionSource,
     easing: RefObject<Easing>,
     frameId: RefObject<number | undefined>,
-    mouseDown: RefObject<boolean>,
+    pointerDown: RefObject<boolean>,
     quickClick: RefObject<boolean>,
     rotationDirection: RefObject<RotationDirection>,
     rotationSpeed: RefObject<number>,
-    startMousePos: RefObject<Coordinates>,
+    startPointerPos: RefObject<Coordinates>,
     setHasWinner: Dispatch<SetStateAction<boolean>> | undefined,
     setRotationBlur: Dispatch<SetStateAction<number>>,
     setWillChange: Dispatch<SetStateAction<boolean>>,
     wheelManager: WheelManager | undefined
 ) {
-    if (mouseDown.current) {
-        mouseDown.current = false;
-        if (event.clientX !== startMousePos.current.x || event.clientY !== startMousePos.current.y) {
+    if (wheelManager == undefined) {
+        return;
+    }
+
+    const coordinates = getCoordinatesFromPointerEvent(event, interactionSource);
+
+    if (!coordinates) {
+        return;
+    }
+
+    if (pointerDown.current) {
+        pointerDown.current = false;
+        if (coordinates.x !== startPointerPos.current.x || coordinates.y !== startPointerPos.current.y) {
             easing.current = Easing.Out;
             frameId.current = requestAnimationFrame(() =>
                 animate(
@@ -172,12 +294,28 @@ export function handleMouseUp(
     }
 }
 
-export function handleMouseMove(
-    event: MouseEvent,
-    mouseDown: RefObject<boolean>,
-    mousePos: RefObject<Coordinates>,
-    prevMouseAngle: RefObject<number>,
-    prevMousePos: RefObject<Coordinates>,
+/**
+ * Handles mouse or touch move events
+ * @param event - The mouse or touch event
+ * @param interactionSource - The source of the interaction (mouse or touch)
+ * @param pointerDown - Reference tracking if mouse/touch is down
+ * @param pointerPos - Reference to the current mouse/touch position
+ * @param prevPointerAngle - Reference to the previous mouse/touch angle
+ * @param prevPointerPos - Reference to the previous mouse/touch position
+ * @param rotationDifference - Reference to the rotation difference
+ * @param rotationDirection - Reference to the current rotation direction
+ * @param rotationSpeed - Reference to the current rotation speed
+ * @param setHasWinner - Function to set whether there is a winner
+ * @param wheelManager - The wheel manager instance
+ * @param wheelRef - Reference to the wheel element
+ */
+export function handlePointerMove(
+    event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
+    interactionSource: InteractionSource,
+    pointerDown: RefObject<boolean>,
+    pointerPos: RefObject<Coordinates>,
+    prevPointerAngle: RefObject<number>,
+    prevPointerPos: RefObject<Coordinates>,
     rotationDifference: RefObject<number>,
     rotationDirection: RefObject<RotationDirection>,
     rotationSpeed: RefObject<number>,
@@ -185,14 +323,23 @@ export function handleMouseMove(
     wheelManager: WheelManager | undefined,
     wheelRef: RefObject<HTMLDivElement | null>
 ) {
+    // Prevent default to avoid scrolling while spinning the wheel
+    event.preventDefault();
+
     if (wheelManager == undefined) {
         return;
     }
 
-    prevMousePos.current = mousePos.current;
-    mousePos.current = { x: event.clientX, y: event.clientY };
+    const coordinates = getCoordinatesFromPointerEvent(event, interactionSource);
 
-    if (!mouseDown.current) {
+    if (!coordinates) {
+        return;
+    }
+
+    prevPointerPos.current = pointerPos.current;
+    pointerPos.current = coordinates;
+
+    if (!pointerDown.current) {
         return;
     }
 
@@ -200,20 +347,23 @@ export function handleMouseMove(
         setHasWinner(false);
     }
 
-    const mouseAngle = getMouseAngle(mousePos.current, wheelRef);
-    if (mouseAngle > prevMouseAngle.current || prevMouseAngle.current - mouseAngle > 180) {
+    const pointerAngle = getPointerAngle(pointerPos.current, wheelRef);
+    if (pointerAngle > prevPointerAngle.current || prevPointerAngle.current - pointerAngle > 180) {
         rotationDirection.current = RotationDirection.Clockwise;
-    } else if (mouseAngle < prevMouseAngle.current || mouseAngle - prevMouseAngle.current > 180) {
+    } else if (pointerAngle < prevPointerAngle.current || pointerAngle - prevPointerAngle.current > 180) {
         rotationDirection.current = RotationDirection.CounterClockwise;
     } else {
         rotationDirection.current = RotationDirection.None;
     }
-    prevMouseAngle.current = mouseAngle;
+    prevPointerAngle.current = pointerAngle;
 
-    const speed = Math.hypot(mousePos.current.x - prevMousePos.current.x, mousePos.current.y - prevMousePos.current.y);
+    const speed = Math.hypot(
+        pointerPos.current.x - prevPointerPos.current.x,
+        pointerPos.current.y - prevPointerPos.current.y
+    );
     rotationSpeed.current = speed * 0.5;
 
-    let newRotation: number = mouseAngle + rotationDifference.current;
+    let newRotation: number = pointerAngle + rotationDifference.current;
     if (newRotation < 0) {
         newRotation += 360;
     } else if (newRotation >= 360) {

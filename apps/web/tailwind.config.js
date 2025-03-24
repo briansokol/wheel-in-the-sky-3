@@ -9,7 +9,17 @@ export default {
         '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}',
     ],
     theme: {
-        extend: {},
+        extend: {
+            animation: {
+                float: 'float 0.8s ease-out infinite alternate',
+            },
+            keyframes: {
+                float: {
+                    '0%': { transform: 'scale(1)', textShadow: '0 0 0 rgba(0, 0, 0, 0.6)' },
+                    '100%': { transform: 'scale(1.4)', textShadow: '7px 7px 10px rgba(0, 0, 0, 0.4)' },
+                },
+            },
+        },
     },
     darkMode: 'class',
     plugins: [

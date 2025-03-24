@@ -182,7 +182,7 @@ describe('Wheel', () => {
 
         unmount();
 
-        expect(removeEventListenerSpy).toHaveBeenCalledTimes(2); // mousedown, mousemove, mouseup
+        expect(removeEventListenerSpy).toHaveBeenCalledTimes(4); // 2 for mouse, 2 for touch
     });
 
     it('handles animation frame updates', () => {
