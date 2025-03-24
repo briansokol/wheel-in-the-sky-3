@@ -4,7 +4,6 @@ import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
 import { useContext, useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
-import { GiPartyPopper } from 'react-icons/gi';
 import { useNavigate, useParams } from 'react-router';
 import { Wheel } from '@/components/wheel';
 import { RotationContext } from '@/contexts/rotation';
@@ -96,20 +95,12 @@ export default function WheelPage() {
                     {wheelManager?.config?.title && (
                         <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>
                     )}
-                    <p className="flex items-center justify-center space-x-2 text-center text-xl font-bold sm:text-4xl">
-                        {hasWinner && (
-                            <span role="img" aria-label="Party Horn Emoji">
-                                <GiPartyPopper />
-                            </span>
-                        )}
+                    <p
+                        className={`${hasWinner ? 'animate-float' : ''} flex items-center justify-center space-x-2 text-center text-xl font-bold sm:text-4xl`}
+                    >
                         <span data-testid="winner" className="mx-4" aria-label="Winner">
                             {segment?.name}
                         </span>
-                        {hasWinner && (
-                            <span role="img" aria-label="Party Horn moji">
-                                <GiPartyPopper />
-                            </span>
-                        )}
                     </p>
                     <FaChevronDown className="mx-auto text-xl sm:text-4xl" />
                     <Wheel

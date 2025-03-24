@@ -3,22 +3,36 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #eee;
-  --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
+    --foreground: #eee;
+    --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
 }
 
 html,
 body {
-  color: var(--foreground);
-  background: var(--background);
-  background-attachment: fixed;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  font-family: 'Quicksand', sans-serif;
+    color: var(--foreground);
+    background: var(--background);
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    font-family: 'Quicksand', sans-serif;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+@theme {
+    --animate-wiggle: wiggle 1s ease-in-out infinite;
+
+    @keyframes wiggle {
+        0%,
+        100% {
+            transform: rotate(-3deg);
+        }
+        50% {
+            transform: rotate(3deg);
+        }
+    }
 }
