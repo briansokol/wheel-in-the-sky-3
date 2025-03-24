@@ -14,3 +14,8 @@ export enum Easing {
     Out,
     InOut,
 }
+
+export enum InteractionSource {
+    Mouse,
+    Touch,
+}

@@ -1,8 +1,9 @@
 import { type WheelManager } from '@repo/shared/classes/wheel-manager';
-import { type Coordinates, Easing, RotationDirection } from '@repo/shared/types/wheel';
+import { type Coordinates, Easing, InteractionSource, RotationDirection } from '@repo/shared/types/wheel';
 import {
     type FC,
     type MouseEvent as ReactMouseEvent,
+    type TouchEvent as ReactTouchEvent,
     type RefObject,
     useCallback,
     useContext,
@@ -13,7 +14,13 @@ import {
 import { MemoizedWheelSegment } from '@/components/wheel-segment';
 import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
-import { handleMouseDown, handleMouseMove, handleMouseUp } from '@/utils/wheel-animation';
+import {
+    handleMouseMove,
+    handleMouseUp,
+    handlePointerDown,
+    handleTouchEnd,
+    handleTouchMove,
+} from '@/utils/wheel-animation';
 
 interface WheelProps {
     wheelManager?: WheelManager;
@@ -43,8 +50,29 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
 
     const onMouseDown = useCallback(
         (event: ReactMouseEvent<HTMLDivElement, MouseEvent>) =>
-            handleMouseDown(
+            handlePointerDown(
                 event,
+                InteractionSource.Mouse,
+                frameId,
+                mouseDown,
+                mousePos,
+                quickClick,
+                rotationDifference,
+                startMousePos,
+                rotation,
+                setHasWinner,
+                setRotationBlur,
+                setWillChange,
+                wheelRef
+            ),
+        [rotation, setHasWinner]
+    );
+
+    const onTouchStart = useCallback(
+        (event: ReactTouchEvent<HTMLDivElement>) =>
+            handlePointerDown(
+                event,
+                InteractionSource.Touch,
                 frameId,
                 mouseDown,
                 mousePos,
@@ -76,11 +104,28 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
                 wheelRef
             );
 
+        const onTouchMove = (event: TouchEvent) =>
+            handleTouchMove(
+                event,
+                mouseDown,
+                mousePos,
+                prevMouseAngle,
+                prevMousePos,
+                rotationDifference,
+                rotationDirection,
+                rotationSpeed,
+                setHasWinner,
+                wheelManager,
+                wheelRef
+            );
+
         if (!isStatic) {
             globalThis.addEventListener('mousemove', onMouseMove);
+            globalThis.addEventListener('touchmove', onTouchMove, { passive: false });
 
             return () => {
                 globalThis.removeEventListener('mousemove', onMouseMove);
+                globalThis.removeEventListener('touchmove', onTouchMove);
             };
         }
     }, [isStatic, setHasWinner, wheelManager]);
@@ -102,11 +147,29 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
                 wheelManager
             );
 
+        const onTouchEnd = (event: TouchEvent) =>
+            handleTouchEnd(
+                event,
+                easing,
+                frameId,
+                mouseDown,
+                quickClick,
+                rotationDirection,
+                rotationSpeed,
+                startMousePos,
+                setHasWinner,
+                setRotationBlur,
+                setWillChange,
+                wheelManager
+            );
+
         if (!isStatic) {
             globalThis.addEventListener('mouseup', onMouseUp);
+            globalThis.addEventListener('touchend', onTouchEnd);
 
             return () => {
                 globalThis.removeEventListener('mouseup', onMouseUp);
+                globalThis.removeEventListener('touchend', onTouchEnd);
             };
         }
     }, [isStatic, setHasWinner, setRotationBlur, setWillChange, wheelManager]);
@@ -115,6 +178,7 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
         <div
             ref={wheelRef}
             onMouseDown={onMouseDown}
+            onTouchStart={onTouchStart}
             className={`relative select-none overflow-hidden rounded-full ${isStatic ? '' : 'cursor-grab active:cursor-grabbing'}`}
             style={{
                 width: radius,
