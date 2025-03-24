@@ -56,6 +56,27 @@ export function getCoordinatesFromTouchEvent(event: TouchEvent | ReactTouchEvent
 }
 
 /**
+ * Extracts coordinates from a pointer event
+ * @param event - The pointer event
+ * @param interactionSource - The source of the interaction (mouse or touch)
+ * @returns Coordinates object with x and y properties
+ */
+export function getCoordinatesFromPointerEvent(
+    event: TouchEvent | ReactTouchEvent | MouseEvent | ReactMouseEvent,
+    interactionSource: InteractionSource
+): Coordinates | null {
+    let coordinates: Coordinates | null = null;
+
+    if (interactionSource === InteractionSource.Mouse) {
+        coordinates = getCoordinatesFromMouseEvent(event as MouseEvent);
+    } else if (interactionSource === InteractionSource.Touch) {
+        coordinates = getCoordinatesFromTouchEvent(event as TouchEvent);
+    }
+
+    return coordinates;
+}
+
+/**
  * Animates the wheel rotation with easing
  * @param easing - Reference to the current easing type
  * @param frameId - Reference to the animation frame ID
@@ -153,13 +174,10 @@ export function handlePointerDown(
     setWillChange: Dispatch<SetStateAction<boolean>>,
     wheelRef: RefObject<HTMLDivElement | null>
 ): void {
-    let coordinates: Coordinates | null = null;
+    // Prevent default to avoid scrolling while spinning the wheel
+    event.preventDefault();
 
-    if (interactionSource === InteractionSource.Mouse) {
-        coordinates = getCoordinatesFromMouseEvent(event as MouseEvent);
-    } else if (interactionSource === InteractionSource.Touch) {
-        coordinates = getCoordinatesFromTouchEvent(event as TouchEvent);
-    }
+    const coordinates = getCoordinatesFromPointerEvent(event, interactionSource);
 
     if (!coordinates) {
         return;
@@ -186,7 +204,8 @@ export function handlePointerDown(
 
 /**
  * Handles mouse up or touch end events
- * @param coordinates - The coordinates of the mouse or touch point
+ * @param event - The mouse or touch event
+ * @param interactionSource - The source of the interaction (mouse or touch)
  * @param easing - Reference to the current easing type
  * @param frameId - Reference to the animation frame ID
  * @param mouseDown - Reference tracking if mouse/touch is down
@@ -200,7 +219,8 @@ export function handlePointerDown(
  * @param wheelManager - The wheel manager instance
  */
 export function handlePointerUp(
-    coordinates: Coordinates,
+    event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
+    interactionSource: InteractionSource,
     easing: RefObject<Easing>,
     frameId: RefObject<number | undefined>,
     mouseDown: RefObject<boolean>,
@@ -213,6 +233,16 @@ export function handlePointerUp(
     setWillChange: Dispatch<SetStateAction<boolean>>,
     wheelManager: WheelManager | undefined
 ) {
+    if (wheelManager == undefined) {
+        return;
+    }
+
+    const coordinates = getCoordinatesFromPointerEvent(event, interactionSource);
+
+    if (!coordinates) {
+        return;
+    }
+
     if (mouseDown.current) {
         mouseDown.current = false;
         if (coordinates.x !== startMousePos.current.x || coordinates.y !== startMousePos.current.y) {
@@ -265,74 +295,9 @@ export function handlePointerUp(
 }
 
 /**
- * Legacy function to handle mouse up events (uses handlePointerUp)
- */
-export function handleMouseUp(
-    event: MouseEvent,
-    easing: RefObject<Easing>,
-    frameId: RefObject<number | undefined>,
-    mouseDown: RefObject<boolean>,
-    quickClick: RefObject<boolean>,
-    rotationDirection: RefObject<RotationDirection>,
-    rotationSpeed: RefObject<number>,
-    startMousePos: RefObject<Coordinates>,
-    setHasWinner: Dispatch<SetStateAction<boolean>> | undefined,
-    setRotationBlur: Dispatch<SetStateAction<number>>,
-    setWillChange: Dispatch<SetStateAction<boolean>>,
-    wheelManager: WheelManager | undefined
-) {
-    handlePointerUp(
-        getCoordinatesFromMouseEvent(event),
-        easing,
-        frameId,
-        mouseDown,
-        quickClick,
-        rotationDirection,
-        rotationSpeed,
-        startMousePos,
-        setHasWinner,
-        setRotationBlur,
-        setWillChange,
-        wheelManager
-    );
-}
-
-/**
- * Handles touch end events (uses handlePointerUp)
- */
-export function handleTouchEnd(
-    event: TouchEvent,
-    easing: RefObject<Easing>,
-    frameId: RefObject<number | undefined>,
-    mouseDown: RefObject<boolean>,
-    quickClick: RefObject<boolean>,
-    rotationDirection: RefObject<RotationDirection>,
-    rotationSpeed: RefObject<number>,
-    startMousePos: RefObject<Coordinates>,
-    setHasWinner: Dispatch<SetStateAction<boolean>> | undefined,
-    setRotationBlur: Dispatch<SetStateAction<number>>,
-    setWillChange: Dispatch<SetStateAction<boolean>>,
-    wheelManager: WheelManager | undefined
-) {
-    handlePointerUp(
-        getCoordinatesFromTouchEvent(event),
-        easing,
-        frameId,
-        mouseDown,
-        quickClick,
-        rotationDirection,
-        rotationSpeed,
-        startMousePos,
-        setHasWinner,
-        setRotationBlur,
-        setWillChange,
-        wheelManager
-    );
-}
-
-/**
  * Handles mouse or touch move events
- * @param coordinates - The coordinates of the mouse or touch point
+ * @param event - The mouse or touch event
+ * @param interactionSource - The source of the interaction (mouse or touch)
  * @param mouseDown - Reference tracking if mouse/touch is down
  * @param mousePos - Reference to the current mouse/touch position
  * @param prevMouseAngle - Reference to the previous mouse/touch angle
@@ -345,7 +310,8 @@ export function handleTouchEnd(
  * @param wheelRef - Reference to the wheel element
  */
 export function handlePointerMove(
-    coordinates: Coordinates,
+    event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
+    interactionSource: InteractionSource,
     mouseDown: RefObject<boolean>,
     mousePos: RefObject<Coordinates>,
     prevMouseAngle: RefObject<number>,
@@ -357,7 +323,16 @@ export function handlePointerMove(
     wheelManager: WheelManager | undefined,
     wheelRef: RefObject<HTMLDivElement | null>
 ) {
+    // Prevent default to avoid scrolling while spinning the wheel
+    event.preventDefault();
+
     if (wheelManager == undefined) {
+        return;
+    }
+
+    const coordinates = getCoordinatesFromPointerEvent(event, interactionSource);
+
+    if (!coordinates) {
         return;
     }
 
@@ -392,68 +367,4 @@ export function handlePointerMove(
         newRotation -= 360;
     }
     wheelManager.setRotation(newRotation);
-}
-
-/**
- * Legacy function to handle mouse move events (uses handlePointerMove)
- */
-export function handleMouseMove(
-    event: MouseEvent,
-    mouseDown: RefObject<boolean>,
-    mousePos: RefObject<Coordinates>,
-    prevMouseAngle: RefObject<number>,
-    prevMousePos: RefObject<Coordinates>,
-    rotationDifference: RefObject<number>,
-    rotationDirection: RefObject<RotationDirection>,
-    rotationSpeed: RefObject<number>,
-    setHasWinner: Dispatch<SetStateAction<boolean>> | undefined,
-    wheelManager: WheelManager | undefined,
-    wheelRef: RefObject<HTMLDivElement | null>
-) {
-    handlePointerMove(
-        getCoordinatesFromMouseEvent(event),
-        mouseDown,
-        mousePos,
-        prevMouseAngle,
-        prevMousePos,
-        rotationDifference,
-        rotationDirection,
-        rotationSpeed,
-        setHasWinner,
-        wheelManager,
-        wheelRef
-    );
-}
-
-/**
- * Handles touch move events (uses handlePointerMove)
- */
-export function handleTouchMove(
-    event: TouchEvent,
-    mouseDown: RefObject<boolean>,
-    mousePos: RefObject<Coordinates>,
-    prevMouseAngle: RefObject<number>,
-    prevMousePos: RefObject<Coordinates>,
-    rotationDifference: RefObject<number>,
-    rotationDirection: RefObject<RotationDirection>,
-    rotationSpeed: RefObject<number>,
-    setHasWinner: Dispatch<SetStateAction<boolean>> | undefined,
-    wheelManager: WheelManager | undefined,
-    wheelRef: RefObject<HTMLDivElement | null>
-) {
-    // Prevent default to avoid scrolling while spinning the wheel
-    event.preventDefault();
-    handlePointerMove(
-        getCoordinatesFromTouchEvent(event),
-        mouseDown,
-        mousePos,
-        prevMouseAngle,
-        prevMousePos,
-        rotationDifference,
-        rotationDirection,
-        rotationSpeed,
-        setHasWinner,
-        wheelManager,
-        wheelRef
-    );
 }

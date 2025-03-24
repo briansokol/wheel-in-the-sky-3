@@ -14,13 +14,7 @@ import {
 import { MemoizedWheelSegment } from '@/components/wheel-segment';
 import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
-import {
-    handleMouseMove,
-    handleMouseUp,
-    handlePointerDown,
-    handleTouchEnd,
-    handleTouchMove,
-} from '@/utils/wheel-animation';
+import { handlePointerDown, handlePointerMove, handlePointerUp } from '@/utils/wheel-animation';
 
 interface WheelProps {
     wheelManager?: WheelManager;
@@ -90,8 +84,9 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
 
     useEffect(() => {
         const onMouseMove = (event: MouseEvent) =>
-            handleMouseMove(
+            handlePointerMove(
                 event,
+                InteractionSource.Mouse,
                 mouseDown,
                 mousePos,
                 prevMouseAngle,
@@ -105,8 +100,9 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
             );
 
         const onTouchMove = (event: TouchEvent) =>
-            handleTouchMove(
+            handlePointerMove(
                 event,
+                InteractionSource.Touch,
                 mouseDown,
                 mousePos,
                 prevMouseAngle,
@@ -132,8 +128,9 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
 
     useEffect(() => {
         const onMouseUp = (event: MouseEvent) =>
-            handleMouseUp(
+            handlePointerUp(
                 event,
+                InteractionSource.Mouse,
                 easing,
                 frameId,
                 mouseDown,
@@ -148,8 +145,9 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
             );
 
         const onTouchEnd = (event: TouchEvent) =>
-            handleTouchEnd(
+            handlePointerUp(
                 event,
+                InteractionSource.Touch,
                 easing,
                 frameId,
                 mouseDown,
