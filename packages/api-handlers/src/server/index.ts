@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import { env } from 'hono/adapter';
-import { compress } from 'hono/compress';
 import { cors } from 'hono/cors';
 import { encodingApi } from '@/server/encoding.js';
 import { AppEnv } from '@/types.js';
@@ -20,8 +19,6 @@ app.use(
         maxAge: 86400,
     })
 );
-
-app.use(compress());
 
 app.notFound((c) => {
     const { ASSETS } = env(c);
