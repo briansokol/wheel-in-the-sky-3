@@ -1,9 +1,11 @@
 import { Hono } from 'hono';
 import { env } from 'hono/adapter';
+import { compress } from 'hono/compress';
 import { cors } from 'hono/cors';
 import { encodingApi } from '@/server/encoding.js';
+import { AppEnv } from '@/types.js';
 
-export const app = new Hono<{ Bindings: Env }>().basePath('/api');
+export const app = new Hono<AppEnv>().basePath('/api');
 
 app.use(
     '*',
@@ -18,6 +20,8 @@ app.use(
         maxAge: 86400,
     })
 );
+
+app.use(compress());
 
 app.notFound((c) => {
     const { ASSETS } = env(c);

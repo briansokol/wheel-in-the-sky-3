@@ -3,7 +3,6 @@
   "name": "wheel-in-the-sky",
   "main": "src/index.ts",
   "compatibility_date": "2025-02-04",
-  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",

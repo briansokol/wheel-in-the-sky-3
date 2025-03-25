@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [3.0.0](#3.0.0) - Unreleased
 
-Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA using the Vite build framework, with a Hono backend API. All proprietary code has been removed and the project is now completely open source.
+Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA using the Vite build framework, with a Hono backend API. All closed source code has been removed and the project is now completely open source.
 
 ### Added
 

@@ -6,9 +6,10 @@ import { getPageGradientTheme, isPageColorTypeGradient } from '@repo/shared/util
 import { configFormInputsSchema } from '@repo/shared/validators/config';
 import { Hono } from 'hono';
 import { z } from 'zod';
+import { AppEnv } from '@/types.js';
 import { decodeConfig, encodeConfig } from '@/utils/encoding.js';
 
-export const encodingApi = new Hono()
+export const encodingApi = new Hono<AppEnv>()
 
     .post('/encode', zValidator('json', configFormInputsSchema), async (c) => {
         const formData = c.req.valid('json');
