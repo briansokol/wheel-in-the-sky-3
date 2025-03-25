@@ -120,8 +120,9 @@ export default function AboutPage() {
                     <p>
                         Source code is available at <SiGithub className="inline-block align-[-3px]" />{' '}
                         <Link href="https://github.com/briansokol/wheel-in-the-sky-3" showAnchorIcon>
-                            GitHub.
+                            GitHub
                         </Link>
+                        .
                     </p>
                     <p className="my-4">©{currentYear} Brian Sokol. All rights reserved.</p>
                 </article>
