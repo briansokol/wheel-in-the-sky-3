@@ -16,6 +16,7 @@
     "@ctrl/tinycolor": "4.1.0",
     "@hono/zod-validator": "0.4.3",
     "@repo/shared": "*",
+    "@sentry/cloudflare": "9.9.0",
     "hono": "4.7.5",
     "zod": "3.24.2"
   },
