@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
+    "postbuild": "cp ./CHANGELOG.md ./apps/api/public/CHANGELOG.md",
     "dev": "turbo run dev",
     "deploy": "turbo run deploy",
     "lint": "turbo run lint",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "3.0.9",
+    "cp": "0.2.0",
     "husky": "9.1.7",
     "prettier": "3.5.3",
     "sherif": "1.4.0",

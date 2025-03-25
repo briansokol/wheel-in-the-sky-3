@@ -209,9 +209,7 @@ export default function ConfigPage() {
                                     </div>
                                     <div className="mb-12 mt-6">
                                         {isLoaded ? (
-                                            <Switch {...register('showNames')} value="true">
-                                                Show Labels on Wheel
-                                            </Switch>
+                                            <Switch {...register('showNames')}>Show Labels on Wheel</Switch>
                                         ) : (
                                             <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
                                         )}
@@ -270,7 +268,7 @@ export default function ConfigPage() {
                                                 {(parsedWheelColorType === WheelColorType.Monochromatic ||
                                                     parsedWheelColorType === WheelColorType.Analogous) && (
                                                     <div className="mb-3">
-                                                        <Switch {...register('randomizeColor')} value="true">
+                                                        <Switch {...register('randomizeColor')}>
                                                             Randomize Color Order
                                                         </Switch>
                                                     </div>

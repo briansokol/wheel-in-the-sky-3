@@ -1,6 +1,11 @@
 import { Button, Divider, Link } from '@heroui/react';
+import { defaultPageColorConfig } from '@repo/shared/constants/colors';
+import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 
 export default function HomePage() {
+    useSetDocumentBackgroundColor(defaultPageColorConfig.backgroundColor);
+    useSetDocumentForegroundColor(defaultPageColorConfig.foregroundColor);
+
     return (
         <main>
             <div className="mx-auto flex max-w-screen-md flex-col items-center p-8 sm:p-16 md:p-24">
