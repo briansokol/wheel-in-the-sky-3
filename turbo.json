@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalEnv": [".env*", ".dev.vars", "WITH_SENTRY"],
+  "globalEnv": [".env*", ".dev.vars", "WITH_SENTRY", "SENTRY_AUTH_TOKEN"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -10,7 +10,7 @@
     },
     "build:with-sentry": {
       "dependsOn": ["^build:with-sentry"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*", "WITH_SENTRY"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "WITH_SENTRY", "SENTRY_AUTH_TOKEN"],
       "cache": false
     },
     "deploy": {
