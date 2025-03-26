@@ -6,6 +6,8 @@
   "scripts": {
     "build": "turbo run build",
     "postbuild": "cp ./CHANGELOG.md ./apps/api/public/CHANGELOG.md",
+    "build:with-sentry": "turbo run build:with-sentry",
+    "postbuild:with-sentry": "npm run postbuild",
     "dev": "turbo run dev",
     "deploy": "turbo run deploy",
     "lint": "turbo run lint",

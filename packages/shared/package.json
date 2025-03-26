@@ -13,7 +13,8 @@
   },
   "scripts": {
     "dev": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\")",
-    "build": "tsc && tsc-alias && npm run sentry:sourcemaps",
+    "build": "tsc && tsc-alias",
+    "build:with-sentry": "npm run build && npm run sentry:sourcemaps",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org brian-sokol --project wits-api ./dist && sentry-cli sourcemaps upload --org brian-sokol --project wits-api ./dist"
   },
   "dependencies": {
