@@ -12,6 +12,7 @@
 
     /* Bundler mode */
     "moduleResolution": "nodenext",
+
     "isolatedModules": true,
     "moduleDetection": "force",
     "jsx": "react-jsx",
@@ -19,6 +20,7 @@
 
     /* Linting */
     "strict": true,
+
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -27,9 +29,19 @@
 
     /* Paths */
     "baseUrl": "./",
+
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+
+    /* Source maps */
+    "sourceMap": true,
+    "inlineSources": true,
+
+    // Set `sourceRoot` to  "/" to strip the build path prefix
+    // from generated source code references.
+    // This improves issue grouping in Sentry.
+    "sourceRoot": "/"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist/**/*"]

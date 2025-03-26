@@ -7,6 +7,7 @@ export default defineConfig({
             exclude: [
                 ...configDefaults.exclude,
                 '**/dist/**',
+                '**/public/**',
                 '**/__tests__/**',
                 '**/*.config.{js,ts,mjs,mts}',
                 '**/*.d.ts',

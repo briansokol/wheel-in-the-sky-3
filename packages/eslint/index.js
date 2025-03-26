@@ -41,7 +41,7 @@ export const base = [
     ...configTurbo,
     {
         rules: {
-            'turbo/no-undeclared-env-vars': 'warn',
+            'turbo/no-undeclared-env-vars': 'off',
         },
     },
     {

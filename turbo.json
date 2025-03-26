@@ -1,11 +1,16 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalEnv": [".env*", ".dev.vars"],
+  "globalEnv": [".env*", ".dev.vars", "WITH_SENTRY"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "cache": false
+    },
+    "build:with-sentry": {
+      "dependsOn": ["^build:with-sentry"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "WITH_SENTRY"],
       "cache": false
     },
     "deploy": {
