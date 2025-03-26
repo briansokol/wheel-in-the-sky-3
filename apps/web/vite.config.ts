@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react-swc';
 import path from 'node:path';
 import { defineConfig } from 'vite';
@@ -10,12 +11,24 @@ export default defineConfig({
             '@': path.resolve(import.meta.dirname, './src'),
         },
     },
-    plugins: [react()],
+
+    plugins: [
+        react(),
+        sentryVitePlugin({
+            org: 'brian-sokol',
+            project: 'wits-web',
+        }),
+    ],
+
     test: {
         ...configDefaults,
         globals: true,
         environment: 'jsdom',
         setupFiles: ['./vitest-setup.ts'],
         exclude: ['**/node_modules/**', '**/coverage/**'],
+    },
+
+    build: {
+        sourcemap: true,
     },
 });

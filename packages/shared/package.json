@@ -13,10 +13,12 @@
   },
   "scripts": {
     "dev": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\")",
-    "build": "tsc && tsc-alias"
+    "build": "tsc && tsc-alias && npm run sentry:sourcemaps",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org brian-sokol --project wits-api ./dist && sentry-cli sourcemaps upload --org brian-sokol --project wits-api ./dist"
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.1.0",
+    "@sentry/cli": "2.42.4",
     "nanoid": "5.1.5",
     "react": "19.0.0",
     "zod": "3.24.2"

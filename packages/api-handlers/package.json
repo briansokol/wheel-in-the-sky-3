@@ -9,13 +9,15 @@
   },
   "scripts": {
     "dev": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\")",
-    "build": "tsc && tsc-alias",
-    "lint": "eslint ."
+    "build": "tsc && tsc-alias && npm run sentry:sourcemaps",
+    "lint": "eslint .",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org brian-sokol --project wits-api ./dist && sentry-cli sourcemaps upload --org brian-sokol --project wits-api ./dist"
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.1.0",
     "@hono/zod-validator": "0.4.3",
     "@repo/shared": "*",
+    "@sentry/cli": "2.42.4",
     "@sentry/cloudflare": "9.9.0",
     "hono": "4.7.5",
     "zod": "3.24.2"
