@@ -1,10 +1,13 @@
+import { Button } from '@heroui/react';
 import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
 import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
-import { useContext, useEffect, useState } from 'react';
+import { RefObject, useContext, useEffect, useRef, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
+import { LuClipboardCopy } from 'react-icons/lu';
 import { useNavigate, useParams } from 'react-router';
+import { Banner } from '@/components/banner';
 import { Wheel } from '@/components/wheel';
 import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
@@ -14,6 +17,13 @@ import { useViewportWidth } from '@/hooks/viewport';
 import { calculateStartingRotation } from '@/utils/math';
 
 const WHEEL_PADDING = 20; // Padding of one side, applied to both sides
+
+function getBanner(bannerRef: RefObject<HTMLCanvasElement | null>) {
+    if (bannerRef.current === null) {
+        return;
+    }
+    bannerRef.current.toBlob((blob) => navigator.clipboard.write([new ClipboardItem({ 'image/png': blob as Blob })]));
+}
 
 export default function WheelPage() {
     const navigate = useNavigate();
@@ -40,6 +50,7 @@ export default function WheelPage() {
 
     useDocumentTitle(decodedConfig?.title ? `${decodedConfig.title} | Wheel in the Sky` : 'Wheel in the Sky');
     const viewportWidth = useViewportWidth();
+    const bannerRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
         if (setRotation !== undefined && wheelManager !== undefined) {
@@ -90,7 +101,7 @@ export default function WheelPage() {
         !isPending &&
         !isError &&
         segment && (
-            <div className="mt-16 flex items-center justify-center">
+            <main className="relative mt-16 flex items-center justify-center">
                 <div className="flex flex-col items-center text-center">
                     {wheelManager?.config?.title && (
                         <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>
@@ -109,8 +120,23 @@ export default function WheelPage() {
                             viewportWidth < 500 + WHEEL_PADDING * 2 ? `${viewportWidth - WHEEL_PADDING * 2}px` : '500px'
                         }
                     />
+                    {hasWinner && (
+                        <Button
+                            color="success"
+                            startContent={<LuClipboardCopy />}
+                            onPress={() => getBanner(bannerRef)}
+                            className="mt-4"
+                        >
+                            Copy Banner
+                        </Button>
+                    )}
                 </div>
-            </div>
+                {hasWinner && (
+                    <div className="invisible fixed -left-96 -top-96">
+                        <Banner bannerRef={bannerRef} wheelManager={wheelManager} winner={segment} />
+                    </div>
+                )}
+            </main>
         )
     );
 }
