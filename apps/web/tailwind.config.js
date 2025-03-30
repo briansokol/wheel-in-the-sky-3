@@ -15,8 +15,8 @@ export default {
             },
             keyframes: {
                 float: {
-                    '0%': { transform: 'scale(1)', textShadow: '0 0 0 rgba(0, 0, 0, 0.6)' },
-                    '100%': { transform: 'scale(1.4)', textShadow: '7px 7px 10px rgba(0, 0, 0, 0.4)' },
+                    '0%': { transform: 'scale(1)', textShadow: '0 0 0 rgba(0, 0, 0, 0.4)' },
+                    '100%': { transform: 'scale(1.4)', textShadow: '7px 7px 10px rgba(0, 0, 0, 0.2)' },
                 },
             },
         },
