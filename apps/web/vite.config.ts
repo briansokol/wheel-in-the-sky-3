@@ -5,11 +5,12 @@ import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
 
 const plugins = [react()];
-if (process.env.WITH_SENTRY && process.env.WITH_SENTRY === 'true') {
+if (process.env.WITH_SENTRY) {
     plugins.push(
         sentryVitePlugin({
-            org: 'brian-sokol',
-            project: 'wits-web',
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_WEB_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
         })
     );
 }

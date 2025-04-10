@@ -11,6 +11,9 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 3
+            - name: Get Release Name
+              id: release
+              run: echo "VERSION=$(node -p "require('./package.json').version")-$(sentry-cli releases propose-version)" >> $GITHUB_OUTPUT
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
@@ -24,9 +27,19 @@ jobs:
               run: npm run check-types
             - name: Lint
               run: npm run lint
+            - name: Prepare Sentry Release
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+              run: |
+                  echo "Preparing Release: ${{ steps.release.outputs.VERSION }}"
+                  npx sentry-cli releases new -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}
+                  npx sentry-cli releases new -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}
             - name: Build with Sentry
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_WEB_PROJECT: ${{ secrets.SENTRY_WEB_PROJECT }}
+                  SENTRY_API_PROJECT: ${{ secrets.SENTRY_API_PROJECT }}
               run: npm run build:with-sentry
             - name: Run Tests
               run: npm run test:ci
@@ -36,3 +49,10 @@ jobs:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
                   workingDirectory: 'apps/api'
+            - name: Prepare Sentry Release
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+              run: |
+                  echo "Finalizing Release: ${{ steps.release.outputs.VERSION }}"
+                  npx sentry-cli releases finalize -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}
+                  npx sentry-cli releases finalize -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}
