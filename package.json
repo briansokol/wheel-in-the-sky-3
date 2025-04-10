@@ -1,5 +1,6 @@
 {
   "name": "wheel-in-the-sky-3",
+  "version": "3.0.0-SNAPSHOT",
   "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",
@@ -21,17 +22,17 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "3.0.9",
+    "@vitest/coverage-v8": "3.1.1",
     "cp": "0.2.0",
     "husky": "9.1.7",
     "prettier": "3.5.3",
-    "sherif": "1.4.0",
-    "turbo": "2.4.4"
+    "sherif": "1.5.0",
+    "turbo": "2.5.0"
   },
   "engines": {
     "node": "22.x"
   },
-  "packageManager": "npm@11.2.0",
+  "packageManager": "npm@11.3.0",
   "workspaces": [
     "apps/*",
     "packages/*"
