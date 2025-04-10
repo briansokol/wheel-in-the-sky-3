@@ -20,7 +20,7 @@ jobs:
               run: npm ci
             - name: Get Release Name
               id: release
-              run: echo "VERSION=$(node -p "require('./package.json').version")-$(sentry-cli releases propose-version)" >> $GITHUB_OUTPUT
+              run: echo "VERSION=$(node -p "require('./package.json').version")-$(npx sentry-cli releases propose-version)" >> $GITHUB_OUTPUT
             - name: Check Dependency Consistency
               run: npm run sherif
             - name: Check Types

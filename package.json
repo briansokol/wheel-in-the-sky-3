@@ -1,5 +1,6 @@
 {
   "name": "wheel-in-the-sky-3",
+  "version": "3.0.0-SNAPSHOT",
   "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",

@@ -20,7 +20,7 @@ jobs:
               run: npm ci
             - name: Get Release Name
               id: release
-              run: echo "VERSION=$(node -p "require('./package.json').version")-$(sentry-cli releases propose-version)" >> $GITHUB_OUTPUT
+              run: echo "VERSION=$(node -p "require('./package.json').version")-$(npx sentry-cli releases propose-version)" >> $GITHUB_OUTPUT
             - name: Prepare Sentry Release
               run: |
                   echo "Preparing Release: ${{ steps.release.outputs.VERSION }}"
