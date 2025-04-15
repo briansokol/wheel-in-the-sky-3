@@ -44,7 +44,7 @@ jobs:
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install Dependencies
-              if: (inputs.operation == 'prepare' || inputs.operation == 'finalize') && steps.node-modules-cache.outputs.cache-hit != 'true'
+              if: (inputs.operation == 'prepare' || inputs.operation == 'finalize')
               run: npm ci
 
             - name: Prepare Sentry Release
