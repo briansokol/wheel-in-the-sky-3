@@ -35,8 +35,16 @@ jobs:
                   node-version-file: '.nvmrc'
                   cache: 'npm'
 
-            - name: Install Dependencies
+            - name: Cache node_modules
               if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
+              uses: actions/cache@v4
+              id: node-modules-cache
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+            - name: Install Dependencies
+              if: (inputs.operation == 'prepare' || inputs.operation == 'finalize') && steps.node-modules-cache.outputs.cache-hit != 'true'
               run: npm ci
 
             - name: Prepare Sentry Release
