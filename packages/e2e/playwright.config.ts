@@ -72,9 +72,9 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'npx turbo run dev',
+        command: process.env.CI ? 'npx turbo run api#dev' : 'npx turbo run dev',
         cwd: '../..',
-        url: 'http://localhost:5173',
+        url: process.env.CI ? 'http://localhost:8787' : 'http://localhost:5173',
         reuseExistingServer: !process.env.CI,
         timeout: 60000,
     },

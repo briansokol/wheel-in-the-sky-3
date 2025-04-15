@@ -1,0 +1,135 @@
+name: 'Reusable: Setup, Build, and Test'
+on:
+    workflow_call:
+        inputs:
+            build_command:
+                description: 'The command to run for building the application'
+                required: true
+                type: string
+
+jobs:
+    setup:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 3
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+            - name: Install Dependencies
+              run: npm ci
+        outputs:
+            node_version: ${{ steps.node_setup.outputs.node_version }}
+
+    validate:
+        needs: setup
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 3
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+            - name: Install Dependencies
+              run: npm ci
+            - name: Check Dependency Consistency
+              run: npm run sherif
+            - name: Check Types
+              run: npm run check-types
+            - name: Lint
+              run: npm run lint
+
+    build:
+        needs: validate
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 3
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+            - name: Install Dependencies
+              run: npm ci
+            - name: Build
+              run: ${{ inputs.build_command }}
+
+    unit-tests:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 3
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+            - name: Install Dependencies
+              run: npm ci
+            - name: Run Tests
+              run: npm run test:ci
+
+    e2e-tests:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 3
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+
+            - name: Install Dependencies
+              run: npm ci
+
+            - name: Get Playwright version
+              id: playwright-version
+              run: echo "version=$(npm ls @playwright/test --json | jq -r '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+
+            - name: Cache Playwright browsers
+              id: playwright-cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  # Create a unique cache key based on the Playwright version and OS
+                  key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+            - name: Install Playwright browsers
+              if: steps.playwright-cache.outputs.cache-hit != 'true'
+              run: npx playwright install --with-deps
+
+            - name: Run Playwright Tests
+              env:
+                  # Set CI env var explicitly to ensure proper server handling
+                  CI: 'true'
+                  # Add any environment variables the server needs
+                  NODE_ENV: 'test'
+              # The webServer config in playwright.config.ts will handle server startup/shutdown
+              run: npm run e2e:ci
+
+            - name: Upload Playwright Report
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-report
+                  path: packages/e2e/playwright-report/
+                  retention-days: 7
