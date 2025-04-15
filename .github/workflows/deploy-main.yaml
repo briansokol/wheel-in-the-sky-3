@@ -31,7 +31,6 @@ jobs:
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
               run: |
-                  echo "Preparing Release: ${{ steps.release.outputs.VERSION }}"
                   npx sentry-cli releases new -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}
                   npx sentry-cli releases new -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}
             - name: Build with Sentry
@@ -43,16 +42,32 @@ jobs:
               run: npm run build:with-sentry
             - name: Run Tests
               run: npm run test:ci
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Run Playwright Tests
+              env:
+                  # Set CI env var explicitly to ensure proper server handling
+                  CI: 'true'
+                  # Add any environment variables the server needs
+                  NODE_ENV: 'test'
+              # The webServer config in playwright.config.ts will handle server startup/shutdown
+              run: npm run e2e:ci
+            - name: Upload Playwright Report
+              if: always()
+              uses: actions/upload-artifact@v3
+              with:
+                  name: playwright-report
+                  path: packages/e2e/playwright-report/
+                  retention-days: 7
             - name: Build & Deploy Worker
               uses: cloudflare/wrangler-action@v3
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
                   workingDirectory: 'apps/api'
-            - name: Prepare Sentry Release
+            - name: Finalize Sentry Release
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
               run: |
-                  echo "Finalizing Release: ${{ steps.release.outputs.VERSION }}"
                   npx sentry-cli releases finalize -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}
                   npx sentry-cli releases finalize -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ steps.release.outputs.VERSION }}

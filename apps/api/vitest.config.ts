@@ -1,8 +1,8 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineProject } from 'vitest/config';
 
-export default defineConfig({
+export default defineProject({
     test: {
         globals: true,
-        exclude: ['**/node_modules/**', '**/coverage/**', '**/public/**'],
+        exclude: [...configDefaults.exclude, '**/node_modules/**', '**/coverage/**', '**/public/**'],
     },
 });

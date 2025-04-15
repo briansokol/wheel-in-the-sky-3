@@ -40,6 +40,21 @@
     },
     "test:ci": {
       "dependsOn": ["^test:ci"]
+    },
+    "e2e": {
+      "dependsOn": ["^e2e"]
+    },
+    "e2e:ui": {
+      "dependsOn": ["^e2e:ui"]
+    },
+    "e2e:ci": {
+      "dependsOn": ["^e2e:ci"]
+    },
+    "e2e:debug": {
+      "dependsOn": ["^e2e:debug"]
+    },
+    "e2e:report": {
+      "dependsOn": ["^e2e:report"]
     }
   }
 }

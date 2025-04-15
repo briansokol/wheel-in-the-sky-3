@@ -1,0 +1,18 @@
+{
+  "name": "@repo/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test --config=playwright.config.ts",
+    "e2e:ui": "playwright test --config=playwright.config.ts --ui",
+    "e2e:ci": "playwright test --config=playwright.config.ts --reporter=dot",
+    "e2e:debug": "playwright test --config=playwright.config.ts --headed --trace on-first-retry",
+    "e2e:report": "playwright show-report",
+    "postinstall": "npx playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.51.1",
+    "@types/node": "22.14.1"
+  }
+}
