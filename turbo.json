@@ -45,13 +45,16 @@
       "dependsOn": ["^e2e"]
     },
     "e2e:ui": {
-      "dependsOn": ["^e2e:ui"]
+      "dependsOn": ["^e2e:ui"],
+      "cache": false
     },
     "e2e:ci": {
-      "dependsOn": ["^e2e:ci"]
+      "dependsOn": ["^e2e:ci"],
+      "cache": false
     },
     "e2e:debug": {
-      "dependsOn": ["^e2e:debug"]
+      "dependsOn": ["^e2e:debug"],
+      "cache": false
     },
     "e2e:report": {
       "dependsOn": ["^e2e:report"]

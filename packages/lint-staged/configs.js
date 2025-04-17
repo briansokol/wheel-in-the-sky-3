@@ -13,7 +13,7 @@ export const eslint = {
  * @see https://github.com/lint-staged/lint-staged?tab=readme-ov-file#configuration
  */
 export const prettier = {
-    '*.{js,ts,tsx,css,scss,json,md}': 'prettier --write',
+    '*.{js,ts,tsx,css,scss,json,md,yaml,yml}': 'prettier --write',
 };
 
 /**

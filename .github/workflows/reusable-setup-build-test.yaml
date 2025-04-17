@@ -30,8 +30,6 @@ jobs:
             - name: Install Dependencies
               if: steps.node-modules-cache.outputs.cache-hit != 'true'
               run: npm ci
-        outputs:
-            node_version: ${{ steps.node_setup.outputs.node_version }}
 
     validate:
         needs: setup

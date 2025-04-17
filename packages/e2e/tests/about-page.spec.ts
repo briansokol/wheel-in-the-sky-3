@@ -23,7 +23,7 @@ test.describe('About Page Tests', () => {
     /**
      * Test to verify that the About page displays technology links
      */
-    test.skip('should display technology links', async ({ page }) => {
+    test('should display technology links', async ({ page }) => {
         // Arrange
         const aboutPage = new AboutPage(page);
 
@@ -43,7 +43,7 @@ test.describe('About Page Tests', () => {
     /**
      * Test to verify that the About page displays support library links
      */
-    test.skip('should display support library links', async ({ page }) => {
+    test('should display support library links', async ({ page }) => {
         // Arrange
         const aboutPage = new AboutPage(page);
 

@@ -41,82 +41,78 @@ export default function AboutPage() {
                         don&apos;t need an account. We only use cookies to store local configuration. We do not use
                         cookies to track you across websites, and we do not have ads.
                     </p>
-                    <p className="my-4">
-                        This app is built on these very cool technologies:
-                        <ul className="list-inside list-disc">
-                            <li>
-                                <SiReact className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://reactjs.org" showAnchorIcon>
-                                    React
-                                </Link>
-                            </li>
-                            <li>
-                                <SiNextui className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://www.heroui.com/" showAnchorIcon>
-                                    HeroUI
-                                </Link>
-                            </li>
-                            <li>
-                                <SiTailwindcss className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://tailwindcss.com/" showAnchorIcon>
-                                    Tailwind
-                                </Link>
-                            </li>
-                            <li>
-                                <SiHono className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://hono.dev/" showAnchorIcon>
-                                    Hono
-                                </Link>
-                            </li>
-                        </ul>
-                    </p>
-                    <p className="my-4">
-                        And it&apos;s supported by these awesome libraries:
-                        <ul className="list-inside list-disc">
-                            <li>
-                                <SiVite className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://vite.dev/" showAnchorIcon>
-                                    Vite
-                                </Link>
-                            </li>
-                            <li>
-                                <SiTurborepo className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://turbo.build/repo/docs" showAnchorIcon>
-                                    Turborepo
-                                </Link>
-                            </li>
-                            <li>
-                                <SiVitest className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://vitest.dev/" showAnchorIcon>
-                                    Vitest
-                                </Link>
-                            </li>
-                            <li>
-                                <SiTestinglibrary className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://testing-library.com/" showAnchorIcon>
-                                    Testing Library
-                                </Link>
-                            </li>
-                            <li>
-                                <FaTheaterMasks className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://playwright.dev/" showAnchorIcon>
-                                    Playwright
-                                </Link>
-                            </li>
-                            <li>
-                                <SiEslint className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://eslint.org/" showAnchorIcon>
-                                    ESLint
-                                </Link>
-                            </li>
-                            <li>
-                                <SiPrettier className="inline-block align-[-3px]" />{' '}
-                                <Link href="https://prettier.io/" showAnchorIcon>
-                                    Prettier
-                                </Link>
-                            </li>
-                        </ul>
-                    </p>
+                    <p className="my-4">This app is built on these very cool technologies:</p>
+                    <ul data-testid="technology-links" className="list-inside list-disc">
+                        <li>
+                            <SiReact className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://reactjs.org" showAnchorIcon>
+                                React
+                            </Link>
+                        </li>
+                        <li>
+                            <SiNextui className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://www.heroui.com/" showAnchorIcon>
+                                HeroUI
+                            </Link>
+                        </li>
+                        <li>
+                            <SiTailwindcss className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://tailwindcss.com/" showAnchorIcon>
+                                Tailwind
+                            </Link>
+                        </li>
+                        <li>
+                            <SiHono className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://hono.dev/" showAnchorIcon>
+                                Hono
+                            </Link>
+                        </li>
+                    </ul>
+                    <p className="my-4">And it&apos;s supported by these awesome libraries:</p>
+                    <ul data-testid="library-links" className="list-inside list-disc">
+                        <li>
+                            <SiVite className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://vite.dev/" showAnchorIcon>
+                                Vite
+                            </Link>
+                        </li>
+                        <li>
+                            <SiTurborepo className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://turbo.build/repo/docs" showAnchorIcon>
+                                Turborepo
+                            </Link>
+                        </li>
+                        <li>
+                            <SiVitest className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://vitest.dev/" showAnchorIcon>
+                                Vitest
+                            </Link>
+                        </li>
+                        <li>
+                            <SiTestinglibrary className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://testing-library.com/" showAnchorIcon>
+                                Testing Library
+                            </Link>
+                        </li>
+                        <li>
+                            <FaTheaterMasks className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://playwright.dev/" showAnchorIcon>
+                                Playwright
+                            </Link>
+                        </li>
+                        <li>
+                            <SiEslint className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://eslint.org/" showAnchorIcon>
+                                ESLint
+                            </Link>
+                        </li>
+                        <li>
+                            <SiPrettier className="inline-block align-[-3px]" />{' '}
+                            <Link href="https://prettier.io/" showAnchorIcon>
+                                Prettier
+                            </Link>
+                        </li>
+                    </ul>
                     <p>
                         It&apos;s hosted on <SiCloudflare className="inline-block align-[-3px] text-xl" />{' '}
                         <Link href="https://www.cloudflare.com/" showAnchorIcon>

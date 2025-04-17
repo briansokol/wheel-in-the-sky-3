@@ -26,5 +26,5 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "vscode-edge-devtools.webhint": false
+  "vscode-edge-devtools.webhint": false,
 }
