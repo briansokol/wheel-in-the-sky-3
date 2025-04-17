@@ -99,6 +99,20 @@ jobs:
                   path: apps/api/public
                   key: ${{ runner.os }}-api-public-${{ github.sha }}
 
+            - name: Cache shared build directory
+              id: cache-shared-dist
+              uses: actions/cache@v4
+              with:
+                  path: packages/shared/dist
+                  key: ${{ runner.os }}-shared-dist-${{ github.sha }}
+
+            - name: Cache API handlers build directory
+              id: cache-api-handlers-dist
+              uses: actions/cache@v4
+              with:
+                  path: packages/api-handlers/dist
+                  key: ${{ runner.os }}-api-handlers-dist-${{ github.sha }}
+
     unit-tests:
         needs: [validate, build]
         runs-on: ubuntu-latest
@@ -130,6 +144,24 @@ jobs:
               with:
                   path: apps/api/public
                   key: ${{ runner.os }}-api-public-${{ github.sha }}
+                  fail-on-cache-miss: true
+
+            # Restore the shared dist directory cache from the build job
+            - name: Restore shared build directory
+              id: restore-shared-dist
+              uses: actions/cache@v4
+              with:
+                  path: packages/shared/dist
+                  key: ${{ runner.os }}-shared-dist-${{ github.sha }}
+                  fail-on-cache-miss: true
+
+            # Restore the API handlers dist directory cache from the build job
+            - name: Restore API handlers build directory
+              id: restore-api-handlers-dist
+              uses: actions/cache@v4
+              with:
+                  path: packages/api-handlers/dist
+                  key: ${{ runner.os }}-api-handlers-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
             - name: Run Tests
