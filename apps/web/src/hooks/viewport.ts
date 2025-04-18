@@ -48,3 +48,35 @@ export function useViewportWidth() {
 
     return width;
 }
+
+export function useViewportHeight() {
+    const [height, setHeight] = useState(window.innerHeight);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setHeight(window.innerHeight);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return height;
+}
+
+export function useLargestViewportDimension() {
+    const width = useViewportWidth();
+    const height = useViewportHeight();
+
+    return Math.max(width, height);
+}
+
+export function useSmallestViewportDimension() {
+    const width = useViewportWidth();
+    const height = useViewportHeight();
+
+    return Math.min(width, height);
+}

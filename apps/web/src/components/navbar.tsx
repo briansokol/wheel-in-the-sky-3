@@ -1,4 +1,10 @@
 import {
+    Button,
+    Divider,
+    Drawer,
+    DrawerBody,
+    DrawerContent,
+    DrawerHeader,
     Link,
     Navbar,
     NavbarBrand,
@@ -7,11 +13,14 @@ import {
     NavbarMenu,
     NavbarMenuItem,
     NavbarMenuToggle,
+    useDisclosure,
 } from '@heroui/react';
 import { useCallback, useMemo, useState } from 'react';
+import { FaList } from 'react-icons/fa6';
 import { useLocation, useParams } from 'react-router';
 import { PageBaseRoute } from '@/constants/routes';
 import { isPage } from '@/utils/routes';
+import { ActionAccordion } from './action-accordion';
 
 export function AppNavBar() {
     const { pathname } = useLocation();
@@ -20,6 +29,7 @@ export function AppNavBar() {
     const uriEncodedConfigId = useMemo(() => encodeURIComponent(configId), [configId]);
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onOpenChange: onDrawerOpenChange } = useDisclosure();
 
     const closeMenu = useCallback(() => {
         setIsMenuOpen(false);
@@ -76,78 +86,65 @@ export function AppNavBar() {
     }, [buildNavbarItems]);
 
     return (
-        <Navbar
-            isMenuOpen={isMenuOpen}
-            onMenuOpenChange={setIsMenuOpen}
-            classNames={{
-                item: [
-                    'flex',
-                    'relative',
-                    'h-full',
-                    'items-center',
-                    "data-[active=true]:after:content-['']",
-                    'data-[active=true]:after:absolute',
-                    'data-[active=true]:after:bottom-0',
-                    'data-[active=true]:after:left-0',
-                    'data-[active=true]:after:right-0',
-                    'data-[active=true]:after:h-[2px]',
-                    'data-[active=true]:after:rounded-[2px]',
-                    'data-[active=true]:after:bg-primary',
-                ],
-            }}
-        >
-            <NavbarMenuToggle aria-label={isMenuOpen ? 'Close Menu' : 'Open Menu'} className="sm:hidden" />
-            <NavbarBrand>
-                <Link
-                    color="foreground"
-                    aria-current={isPage(pathname, PageBaseRoute.Home) ? 'page' : 'false'}
-                    href={`/`}
-                >
-                    <p className="font-bold text-inherit">Wheel in the Sky</p>
-                </Link>
-            </NavbarBrand>
-            <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-                {navbarItems}
-            </NavbarContent>
-            <NavbarContent justify="end">
-                {/*     <NavbarItem className="lg:flex">
-                    <Dropdown>
-                        <DropdownTrigger>
-                            <Button variant="light" endContent={<FaAngleDown />}>
-                                Favorites
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Favorite Wheel Actions" onAction={(key) => console.log(key)}>
-                            <DropdownSection>
-                                <DropdownItem key="add-favorite" color="success" endContent={<FaPlus />}>
-                                    Add Favorite
-                                </DropdownItem>
-                                <DropdownItem
-                                    key="remove-favorite"
-                                    color="danger"
-                                    endContent={<FaTrashCan />}
-                                    showDivider
-                                >
-                                    Forget Favorite
-                                </DropdownItem>
-                            </DropdownSection>
-                            <DropdownSection title="Favorite Wheels">
-                                <DropdownItem
-                                    key="wheel-1"
-                                    description="Description of the wheel"
-                                    endContent={<FaCheck />}
-                                >
-                                    Wheel 1
-                                </DropdownItem>
-                                <DropdownItem key="wheel-2" description="Description of the wheel">
-                                    Wheel 2
-                                </DropdownItem>
-                            </DropdownSection>
-                        </DropdownMenu>
-                    </Dropdown>
-                </NavbarItem> */}
-            </NavbarContent>
-            <NavbarMenu>{navbarMenuItems}</NavbarMenu>
-        </Navbar>
+        <>
+            <Navbar
+                isMenuOpen={isMenuOpen}
+                onMenuOpenChange={setIsMenuOpen}
+                classNames={{
+                    item: [
+                        'flex',
+                        'relative',
+                        'h-full',
+                        'items-center',
+                        "data-[active=true]:after:content-['']",
+                        'data-[active=true]:after:absolute',
+                        'data-[active=true]:after:bottom-0',
+                        'data-[active=true]:after:left-0',
+                        'data-[active=true]:after:right-0',
+                        'data-[active=true]:after:h-[2px]',
+                        'data-[active=true]:after:rounded-[2px]',
+                        'data-[active=true]:after:bg-primary',
+                    ],
+                }}
+            >
+                <NavbarMenuToggle aria-label={isMenuOpen ? 'Close Menu' : 'Open Menu'} className="sm:hidden" />
+                <NavbarBrand>
+                    <Link
+                        color="foreground"
+                        aria-current={isPage(pathname, PageBaseRoute.Home) ? 'page' : 'false'}
+                        href={`/`}
+                    >
+                        <p className="font-bold text-inherit">Wheel in the Sky</p>
+                    </Link>
+                </NavbarBrand>
+                <NavbarContent className="hidden gap-4 sm:flex" justify="center">
+                    {navbarItems}
+                </NavbarContent>
+                <NavbarContent className="hidden gap-4 sm:flex" justify="end">
+                    <NavbarItem>
+                        <Button variant="light" endContent={<FaList />} onPress={onDrawerOpen}>
+                            Actions
+                        </Button>
+                    </NavbarItem>
+                </NavbarContent>
+                <NavbarMenu>
+                    {navbarMenuItems}
+                    <Divider />
+                    <ActionAccordion pathname={pathname} />
+                </NavbarMenu>
+            </Navbar>
+            <Drawer isOpen={isDrawerOpen} onOpenChange={onDrawerOpenChange} size="md">
+                <DrawerContent>
+                    {() => (
+                        <>
+                            <DrawerHeader className="flex flex-col gap-1">Actions</DrawerHeader>
+                            <DrawerBody>
+                                <ActionAccordion pathname={pathname} />
+                            </DrawerBody>
+                        </>
+                    )}
+                </DrawerContent>
+            </Drawer>
+        </>
     );
 }

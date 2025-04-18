@@ -30,8 +30,8 @@ export const WheelSegment: FC<WheelSegmentProps> = ({ segment }) => {
         >
             <div
                 data-testid="wheel-segment-name"
-                className="absolute right-5 top-1/2 text-right"
-                style={{ color: segment.textColor, transformOrigin: 'right center', transform: 'translateY(-50%)' }}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-right text-xl [transform-origin:right_center]"
+                style={{ color: segment.textColor }}
             >
                 {segment.name}
             </div>

@@ -31,7 +31,7 @@ describe('WheelSegment', () => {
         const { container } = render(<WheelSegment segment={mockSegment} />);
         const segmentDiv = container.firstChild as HTMLElement;
 
-        expect(segmentDiv).toHaveStyle({clipPath:''});
+        expect(segmentDiv).toHaveStyle({ clipPath: '' });
     });
 
     it('should apply proper clip path when there are only 2 segments', () => {
@@ -50,14 +50,12 @@ describe('WheelSegment', () => {
         expect(segmentDiv.style.clipPath).toContain('polygon(50% 50%');
     });
 
-    it('should render text with correct styling', () => {
-        const { container } = render(<WheelSegment segment={mockSegment} />);
-        const textDiv = container.querySelector('.absolute.right-5') as HTMLElement;
+    it('should render text with correct color styling', () => {
+        const { getByTestId } = render(<WheelSegment segment={mockSegment} />);
+        const textDiv = getByTestId('wheel-segment-name') as HTMLElement;
 
         expect(textDiv).toHaveStyle({
             color: mockSegment.textColor,
-            transformOrigin: 'right center',
-            transform: 'translateY(-50%)',
         });
     });
 

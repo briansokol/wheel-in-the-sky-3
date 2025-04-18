@@ -18,11 +18,11 @@ import { handlePointerDown, handlePointerMove, handlePointerUp } from '@/utils/w
 
 interface WheelProps {
     wheelManager?: WheelManager;
-    radius: string;
+    diameter: string;
     isStatic?: boolean;
 }
 
-export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic = false }) => {
+export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStatic = false }) => {
     const { rotation } = useContext(RotationContext);
     const { setHasWinner } = useContext(SegmentContext);
 
@@ -179,8 +179,8 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, radius = '400px', isStatic
             onTouchStart={onTouchStart}
             className={`relative select-none overflow-hidden rounded-full ${isStatic ? '' : 'cursor-grab active:cursor-grabbing'}`}
             style={{
-                width: radius,
-                paddingTop: radius,
+                width: diameter,
+                paddingTop: diameter,
                 clipPath: 'circle(50%)',
                 transform: `rotate(${rotation ?? 0}deg)`,
                 filter: `blur(0)`,

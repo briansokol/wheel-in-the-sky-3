@@ -42,7 +42,7 @@ describe('Wheel', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -58,7 +58,7 @@ describe('Wheel', () => {
         const { getAllByText } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -70,7 +70,7 @@ describe('Wheel', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -87,7 +87,7 @@ describe('Wheel', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -109,7 +109,7 @@ describe('Wheel', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -140,7 +140,7 @@ describe('Wheel', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -161,7 +161,7 @@ describe('Wheel', () => {
         render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" isStatic={true} />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" isStatic={true} />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -175,7 +175,7 @@ describe('Wheel', () => {
         const { unmount } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -189,7 +189,7 @@ describe('Wheel', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
@@ -217,7 +217,7 @@ describe('Wheel', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
-                    <Wheel wheelManager={mockWheelManager} radius="400px" />
+                    <Wheel wheelManager={mockWheelManager} diameter="400px" />
                 </SegmentProvider>
             </RotationProvider>
         );
