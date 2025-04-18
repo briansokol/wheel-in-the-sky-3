@@ -67,14 +67,14 @@ export function useViewportHeight() {
     return height;
 }
 
-export function useLargestViewportDimenstion() {
+export function useLargestViewportDimension() {
     const width = useViewportWidth();
     const height = useViewportHeight();
 
     return Math.max(width, height);
 }
 
-export function useSmallestViewportDimenstion() {
+export function useSmallestViewportDimension() {
     const width = useViewportWidth();
     const height = useViewportHeight();
 

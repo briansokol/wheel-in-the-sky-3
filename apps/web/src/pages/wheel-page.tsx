@@ -15,7 +15,7 @@ import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
 import { useBgColor, useFgColor, useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig } from '@/hooks/config';
-import { useSmallestViewportDimenstion } from '@/hooks/viewport';
+import { useSmallestViewportDimension } from '@/hooks/viewport';
 import { calculateStartingRotation } from '@/utils/math';
 
 const WHEEL_PADDING = 40; // Padding of one side, applied to both sides
@@ -53,7 +53,7 @@ export default function WheelPage() {
     }, [decodedConfig, removedWinners]);
 
     useDocumentTitle(decodedConfig?.title ? `${decodedConfig.title} | Wheel in the Sky` : 'Wheel in the Sky');
-    const viewportSize = useSmallestViewportDimenstion();
+    const viewportSize = useSmallestViewportDimension();
     const bannerRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
