@@ -123,7 +123,7 @@ export const WheelPreview: FC<WheelPreviewProps> = ({
                         {shortTitle}
                     </div>
                     <div className="flex size-full translate-y-28 items-center justify-center transition-all">
-                        <Wheel wheelManager={wheelManager} radius="70%" isStatic={true} />
+                        <Wheel wheelManager={wheelManager} diameter="70%" isStatic={true} />
                     </div>
                 </div>
             ) : (
