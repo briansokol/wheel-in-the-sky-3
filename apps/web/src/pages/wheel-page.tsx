@@ -10,14 +10,16 @@ import { LuClipboardCopy } from 'react-icons/lu';
 import { useNavigate, useParams } from 'react-router';
 import { Banner } from '@/components/banner';
 import { Wheel } from '@/components/wheel';
+import { RemovedWinnersContext } from '@/contexts/removed-winners';
 import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
 import { useBgColor, useFgColor, useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig } from '@/hooks/config';
-import { useViewportWidth } from '@/hooks/viewport';
+import { useSmallestViewportDimenstion } from '@/hooks/viewport';
 import { calculateStartingRotation } from '@/utils/math';
 
 const WHEEL_PADDING = 40; // Padding of one side, applied to both sides
+const MIN_WHEEL_DIAMETER = 800; // Minimum wheel diameter
 
 function getBanner(bannerRef: RefObject<HTMLCanvasElement | null>) {
     if (bannerRef.current === null) {
@@ -35,7 +37,8 @@ export default function WheelPage() {
     }
 
     const { rotation, setRotation } = useContext(RotationContext);
-    const { segment, setSegment, hasWinner } = useContext(SegmentContext);
+    const { segment, setSegment, hasWinner, setHasWinner } = useContext(SegmentContext);
+    const { removedWinners, setRemovedWinners } = useContext(RemovedWinnersContext);
 
     const [wheelManager, setWheelManager] = useState<WheelManager>();
 
@@ -44,13 +47,13 @@ export default function WheelPage() {
     useEffect(() => {
         if (decodedConfig !== undefined) {
             const newWheelManager = new WheelManager();
-            newWheelManager.init(decodedConfig, []);
+            newWheelManager.init(decodedConfig, removedWinners);
             setWheelManager(newWheelManager);
         }
-    }, [decodedConfig]);
+    }, [decodedConfig, removedWinners]);
 
     useDocumentTitle(decodedConfig?.title ? `${decodedConfig.title} | Wheel in the Sky` : 'Wheel in the Sky');
-    const viewportWidth = useViewportWidth();
+    const viewportSize = useSmallestViewportDimenstion();
     const bannerRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -107,8 +110,10 @@ export default function WheelPage() {
                     <FaChevronDown className="relative top-[15px] z-10 mx-auto text-xl drop-shadow-lg sm:text-4xl" />
                     <Wheel
                         wheelManager={wheelManager}
-                        radius={
-                            viewportWidth > 500 + WHEEL_PADDING * 2 ? `${viewportWidth - WHEEL_PADDING * 2}px` : '500px'
+                        diameter={
+                            viewportSize < MIN_WHEEL_DIAMETER + WHEEL_PADDING * 2
+                                ? `${viewportSize - WHEEL_PADDING * 2}px`
+                                : `${MIN_WHEEL_DIAMETER}px`
                         }
                     />
                     {hasWinner && (
@@ -148,7 +153,12 @@ export default function WheelPage() {
                                     variant="flat"
                                     className="mx-1"
                                     startContent={<IoRemoveCircleOutline />}
-                                    onPress={() => null}
+                                    onPress={() => {
+                                        if (segment?.name && setRemovedWinners && setHasWinner) {
+                                            setRemovedWinners([...removedWinners, segment.name]);
+                                            setHasWinner(false);
+                                        }
+                                    }}
                                 >
                                     Remove Winner
                                 </Button>
