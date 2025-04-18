@@ -1,0 +1,64 @@
+name: 'Reusable: Sentry Operations'
+on:
+    workflow_call:
+        inputs:
+            version:
+                description: 'The release version to use for Sentry'
+                required: true
+                type: string
+            operation:
+                description: 'The operation to perform: prepare, finalize'
+                required: true
+                type: string
+        secrets:
+            SENTRY_AUTH_TOKEN:
+                required: true
+            SENTRY_ORG:
+                required: true
+            SENTRY_WEB_PROJECT:
+                required: true
+            SENTRY_API_PROJECT:
+                required: true
+
+jobs:
+    sentry-operations:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+
+            - name: Cache node_modules
+              if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
+              uses: actions/cache@v4
+              id: node-modules-cache
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+            - name: Install Dependencies
+              if: (inputs.operation == 'prepare' || inputs.operation == 'finalize') && steps.node-modules-cache.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: Prepare Sentry Release
+              if: inputs.operation == 'prepare'
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+              run: |
+                  npx sentry-cli releases new -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
+                  npx sentry-cli releases new -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
+
+            - name: Finalize Sentry Release
+              if: inputs.operation == 'finalize'
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+              run: |
+                  npx sentry-cli releases finalize -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
+                  npx sentry-cli releases finalize -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}

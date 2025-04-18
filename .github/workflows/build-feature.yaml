@@ -3,28 +3,9 @@ on:
     push:
         branches-ignore:
             - main
+
 jobs:
-    Build-Feature:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 3
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version-file: '.nvmrc'
-                  cache: 'npm'
-            - name: Install Dependencies
-              run: npm ci
-            - name: Check Dependency Consistency
-              run: npm run sherif
-            - name: Check Types
-              run: npm run check-types
-            - name: Lint
-              run: npm run lint
-            - name: Build
-              run: npm run build
-            - name: Run Tests
-              run: npm run test:ci
+    build-and-test:
+        uses: ./.github/workflows/reusable-setup-build-test.yaml
+        with:
+            build_command: npm run build

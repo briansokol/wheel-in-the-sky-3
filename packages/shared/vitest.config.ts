@@ -9,6 +9,6 @@ export default defineConfig({
     },
     test: {
         globals: true,
-        exclude: ['**/node_modules/**', '**/coverage/**', './dist/**'],
+        exclude: [...configDefaults.exclude, '**/node_modules/**', '**/coverage/**', './dist/**'],
     },
 });

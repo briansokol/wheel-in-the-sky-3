@@ -1,0 +1,39 @@
+name: 'Reusable: Deploy to Cloudflare Workers'
+on:
+    workflow_call:
+        secrets:
+            CLOUDFLARE_API_TOKEN:
+                required: true
+            CLOUDFLARE_ACCOUNT_ID:
+                required: true
+
+jobs:
+    deploy-worker:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+
+            - name: Cache node_modules
+              uses: actions/cache@v4
+              id: node-modules-cache
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+            - name: Install Dependencies
+              if: steps.node-modules-cache.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: Build & Deploy Worker
+              uses: cloudflare/wrangler-action@v3
+              with:
+                  apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                  accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+                  workingDirectory: 'apps/api'

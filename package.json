@@ -18,11 +18,15 @@
     "sherif": "sherif",
     "test": "vitest",
     "test:ci": "vitest run --coverage",
+    "e2e": "turbo run e2e",
+    "e2e:ui": "turbo run e2e:ui",
+    "e2e:ci": "turbo run e2e:ci",
+    "e2e:debug": "turbo run e2e:debug",
+    "e2e:report": "turbo run e2e:report",
     "ncu": "npx ncu --interactive --install=never --workspaces --root",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "3.1.1",
     "cp": "0.2.0",
     "husky": "9.1.7",
     "prettier": "3.5.3",
