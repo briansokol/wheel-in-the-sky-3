@@ -11,10 +11,7 @@ const MAX_BLUR = 10;
  * Interface for animation state change callbacks
  */
 export interface AnimationStateCallbacks {
-    onRotationChange: (rotation: number) => void;
-    onBlurChange: (blur: number) => void;
-    onWillChangeUpdate: (willChange: boolean) => void;
-    onWinnerStateChange: (hasWinner: boolean) => void;
+    onWinnerStateChange: (hasWinner: boolean, rotation: number) => void;
 }
 
 /**
@@ -46,11 +43,13 @@ export class WheelAnimationManager {
      *
      * @param wheelManager - The wheel manager instance that controls the wheel state
      * @param wheelRef - Reference to the wheel DOM element
+     * @param wheelBlurRef - Reference to the wheel blur overlay
      * @param callbacks - Callbacks to notify React of state changes
      */
     constructor(
         private readonly _wheelManager: WheelManager | undefined,
         private readonly _wheelRef: RefObject<HTMLDivElement | null>,
+        private readonly _wheelBlurRef: RefObject<HTMLDivElement | null>,
         private readonly _callbacks: AnimationStateCallbacks
     ) {}
 
@@ -67,12 +66,9 @@ export class WheelAnimationManager {
     private set rotation(value: number) {
         this._rotation = value;
 
-        // Update the wheel manager and notify React
-        if (this._wheelManager) {
-            this._wheelManager.setRotation(value);
+        if (this._wheelRef.current) {
+            this._wheelRef.current.style.transform = `rotate(${value ?? 0}deg)`;
         }
-
-        this._callbacks.onRotationChange(value);
     }
 
     /**
@@ -87,7 +83,9 @@ export class WheelAnimationManager {
      */
     private set rotationBlur(value: number) {
         this._rotationBlur = value;
-        this._callbacks.onBlurChange(value);
+        if (this._wheelBlurRef.current) {
+            this._wheelBlurRef.current.style.backdropFilter = `blur(${value}px)`;
+        }
     }
 
     /**
@@ -102,7 +100,12 @@ export class WheelAnimationManager {
      */
     private set willChange(value: boolean) {
         this._willChange = value;
-        this._callbacks.onWillChangeUpdate(value);
+        if (this._wheelRef.current) {
+            this._wheelRef.current.style.willChange = value ? 'transform' : 'auto';
+        }
+        if (this._wheelBlurRef.current) {
+            this._wheelBlurRef.current.style.willChange = value ? 'backdrop-filter' : 'auto';
+        }
     }
 
     /**
@@ -117,7 +120,7 @@ export class WheelAnimationManager {
      */
     private set hasWinner(value: boolean) {
         this._hasWinner = value;
-        this._callbacks.onWinnerStateChange(value);
+        this._callbacks.onWinnerStateChange(value, this._rotation);
     }
 
     /**

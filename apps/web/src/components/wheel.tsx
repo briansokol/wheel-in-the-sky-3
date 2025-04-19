@@ -9,7 +9,6 @@ import {
     useContext,
     useEffect,
     useRef,
-    useState,
 } from 'react';
 import { MemoizedWheelSegment } from '@/components/wheel-segment';
 import { RotationContext } from '@/contexts/rotation';
@@ -31,16 +30,14 @@ interface WheelProps {
  * The wheel animation is managed outside of React's render cycle by WheelAnimationManager
  */
 export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStatic = false }) => {
-    console.log('render');
-
-    const { rotation, setRotation } = useContext(RotationContext);
+    const { setRotation } = useContext(RotationContext);
     const { setHasWinner } = useContext(SegmentContext);
-
-    const [rotationBlur, setRotationBlur] = useState(0);
-    const [willChange, setWillChange] = useState(false);
 
     // Reference to the wheel DOM element
     const wheelRef: RefObject<HTMLDivElement | null> = useRef(null);
+
+    // Reference to the wheel blur overlay
+    const wheelBlurRef: RefObject<HTMLDivElement | null> = useRef(null);
 
     // Reference to the animation manager instance
     const animationManagerRef = useRef<WheelAnimationManager | null>(null);
@@ -49,11 +46,11 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
     useEffect(() => {
         if (!animationManagerRef.current) {
             // Create the animation manager with callbacks to update React state
-            animationManagerRef.current = new WheelAnimationManager(wheelManager, wheelRef, {
-                onRotationChange: (newRotation) => setRotation?.(newRotation),
-                onBlurChange: (newBlur) => setRotationBlur(newBlur),
-                onWillChangeUpdate: (newWillChange) => setWillChange(newWillChange),
-                onWinnerStateChange: (newHasWinner) => setHasWinner?.(newHasWinner),
+            animationManagerRef.current = new WheelAnimationManager(wheelManager, wheelRef, wheelBlurRef, {
+                onWinnerStateChange: (newHasWinner, newRotation) => {
+                    setHasWinner?.(newHasWinner);
+                    setRotation?.(newRotation);
+                },
             });
         }
 
@@ -145,9 +142,9 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
                 width: diameter,
                 paddingTop: diameter,
                 clipPath: 'circle(50%)',
-                transform: `rotate(${rotation ?? 0}deg)`,
                 filter: `blur(0)`,
-                willChange: willChange ? 'transform' : 'auto',
+                transform: 'rotate(0deg)',
+                willChange: 'auto',
             }}
         >
             {wheelManager !== undefined &&
@@ -155,11 +152,13 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
                     return <MemoizedWheelSegment key={segment.id} segment={segment} />;
                 })}
             <div
+                ref={wheelBlurRef}
+                data-testid="wheel-blur"
                 className="absolute left-0 top-0 size-full"
                 style={{
-                    backdropFilter: `blur(${rotationBlur}px)`,
+                    backdropFilter: `blur(0px)`,
                     maskImage: 'radial-gradient(transparent 10%, black 50%)',
-                    willChange: willChange ? 'backdropFilter' : 'auto',
+                    willChange: 'auto',
                 }}
             />
         </div>

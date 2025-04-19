@@ -18,7 +18,7 @@ import { useDecodedConfig } from '@/hooks/config';
 import { useSmallestViewportDimension } from '@/hooks/viewport';
 import { calculateStartingRotation } from '@/utils/math';
 
-const WHEEL_PADDING = 40; // Padding of one side, applied to both sides
+const WHEEL_PADDING = 60; // Padding of one side, applied to both sides
 const MIN_WHEEL_DIAMETER = 800; // Minimum wheel diameter
 
 function getBanner(bannerRef: RefObject<HTMLCanvasElement | null>) {
@@ -63,12 +63,6 @@ export default function WheelPage() {
     }, [setRotation, wheelManager]);
 
     useEffect(() => {
-        if (setRotation !== undefined && wheelManager !== undefined) {
-            wheelManager.setRotationDispatch(setRotation);
-        }
-    }, [setRotation, wheelManager]);
-
-    useEffect(() => {
         if (setSegment !== undefined && wheelManager !== undefined) {
             setSegment(wheelManager.getSegmentByRotation(rotation));
         }
@@ -107,7 +101,7 @@ export default function WheelPage() {
         segment && (
             <main className="min-h-screen">
                 <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
-                    <FaChevronDown className="relative top-[15px] z-10 mx-auto text-xl drop-shadow-lg sm:text-4xl" />
+                    <FaChevronDown className="relative top-[8px] z-10 mx-auto text-xl drop-shadow-lg sm:top-[15px] sm:text-4xl" />
                     <Wheel
                         wheelManager={wheelManager}
                         diameter={
