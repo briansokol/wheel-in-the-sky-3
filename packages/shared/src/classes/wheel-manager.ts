@@ -14,7 +14,6 @@ export class WheelManager {
     public config: Config = new Config();
     public colors: TinyColor[] = [];
     private _segmentEdges: number[] = [];
-    // private _setRotationDispatch: Dispatch<SetStateAction<number>> | undefined;
 
     get segmentCount(): number {
         return this.segments?.length ?? 0;
@@ -73,16 +72,6 @@ export class WheelManager {
             );
         });
     }
-
-    // public setRotationDispatch(setRotation: Dispatch<SetStateAction<number>>): void {
-    //     this._setRotationDispatch = setRotation;
-    // }
-
-    // public setRotation(rotation: SetStateAction<number>): void {
-    //     if (this._setRotationDispatch) {
-    //         this._setRotationDispatch(rotation);
-    //     }
-    // }
 
     public getSegmentByRotation(rotation?: number): Segment | undefined {
         if (rotation === undefined) {
