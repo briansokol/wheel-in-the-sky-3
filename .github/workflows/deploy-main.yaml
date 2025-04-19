@@ -1,7 +1,7 @@
 name: Deploy Main to Production
 on:
     push:
-        branches-ignore:
+        branches:
             - main
 jobs:
     get-version:
