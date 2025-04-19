@@ -9,3 +9,5 @@ jobs:
         uses: ./.github/workflows/reusable-setup-build-test.yaml
         with:
             build_command: npm run build
+        secrets:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
