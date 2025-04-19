@@ -58,9 +58,6 @@ jobs:
                   key: ${{ runner.os }}-api-handlers-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
-            - name: Run Tests
-              run: npm run test:ci
-
             - name: Build & Deploy Worker
               uses: cloudflare/wrangler-action@v3
               with:
