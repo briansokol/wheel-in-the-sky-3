@@ -51,6 +51,8 @@ jobs:
         with:
             build_command: |
                 npm run build:with-sentry
+        secrets:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
     deploy-worker:
         needs: [build-and-test, prepare-sentry]
