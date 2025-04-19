@@ -1,5 +1,5 @@
 import { type WheelManager } from '@repo/shared/classes/wheel-manager';
-import { type Coordinates, Easing, InteractionSource, RotationDirection } from '@repo/shared/types/wheel';
+import { InteractionSource } from '@repo/shared/types/wheel';
 import {
     type FC,
     type MouseEvent as ReactMouseEvent,
@@ -9,168 +9,128 @@ import {
     useContext,
     useEffect,
     useRef,
-    useState,
 } from 'react';
 import { MemoizedWheelSegment } from '@/components/wheel-segment';
 import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
-import { handlePointerDown, handlePointerMove, handlePointerUp } from '@/utils/wheel-animation';
+import { WheelAnimationManager } from '@/utils/wheel-animation-manager';
 
+/**
+ * Props for the Wheel component
+ */
 interface WheelProps {
     wheelManager?: WheelManager;
     diameter: string;
     isStatic?: boolean;
 }
 
+/**
+ * Wheel component that displays a spinning wheel with segments
+ *
+ * The wheel animation is managed outside of React's render cycle by WheelAnimationManager
+ */
 export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStatic = false }) => {
-    const { rotation } = useContext(RotationContext);
+    const { setRotation } = useContext(RotationContext);
     const { setHasWinner } = useContext(SegmentContext);
 
-    const [rotationBlur, setRotationBlur] = useState(0);
-    const [willChange, setWillChange] = useState(false);
-
-    const pointerPos = useRef<Coordinates>({ x: 0, y: 0 });
-    const rotationDirection = useRef<RotationDirection>(RotationDirection.None);
-    const startPointerPos = useRef<Coordinates>({ x: 0, y: 0 });
-    const prevPointerPos = useRef<Coordinates>({ x: 0, y: 0 });
-    const prevPointerAngle = useRef(0);
-    const rotationDifference = useRef(0);
-    const rotationSpeed = useRef(0);
-    const easing = useRef(Easing.Out);
-    const pointerDown = useRef(false);
-    const quickClick = useRef(false);
-    const frameId = useRef<number>(undefined);
+    // Reference to the wheel DOM element
     const wheelRef: RefObject<HTMLDivElement | null> = useRef(null);
 
-    const onMouseDown = useCallback(
-        (event: ReactMouseEvent<HTMLDivElement, MouseEvent>) =>
-            handlePointerDown(
-                event,
-                InteractionSource.Mouse,
-                frameId,
-                pointerDown,
-                pointerPos,
-                quickClick,
-                rotationDifference,
-                startPointerPos,
-                rotation,
-                setHasWinner,
-                setRotationBlur,
-                setWillChange,
-                wheelRef
-            ),
-        [rotation, setHasWinner]
-    );
+    // Reference to the wheel blur overlay
+    const wheelBlurRef: RefObject<HTMLDivElement | null> = useRef(null);
 
-    const onTouchStart = useCallback(
-        (event: ReactTouchEvent<HTMLDivElement>) =>
-            handlePointerDown(
-                event,
-                InteractionSource.Touch,
-                frameId,
-                pointerDown,
-                pointerPos,
-                quickClick,
-                rotationDifference,
-                startPointerPos,
-                rotation,
-                setHasWinner,
-                setRotationBlur,
-                setWillChange,
-                wheelRef
-            ),
-        [rotation, setHasWinner]
-    );
+    // Reference to the animation manager instance
+    const animationManagerRef = useRef<WheelAnimationManager | null>(null);
 
+    // Create or update the animation manager when dependencies change
     useEffect(() => {
-        const onMouseMove = (event: MouseEvent) =>
-            handlePointerMove(
-                event,
-                InteractionSource.Mouse,
-                pointerDown,
-                pointerPos,
-                prevPointerAngle,
-                prevPointerPos,
-                rotationDifference,
-                rotationDirection,
-                rotationSpeed,
-                setHasWinner,
-                wheelManager,
-                wheelRef
-            );
-
-        const onTouchMove = (event: TouchEvent) =>
-            handlePointerMove(
-                event,
-                InteractionSource.Touch,
-                pointerDown,
-                pointerPos,
-                prevPointerAngle,
-                prevPointerPos,
-                rotationDifference,
-                rotationDirection,
-                rotationSpeed,
-                setHasWinner,
-                wheelManager,
-                wheelRef
-            );
-
-        if (!isStatic) {
-            globalThis.addEventListener('mousemove', onMouseMove);
-            globalThis.addEventListener('touchmove', onTouchMove, { passive: false });
-
-            return () => {
-                globalThis.removeEventListener('mousemove', onMouseMove);
-                globalThis.removeEventListener('touchmove', onTouchMove);
-            };
+        if (!animationManagerRef.current) {
+            // Create the animation manager with callbacks to update React state
+            animationManagerRef.current = new WheelAnimationManager(wheelManager, wheelRef, wheelBlurRef, {
+                onWinnerStateChange: (newHasWinner, newRotation) => {
+                    setHasWinner?.(newHasWinner);
+                    setRotation?.(newRotation);
+                },
+            });
         }
-    }, [isStatic, setHasWinner, wheelManager]);
 
+        // Clean up the animation manager when component unmounts
+        return () => {
+            if (animationManagerRef.current) {
+                animationManagerRef.current.destroy();
+                animationManagerRef.current = null;
+            }
+        };
+    }, [wheelManager, setRotation, setHasWinner]);
+
+    // Event handlers that delegate to the animation manager
+    const onMouseDown = useCallback((event: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (animationManagerRef.current) {
+            animationManagerRef.current.handlePointerDown(event, InteractionSource.Mouse);
+        }
+    }, []);
+
+    const onTouchStart = useCallback((event: ReactTouchEvent<HTMLDivElement>) => {
+        if (animationManagerRef.current) {
+            animationManagerRef.current.handlePointerDown(event, InteractionSource.Touch);
+        }
+    }, []);
+
+    // Set up global mouse/touch move event listeners
     useEffect(() => {
-        const onMouseUp = (event: MouseEvent) =>
-            handlePointerUp(
-                event,
-                InteractionSource.Mouse,
-                easing,
-                frameId,
-                pointerDown,
-                quickClick,
-                rotationDirection,
-                rotationSpeed,
-                startPointerPos,
-                setHasWinner,
-                setRotationBlur,
-                setWillChange,
-                wheelManager
-            );
+        if (isStatic || !animationManagerRef.current) return;
 
-        const onTouchEnd = (event: TouchEvent) =>
-            handlePointerUp(
-                event,
-                InteractionSource.Touch,
-                easing,
-                frameId,
-                pointerDown,
-                quickClick,
-                rotationDirection,
-                rotationSpeed,
-                startPointerPos,
-                setHasWinner,
-                setRotationBlur,
-                setWillChange,
-                wheelManager
-            );
+        // Define event handlers that delegate to the animation manager
+        const onMouseMove = (event: MouseEvent) => {
+            if (animationManagerRef.current) {
+                animationManagerRef.current.handlePointerMove(event, InteractionSource.Mouse);
+            }
+        };
 
-        if (!isStatic) {
-            globalThis.addEventListener('mouseup', onMouseUp);
-            globalThis.addEventListener('touchend', onTouchEnd);
+        const onTouchMove = (event: TouchEvent) => {
+            if (animationManagerRef.current) {
+                animationManagerRef.current.handlePointerMove(event, InteractionSource.Touch);
+            }
+        };
 
-            return () => {
-                globalThis.removeEventListener('mouseup', onMouseUp);
-                globalThis.removeEventListener('touchend', onTouchEnd);
-            };
-        }
-    }, [isStatic, setHasWinner, setRotationBlur, setWillChange, wheelManager]);
+        // Add event listeners
+        globalThis.addEventListener('mousemove', onMouseMove);
+        globalThis.addEventListener('touchmove', onTouchMove, { passive: false });
+
+        // Clean up event listeners
+        return () => {
+            globalThis.removeEventListener('mousemove', onMouseMove);
+            globalThis.removeEventListener('touchmove', onTouchMove);
+        };
+    }, [isStatic]);
+
+    // Set up global mouse/touch up event listeners
+    useEffect(() => {
+        if (isStatic || !animationManagerRef.current) return;
+
+        // Define event handlers that delegate to the animation manager
+        const onMouseUp = (event: MouseEvent) => {
+            if (animationManagerRef.current) {
+                animationManagerRef.current.handlePointerUp(event, InteractionSource.Mouse);
+            }
+        };
+
+        const onTouchEnd = (event: TouchEvent) => {
+            if (animationManagerRef.current) {
+                animationManagerRef.current.handlePointerUp(event, InteractionSource.Touch);
+            }
+        };
+
+        // Add event listeners
+        globalThis.addEventListener('mouseup', onMouseUp);
+        globalThis.addEventListener('touchend', onTouchEnd);
+
+        // Clean up event listeners
+        return () => {
+            globalThis.removeEventListener('mouseup', onMouseUp);
+            globalThis.removeEventListener('touchend', onTouchEnd);
+        };
+    }, [isStatic]);
 
     return (
         <div
@@ -182,9 +142,9 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
                 width: diameter,
                 paddingTop: diameter,
                 clipPath: 'circle(50%)',
-                transform: `rotate(${rotation ?? 0}deg)`,
                 filter: `blur(0)`,
-                willChange: willChange ? 'transform' : 'auto',
+                transform: 'rotate(0deg)',
+                willChange: 'auto',
             }}
         >
             {wheelManager !== undefined &&
@@ -192,11 +152,13 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
                     return <MemoizedWheelSegment key={segment.id} segment={segment} />;
                 })}
             <div
+                ref={wheelBlurRef}
+                data-testid="wheel-blur"
                 className="absolute left-0 top-0 size-full"
                 style={{
-                    backdropFilter: `blur(${rotationBlur}px)`,
+                    backdropFilter: `blur(0px)`,
                     maskImage: 'radial-gradient(transparent 10%, black 50%)',
-                    willChange: willChange ? 'backdropFilter' : 'auto',
+                    willChange: 'auto',
                 }}
             />
         </div>

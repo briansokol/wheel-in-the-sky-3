@@ -25,12 +25,12 @@ export const WheelSegment: FC<WheelSegmentProps> = ({ segment }) => {
     return (
         <div
             data-testid="wheel-segment"
-            className="absolute top-0 box-border size-full text-right text-black"
+            className="absolute top-0 box-border size-full text-right font-semibold text-black"
             style={styles}
         >
             <div
                 data-testid="wheel-segment-name"
-                className="absolute right-5 top-1/2 -translate-y-1/2 text-right text-xl [transform-origin:right_center]"
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-right text-base [transform-origin:right_center] sm:text-xl"
                 style={{ color: segment.textColor }}
             >
                 {segment.name}

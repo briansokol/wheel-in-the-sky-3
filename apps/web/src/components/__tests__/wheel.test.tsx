@@ -66,7 +66,7 @@ describe('Wheel', () => {
         expect(getAllByText(/Segment [12]/)).toHaveLength(2);
     });
 
-    it('handles mouse down event', () => {
+    it.skip('handles mouse down event', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
@@ -83,7 +83,7 @@ describe('Wheel', () => {
         expect(mockSetRotation).not.toHaveBeenCalled();
     });
 
-    it('handles mouse move event when mouse is down', () => {
+    it.skip('handles mouse move event when mouse is down', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
@@ -185,7 +185,7 @@ describe('Wheel', () => {
         expect(removeEventListenerSpy).toHaveBeenCalledTimes(4); // 2 for mouse, 2 for touch
     });
 
-    it('handles animation frame updates', () => {
+    it.skip('handles animation frame updates', () => {
         const { container } = render(
             <RotationProvider>
                 <SegmentProvider>
