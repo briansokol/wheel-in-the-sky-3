@@ -18,6 +18,8 @@ export default defineConfig({
                 './packages/prettier/**',
                 './packages/lint-staged/**',
                 './packages/e2e/**',
+                './apps/web/src/components/**',
+                './apps/web/src/pages/**',
             ],
         },
     },
