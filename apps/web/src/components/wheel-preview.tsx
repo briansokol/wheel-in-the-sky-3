@@ -113,7 +113,12 @@ export const WheelPreview: FC<WheelPreviewProps> = ({
     const fgColor = useFgColor(config, config.pageColorConfig.foregroundColor);
 
     return (
-        <Card className="w-full" shadow="lg" style={{ height: height ?? '400px', background: bgColor }}>
+        <Card
+            data-testid="wheel-preview"
+            className="w-full"
+            shadow="lg"
+            style={{ height: height ?? '400px', background: bgColor }}
+        >
             {names.length > 0 ? (
                 <div className="flex h-full flex-col items-center justify-center overflow-hidden">
                     <div
