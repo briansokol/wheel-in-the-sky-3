@@ -12,7 +12,7 @@
     "postinstall": "npx playwright install"
   },
   "devDependencies": {
-    "@playwright/test": "1.51.1",
+    "@playwright/test": "1.53.1",
     "@types/node": "22.14.1"
   }
 }
