@@ -48,7 +48,7 @@ export default function WheelPage() {
 
     const { data: decodedConfig, isError, isPending } = useDecodedConfig(id);
 
-    useMemo(() => {
+    useEffect(() => {
         updateWheelIfSaved(decodedConfig, id);
     }, [decodedConfig, id, updateWheelIfSaved]);
 
