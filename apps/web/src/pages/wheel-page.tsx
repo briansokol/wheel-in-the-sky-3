@@ -3,19 +3,21 @@ import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
 import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
-import { RefObject, useContext, useEffect, useRef, useState } from 'react';
+import { RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
 import { IoRemoveCircleOutline } from 'react-icons/io5';
 import { LuClipboardCopy } from 'react-icons/lu';
 import { useNavigate, useParams } from 'react-router';
 import { Banner } from '@/components/banner';
 import { Wheel } from '@/components/wheel';
+import { ConfigContext } from '@/contexts/config';
 import { RemovedWinnersContext } from '@/contexts/removed-winners';
 import { RotationContext } from '@/contexts/rotation';
 import { SegmentContext } from '@/contexts/segment';
 import { useBgColor, useFgColor, useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig } from '@/hooks/config';
 import { useSmallestViewportDimension } from '@/hooks/viewport';
+import { useSavedWheels } from '@/utils/local-storage';
 import { calculateStartingRotation } from '@/utils/math';
 
 const WHEEL_PADDING = 60; // Padding of one side, applied to both sides
@@ -31,6 +33,8 @@ function getBanner(bannerRef: RefObject<HTMLCanvasElement | null>) {
 export default function WheelPage() {
     const navigate = useNavigate();
     const { id } = useParams();
+    const { setDecodedConfig, setEncodedConfig } = useContext(ConfigContext);
+    const { updateWheelIfSaved } = useSavedWheels();
 
     if (id === undefined || id === 'new') {
         navigate('/config/v3/new');
@@ -43,6 +47,22 @@ export default function WheelPage() {
     const [wheelManager, setWheelManager] = useState<WheelManager>();
 
     const { data: decodedConfig, isError, isPending } = useDecodedConfig(id);
+
+    useMemo(() => {
+        updateWheelIfSaved(decodedConfig, id);
+    }, [decodedConfig, id, updateWheelIfSaved]);
+
+    useEffect(() => {
+        if (setDecodedConfig && setEncodedConfig) {
+            if (decodedConfig !== undefined && id !== undefined && id !== 'new') {
+                setDecodedConfig(decodedConfig);
+                setEncodedConfig(id);
+            } else {
+                setDecodedConfig(undefined);
+                setEncodedConfig(undefined);
+            }
+        }
+    }, [setDecodedConfig, setEncodedConfig, decodedConfig, id]);
 
     useEffect(() => {
         if (decodedConfig !== undefined) {
@@ -135,7 +155,7 @@ export default function WheelPage() {
                                     size="md"
                                     variant="flat"
                                     className="mx-1"
-                                    startContent={<LuClipboardCopy />}
+                                    startContent={<LuClipboardCopy className="text-xl" />}
                                     onPress={() => getBanner(bannerRef)}
                                 >
                                     Copy Banner
@@ -146,7 +166,7 @@ export default function WheelPage() {
                                     size="md"
                                     variant="flat"
                                     className="mx-1"
-                                    startContent={<IoRemoveCircleOutline />}
+                                    startContent={<IoRemoveCircleOutline className="text-xl" />}
                                     onPress={() => {
                                         if (segment?.name && setRemovedWinners && setHasWinner) {
                                             setRemovedWinners([...removedWinners, segment.name]);

@@ -43,7 +43,7 @@ export default {
                             700: '#FCADF9',
                             800: '#FDD5F9',
                             900: '#FEECFE',
-                            DEFAULT: '#F182F6',
+                            DEFAULT: '#c031e2',
                             foreground: '#ffffff',
                         },
                         focus: '#F182F6',

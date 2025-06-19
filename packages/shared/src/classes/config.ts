@@ -104,8 +104,12 @@ export class Config {
         return this;
     }
 
+    public static generateId(): string {
+        return nanoid();
+    }
+
     public addId(): void {
-        this.id = nanoid();
+        this.id = Config.generateId();
     }
 
     public serialize(): SerializedConfigManager {

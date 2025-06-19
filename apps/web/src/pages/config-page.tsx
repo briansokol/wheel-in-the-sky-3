@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, Input, Select, SelectItem, Skeleton, Switch, Textarea } from '@heroui/react';
+import { Button, Card, CardBody, Input, Link, Select, SelectItem, Skeleton, Switch, Textarea } from '@heroui/react';
 import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
 import { pageColorSelectOptions, wheelColorSelectOptions } from '@repo/shared/constants/config';
@@ -10,9 +10,11 @@ import { getPageColorSelectOptionDescription, getWheelColorSelectOptionDescripti
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
+import { MdClear, MdOutlineAddCircle, MdSave } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router';
 import { ColorPicker } from '@/components/color-picker';
 import { WheelPreview } from '@/components/wheel-preview';
+import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig, useEncodeConfigMutation, useValidConfigCheck } from '@/hooks/config';
 
@@ -329,11 +331,56 @@ export default function ConfigPage() {
                                     </div>
                                     <div className="my-12">
                                         {isLoaded ? (
-                                            <Button color="primary" type="submit">
-                                                Update Wheel
-                                            </Button>
+                                            <div className="flex justify-between">
+                                                <div className="flex gap-4">
+                                                    {id !== 'new' && (
+                                                        <Button
+                                                            className="text-base"
+                                                            startContent={<MdSave className="text-2xl" />}
+                                                            color="primary"
+                                                            type="submit"
+                                                            title="This button will update the existing wheel"
+                                                        >
+                                                            Update Existing Wheel
+                                                        </Button>
+                                                    )}
+                                                    <Button
+                                                        className="text-base"
+                                                        startContent={<MdOutlineAddCircle className="text-2xl" />}
+                                                        color={id === 'new' ? 'primary' : 'secondary'}
+                                                        variant={id === 'new' ? 'solid' : 'flat'}
+                                                        title="If you have saved this wheel, this button will create a new wheel and not overwrite the saved wheel"
+                                                        onPress={() => {
+                                                            methods.setValue('id', Config.generateId());
+                                                            methods.handleSubmit(onSubmit)();
+                                                        }}
+                                                    >
+                                                        Create New Wheel
+                                                    </Button>
+                                                </div>
+                                                <Button
+                                                    as={Link}
+                                                    href={`${PageBaseRoute.ConfigV3}/new`}
+                                                    className="text-base"
+                                                    startContent={<MdClear className="text-2xl" />}
+                                                    color="danger"
+                                                    variant="flat"
+                                                    onPress={() => {
+                                                        methods.reset();
+                                                    }}
+                                                    title="This button will reset the form to its default values"
+                                                >
+                                                    Reset Form
+                                                </Button>
+                                            </div>
                                         ) : (
-                                            <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
+                                            <div className="flex justify-between">
+                                                <div className="flex gap-4">
+                                                    <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
+                                                    <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
+                                                </div>
+                                                <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
+                                            </div>
                                         )}
                                     </div>
                                 </form>
