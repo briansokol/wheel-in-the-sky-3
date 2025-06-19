@@ -58,7 +58,7 @@ export function AppNavBar() {
                             href={`/config/v3/${uriEncodedConfigId}`}
                             onPress={closeMenu}
                         >
-                            {configId === 'new' ? 'Create Wheel' : 'Configure'}
+                            {configId === 'new' ? 'Create Wheel' : 'Change Wheel'}
                         </Link>
                     </Component>
                     <Component isActive={isPage(pathname, PageBaseRoute.About)}>
@@ -130,7 +130,7 @@ export function AppNavBar() {
                 <NavbarMenu>
                     {navbarMenuItems}
                     <Divider />
-                    <ActionAccordion pathname={pathname} />
+                    <ActionAccordion pathname={pathname} closeDrawer={closeMenu} />
                 </NavbarMenu>
             </Navbar>
             <Drawer isOpen={isDrawerOpen} onOpenChange={onDrawerOpenChange} size="md">
@@ -139,7 +139,7 @@ export function AppNavBar() {
                         <>
                             <DrawerHeader className="flex flex-col gap-1">Actions</DrawerHeader>
                             <DrawerBody>
-                                <ActionAccordion pathname={pathname} />
+                                <ActionAccordion pathname={pathname} closeDrawer={onDrawerOpenChange} />
                             </DrawerBody>
                         </>
                     )}

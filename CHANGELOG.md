@@ -11,19 +11,24 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 ### Added
 
 - Config page shows a preview of the wheel as you change settings.
+- Actions drawer lets you manage various features of the wheel.
+- Ability to save wheel configurations locally to your browser, managed through the Actions drawer.
 
 ### Changed
 
 - Wheel no longer "floats" to the center of the segment. It will stop where it stops.
-- Wheel is now individual DOM elements. This helps ensure consitency across browsers.
+- Wheel is now individual DOM elements instead of a gradient. This helps ensure consistency across browsers.
 - Spinning is handled by custom-written code.
 - UI is completely rewritten using [HeroUI](https://heroui.com).
 - Options and navigation have been moved to a new mobile-friendly navbar.
+- Winners removed from the wheel can be managed from the Actions drawer.
+- Downloadable banner now uses the wheel and winner's colors.
+- Project is a monorepo.
 - Project is open source.
 
 ### Removed
 
-- Greensock, which is closed source (and expensive), is no longer used to handle the spinning.
+- Greensock, which ~~is~~ _was_ closed source (and expensive), is no longer used to handle the spinning.
 - App sounds have been removed. They were difficult to support across browser implementations, and were often buggy. They may return in the future, no promises.
 
 ### Security
