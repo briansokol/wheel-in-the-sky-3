@@ -45,4 +45,4 @@ export const pageThemeTwilight: PageColorConfig = {
     foregroundColor: INVERSE_FOREGROUND_COLOR,
 };
 
-export const defaultPageColorConfig = pageThemeNight;
+export const defaultPageColorConfig = { ...pageThemeNight };

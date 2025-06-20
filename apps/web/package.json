@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.1.0",
-    "@heroui/react": "2.7.10",
+    "@heroui/react": "2.7.11",
     "@repo/api-handlers": "*",
     "@repo/shared": "*",
     "@sentry/react": "9.30.0",

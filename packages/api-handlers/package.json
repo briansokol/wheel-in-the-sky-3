@@ -20,7 +20,7 @@
     "@repo/shared": "*",
     "@sentry/cli": "2.46.0",
     "@sentry/cloudflare": "9.30.0",
-    "hono": "4.8.0",
+    "hono": "4.8.1",
     "zod": "3.25.67"
   },
   "devDependencies": {

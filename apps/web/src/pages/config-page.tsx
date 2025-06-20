@@ -287,7 +287,7 @@ export default function ConfigPage() {
                                                     {...register('backgroundColorType', { required: true })}
                                                     data-testid="app-background-color-select"
                                                     items={pageColorSelectOptions}
-                                                    label="App Background Color"
+                                                    label="Page Background Color"
                                                     labelPlacement="outside"
                                                     disallowEmptySelection
                                                     isRequired

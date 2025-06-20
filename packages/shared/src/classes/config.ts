@@ -1,10 +1,10 @@
 import { nanoid } from 'nanoid';
+import { defaultPageColorConfig } from '@/constants/colors.js';
 import { PageColorType } from '@/enums/page-colors.js';
 import { WheelColorType } from '@/enums/wheel-colors.js';
 import { SerializedConfigManager } from '@/types/config.js';
 import { PageColorConfig } from '@/types/page-colors.js';
 import { WheelColorConfig, defaultWheelColorConfig } from '@/types/wheel-colors.js';
-import { defaultPageColorConfig } from '../constants/colors.js';
 
 export class Config {
     public static readonly queryKey = 'config';
@@ -16,8 +16,8 @@ export class Config {
     public names: string[] = [];
     public randomizeOrder = true;
     public showNames = true;
-    public wheelColorConfig: WheelColorConfig = defaultWheelColorConfig;
-    public pageColorConfig: PageColorConfig = defaultPageColorConfig;
+    public wheelColorConfig: WheelColorConfig = { ...defaultWheelColorConfig };
+    public pageColorConfig: PageColorConfig = { ...defaultPageColorConfig };
 
     constructor() {
         this.addId();
