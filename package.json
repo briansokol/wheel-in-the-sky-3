@@ -27,6 +27,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "3.2.4",
     "cp": "0.2.0",
     "husky": "9.1.7",
     "prettier": "3.5.3",
