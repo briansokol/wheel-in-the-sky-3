@@ -149,7 +149,13 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
         >
             {wheelManager !== undefined &&
                 wheelManager.segments.map((segment) => {
-                    return <MemoizedWheelSegment key={segment.id} segment={segment} />;
+                    return (
+                        <MemoizedWheelSegment
+                            key={segment.id}
+                            segment={segment}
+                            showName={wheelManager.config.showNames}
+                        />
+                    );
                 })}
             <div
                 ref={wheelBlurRef}

@@ -3,9 +3,10 @@ import { type CSSProperties, type FC, memo, useMemo } from 'react';
 
 interface WheelSegmentProps {
     segment: Segment;
+    showName?: boolean;
 }
 
-export const WheelSegment: FC<WheelSegmentProps> = ({ segment }) => {
+export const WheelSegment: FC<WheelSegmentProps> = ({ segment, showName = true }) => {
     const styles = useMemo(() => {
         const baseStyles: CSSProperties = {
             backgroundColor: segment.backgroundColor,
@@ -33,7 +34,7 @@ export const WheelSegment: FC<WheelSegmentProps> = ({ segment }) => {
                 className="absolute right-5 top-1/2 -translate-y-1/2 text-right text-base [transform-origin:right_center] sm:text-xl"
                 style={{ color: segment.textColor }}
             >
-                {segment.name}
+                {showName ? segment.name : ''}
             </div>
         </div>
     );

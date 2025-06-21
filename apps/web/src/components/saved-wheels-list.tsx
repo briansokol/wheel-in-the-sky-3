@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@heroui/react';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { MdSave } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import { MdOutlinePlayCircleFilled } from 'react-icons/md';
@@ -17,6 +17,10 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
     const { setHasWinner } = useContext(SegmentContext);
     const { savedWheels, saveWheel, removeSavedWheel } = useSavedWheels();
     const navigate = useNavigate();
+
+    const currentWheelIsSaved = useMemo(() => {
+        return savedWheels.some((wheel) => wheel.id === decodedConfig?.id);
+    }, [savedWheels, decodedConfig]);
 
     return (
         <div className="flex flex-col gap-4">
@@ -60,7 +64,7 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
             ))}
             <Button
                 className="w-full text-base"
-                isDisabled={!decodedConfig || !encodedConfig}
+                isDisabled={currentWheelIsSaved || !decodedConfig || !encodedConfig}
                 startContent={<MdSave className="text-2xl" />}
                 color="primary"
                 onPress={() => {

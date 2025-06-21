@@ -85,7 +85,6 @@ export function useSavedWheels() {
 
     const getSavedWheelsEvent = useCallback(
         (event: StorageEvent) => {
-            console.log('Storage event:', event);
             if (event.storageArea === localStorage && event.key === WHEEL_STORAGE_KEY) {
                 getSavedWheelArray(event.newValue);
             }
