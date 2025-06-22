@@ -58,7 +58,7 @@ export function useSavedWheels() {
 
                     const wheelId = decodedConfig.id;
 
-                    if (savedWheels[wheelId]) {
+                    if (savedWheels[wheelId] && savedWheels[wheelId].encodedConfig !== encodedConfig) {
                         saveWheel(decodedConfig, encodedConfig);
                     }
                 }

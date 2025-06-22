@@ -33,7 +33,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 
 ### Security
 
-- Updated Node to version 22.
+- Updated Node to version 24.
 - All dependencies have been updated or replaced.
 - App hosting was moved from Heroku to Cloudflare.
 

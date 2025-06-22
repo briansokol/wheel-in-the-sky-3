@@ -36,7 +36,7 @@
     "vitest": "3.2.4"
   },
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "packageManager": "npm@11.4.2",
   "workspaces": [

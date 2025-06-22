@@ -1,4 +1,4 @@
-import { base, makeReactConfig } from '@repo/prettier/configs';
+import { base, makeTailwindConfig } from '@repo/prettier/configs';
 import { combineConfigs } from '@repo/prettier/utils';
 
-export default combineConfigs(base, makeReactConfig('./src/globals.css', './tailwind.config.js'));
+export default combineConfigs(base, makeTailwindConfig('./src/globals.css', './tailwind.config.js'));
