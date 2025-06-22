@@ -32,7 +32,7 @@ export const base = {
  * @see https://prettier.io/docs/configuration
  * @type {(tailwindStyleSheet: string, tailwindConfig: string) => import("prettier").Config}
  */
-export const makeReactConfig = (tailwindStyleSheet, tailwindConfig) => ({
+export const makeTailwindConfig = (tailwindStyleSheet, tailwindConfig) => ({
     plugins: ['prettier-plugin-tailwindcss'],
     tailwindStylesheet: tailwindStyleSheet,
     tailwindConfig: tailwindConfig,
