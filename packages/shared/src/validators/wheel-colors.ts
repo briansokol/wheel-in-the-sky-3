@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { WheelColorType } from '@/enums/wheel-colors.js';
 
-const wheelColorTypeSchema = z.nativeEnum(WheelColorType);
+const wheelColorTypeSchema = z.enum(WheelColorType);
 
 const baseWheelColorConfigSchema = z.object({
     wheelColorType: wheelColorTypeSchema,
