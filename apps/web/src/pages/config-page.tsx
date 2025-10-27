@@ -8,7 +8,7 @@ import { ConfigFormInputs } from '@repo/shared/types/config';
 import { defaultWheelColorConfig } from '@repo/shared/types/wheel-colors';
 import { getPageColorSelectOptionDescription, getWheelColorSelectOptionDescription } from '@repo/shared/utils/configs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { MdClear, MdOutlineAddCircle, MdSave } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router';
@@ -63,7 +63,7 @@ export default function ConfigPage() {
     const {
         register,
         handleSubmit,
-        watch,
+        control,
         setValue,
         // formState: { errors },
     } = methods;
@@ -74,30 +74,35 @@ export default function ConfigPage() {
         });
     }, [defaultFormValues, setValue]);
 
-    const title = watch('title');
-    const names = watch('names');
-    const randomizeOrder = watch('randomizeOrder');
-    const showNames = watch('showNames');
-    const baseColor = watch('baseColor');
-    const customColors = watch('customColors');
-    const randomizeColor = watch('randomizeColor');
-    const backgroundColor = watch('backgroundColor');
-    const colorSchemeType = watch('colorSchemeType');
-    const backgroundColorType = watch('backgroundColorType');
+    const {
+        title,
+        names,
+        randomizeOrder,
+        showNames,
+        baseColor,
+        customColors,
+        randomizeColor,
+        backgroundColor,
+        colorSchemeType,
+        backgroundColorType,
+    } = useWatch({
+        control,
+        defaultValue: defaultFormValues,
+    });
 
     const deserializedCustomColors = useMemo(() => {
-        return JSON.parse(customColors);
-    }, [customColors]);
+        return JSON.parse(customColors ?? defaultFormValues.customColors);
+    }, [customColors, defaultFormValues]);
 
     const [parsedWheelColorType, wheelColorTypeDesc] = useMemo(() => {
-        const parsedType = Number.parseInt(colorSchemeType);
+        const parsedType = Number.parseInt(colorSchemeType ?? defaultFormValues.colorSchemeType);
         return [parsedType, getWheelColorSelectOptionDescription(parsedType)];
-    }, [colorSchemeType]);
+    }, [colorSchemeType, defaultFormValues]);
 
     const [parsedPageColorType, currentPageColorTypeDesc] = useMemo(() => {
-        const parsedType = Number.parseInt(backgroundColorType);
+        const parsedType = Number.parseInt(backgroundColorType ?? defaultFormValues.backgroundColorType);
         return [parsedType, getPageColorSelectOptionDescription(parsedType)];
-    }, [backgroundColorType]);
+    }, [backgroundColorType, defaultFormValues]);
 
     const { mutateAsync: encodeConfig } = useEncodeConfigMutation();
 
@@ -115,7 +120,7 @@ export default function ConfigPage() {
         <main className="flex flex-col items-center px-4 py-8">
             {!isError && (
                 <>
-                    <div className="container fixed z-30 mx-auto max-w-3xl">
+                    <div className="fixed z-30 container mx-auto max-w-3xl">
                         <div className="relative space-y-6">
                             <Card shadow="lg" isBlurred>
                                 <CardBody className="relative min-h-16">
@@ -123,17 +128,17 @@ export default function ConfigPage() {
                                         <div className="my-auto size-full text-center">Expand to See Wheel Preview</div>
                                     ) : isLoaded ? (
                                         <WheelPreview
-                                            names={names}
-                                            title={title}
+                                            names={names ?? defaultFormValues.names}
+                                            title={title ?? defaultFormValues.title}
                                             description="Preview of the wheel with the current configuration"
-                                            randomizeOrder={randomizeOrder}
+                                            randomizeOrder={randomizeOrder ?? defaultFormValues.randomizeOrder}
                                             wheelColorType={parsedWheelColorType}
-                                            baseColor={baseColor}
-                                            randomizeColor={randomizeColor}
+                                            baseColor={baseColor ?? defaultFormValues.baseColor}
+                                            randomizeColor={randomizeColor ?? defaultFormValues.randomizeColor}
                                             pageColorType={parsedPageColorType}
-                                            backgroundColor={backgroundColor}
+                                            backgroundColor={backgroundColor ?? defaultFormValues.backgroundColor}
                                             colors={deserializedCustomColors}
-                                            showNames={showNames}
+                                            showNames={showNames ?? defaultFormValues.showNames}
                                             height="24rem"
                                         />
                                     ) : (
@@ -143,7 +148,7 @@ export default function ConfigPage() {
                                         isIconOnly
                                         variant="shadow"
                                         color="secondary"
-                                        className="absolute right-3 top-3"
+                                        className="absolute top-3 right-3"
                                         aria-label={previewIsCollapsed ? 'Show wheel preview' : 'Hide wheel preview'}
                                         onPress={() => setPreviewIsCollapsed(!previewIsCollapsed)}
                                     >
@@ -187,7 +192,7 @@ export default function ConfigPage() {
                                             <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
                                         )}
                                     </div>
-                                    <div className="mb-8 mt-12">
+                                    <div className="mt-12 mb-8">
                                         {isLoaded ? (
                                             <Input
                                                 {...register('description')}
@@ -200,7 +205,7 @@ export default function ConfigPage() {
                                             <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
                                         )}
                                     </div>
-                                    <div className="mb-6 mt-8">
+                                    <div className="mt-8 mb-6">
                                         {isLoaded ? (
                                             <Switch {...register('randomizeOrder')}>
                                                 Randomize Order Every So Often
@@ -209,7 +214,7 @@ export default function ConfigPage() {
                                             <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
                                         )}
                                     </div>
-                                    <div className="mb-12 mt-6">
+                                    <div className="mt-6 mb-12">
                                         {isLoaded ? (
                                             <Switch {...register('showNames')}>Show Labels on Wheel</Switch>
                                         ) : (
