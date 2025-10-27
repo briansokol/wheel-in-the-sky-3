@@ -310,6 +310,24 @@ export type Segment = z.infer<typeof SegmentSchema>;
 - Co-locate with source files
 - Use `.test.ts` or `.test.tsx` extension
 
+## Dependency Management
+
+**Installing Dependencies**: Always use `--save-exact` flag when installing packages to lock exact versions and prevent unexpected updates.
+
+**Workspace Installations**: In this monorepo, use the `--workspace` flag to specify the target workspace instead of navigating into the workspace directory.
+
+**Correct Pattern**:
+```bash
+# ✅ Good - Use --workspace from root
+npm install --save-exact --workspace apps/web lodash
+npm install --save-exact --workspace packages/shared zod
+
+# ❌ Avoid - Do not cd into workspace
+cd apps/web && npm install lodash
+```
+
+This keeps the monorepo structure intact and avoids unintended side effects from directory navigation.
+
 ## Common Patterns
 
 **Query Pattern** (fetching data):
