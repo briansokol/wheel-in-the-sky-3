@@ -15,6 +15,8 @@
   "dependencies": {
     "@ctrl/tinycolor": "4.2.0",
     "@heroui/react": "2.8.5",
+    "@heroui/system": "2.4.23",
+    "@heroui/theme": "2.4.23",
     "@repo/api-handlers": "*",
     "@repo/shared": "*",
     "@sentry/react": "10.22.0",
@@ -41,7 +43,6 @@
     "@repo/eslint": "*",
     "@repo/lint-staged": "*",
     "@repo/prettier": "*",
-    "@tailwindcss/postcss": "4.1.16",
     "@tailwindcss/vite": "4.1.16",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",

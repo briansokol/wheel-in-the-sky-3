@@ -1,24 +1,47 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-    --foreground: #eee;
-    --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
 }
 
-html,
-body {
-    color: var(--foreground);
-    background: var(--background);
-    background-attachment: fixed;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    font-family: 'Quicksand', sans-serif;
+@utility text-balance {
+    text-wrap: balance;
 }
 
 @layer utilities {
-    .text-balance {
-        text-wrap: balance;
+    :root {
+        --foreground: #eee;
+        --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
+    }
+
+    html,
+    body {
+        color: var(--foreground);
+        background: var(--background);
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        font-family: 'Quicksand', sans-serif;
     }
 }
+
+@plugin './hero.ts';
+
+@source '../../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+
+@config '../tailwind.config.js';

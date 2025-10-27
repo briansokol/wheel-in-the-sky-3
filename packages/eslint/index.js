@@ -92,7 +92,7 @@ export const react = [
         files: ['**/*.test.{js,jsx,ts,tsx}'],
         ...pluginJestDom.configs['flat/recommended'],
     },
-    ...pluginTailwind.configs['flat/recommended'],
+    // ...pluginTailwind.configs['flat/recommended'],
     ...compat.config({
         extends: ['plugin:react-hooks/recommended'],
         plugins: ['react-compiler'],
