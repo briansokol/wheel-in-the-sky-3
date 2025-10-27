@@ -18,17 +18,17 @@
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org brian-sokol --project wits-api ./dist && sentry-cli sourcemaps upload --org brian-sokol --project wits-api ./dist"
   },
   "dependencies": {
-    "@ctrl/tinycolor": "4.1.0",
-    "@sentry/cli": "2.46.0",
-    "nanoid": "5.1.5",
-    "react": "19.1.0",
-    "zod": "3.25.67"
+    "@ctrl/tinycolor": "4.2.0",
+    "@sentry/cli": "2.57.0",
+    "nanoid": "5.1.6",
+    "react": "19.2.0",
+    "zod": "4.1.12"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "3.2.4",
-    "concurrently": "9.1.2",
+    "@vitest/coverage-v8": "4.0.4",
+    "concurrently": "9.2.1",
     "tsc-alias": "1.8.16",
-    "typescript": "5.8.3",
-    "vitest": "3.2.4"
+    "typescript": "5.9.3",
+    "vitest": "4.0.4"
   }
 }

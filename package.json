@@ -27,18 +27,18 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "3.2.4",
+    "@vitest/coverage-v8": "4.0.4",
     "cp": "0.2.0",
     "husky": "9.1.7",
-    "prettier": "3.5.3",
-    "sherif": "1.6.1",
-    "turbo": "2.5.4",
-    "vitest": "3.2.4"
+    "prettier": "3.6.2",
+    "sherif": "1.7.0",
+    "turbo": "2.5.8",
+    "vitest": "4.0.4"
   },
   "engines": {
     "node": "24.x"
   },
-  "packageManager": "npm@11.4.2",
+  "packageManager": "npm@11.6.2",
   "workspaces": [
     "apps/*",
     "packages/*"

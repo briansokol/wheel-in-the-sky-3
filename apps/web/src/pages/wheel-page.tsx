@@ -3,7 +3,7 @@ import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
 import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
-import { RefObject, useContext, useEffect, useRef, useState } from 'react';
+import { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
 import { IoRemoveCircleOutline } from 'react-icons/io5';
 import { LuClipboardCopy } from 'react-icons/lu';
@@ -44,8 +44,6 @@ export default function WheelPage() {
     const { segment, setSegment, hasWinner, setHasWinner } = useContext(SegmentContext);
     const { removedWinners, setRemovedWinners } = useContext(RemovedWinnersContext);
 
-    const [wheelManager, setWheelManager] = useState<WheelManager>();
-
     const { data: decodedConfig, isError, isPending } = useDecodedConfig(id);
 
     useEffect(() => {
@@ -64,12 +62,13 @@ export default function WheelPage() {
         }
     }, [setDecodedConfig, setEncodedConfig, decodedConfig, id]);
 
-    useEffect(() => {
+    const wheelManager = useMemo(() => {
         if (decodedConfig !== undefined) {
             const newWheelManager = new WheelManager();
             newWheelManager.init(decodedConfig, removedWinners);
-            setWheelManager(newWheelManager);
+            return newWheelManager;
         }
+        return undefined;
     }, [decodedConfig, removedWinners]);
 
     useDocumentTitle(decodedConfig?.title ? `${decodedConfig.title} | Wheel in the Sky` : 'Wheel in the Sky');
@@ -120,8 +119,8 @@ export default function WheelPage() {
         !isError &&
         segment && (
             <main className="min-h-screen">
-                <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
-                    <FaChevronDown className="relative top-[8px] z-10 mx-auto text-xl drop-shadow-lg sm:top-[15px] sm:text-4xl" />
+                <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
+                    <FaChevronDown className="relative top-2 z-10 mx-auto text-xl drop-shadow-lg sm:top-4 sm:text-4xl" />
                     <Wheel
                         wheelManager={wheelManager}
                         diameter={
@@ -133,7 +132,7 @@ export default function WheelPage() {
                     {hasWinner && (
                         <Card
                             isBlurred
-                            className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible bg-background/50 dark:bg-default-100/50"
+                            className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible bg-background/50 dark:bg-default-100/50"
                             shadow="lg"
                         >
                             {wheelManager?.config?.title && (
@@ -181,7 +180,7 @@ export default function WheelPage() {
                     )}
                 </div>
                 {hasWinner && (
-                    <div className="invisible fixed -left-96 -top-96">
+                    <div className="invisible fixed -top-96 -left-96">
                         <Banner bannerRef={bannerRef} wheelManager={wheelManager} winner={segment} />
                     </div>
                 )}

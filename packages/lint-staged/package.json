@@ -8,6 +8,6 @@
     "./utils": "./utils.js"
   },
   "devDependencies": {
-    "lint-staged": "16.1.2"
+    "lint-staged": "16.2.6"
   }
 }

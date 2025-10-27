@@ -1,23 +1,5 @@
 {
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "github.copilot.chat.reviewSelection.instructions": [
-    {
-      "file": ".github/copilot/copilot-instructions.md"
-    }
-  ],
-  "github.copilot.chat.testGeneration.instructions": [
-    {
-      "file": ".github/copilot/copilot-instructions.md"
-    },
-    {
-      "file": ".github/copilot/copilot-test-instructions.md"
-    }
-  ],
-  "github.copilot.chat.codeGeneration.instructions": [
-    {
-      "file": ".github/copilot/copilot-instructions.md"
-    }
-  ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "css.validate": false,
   "scss.validate": false,
@@ -26,5 +8,5 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "vscode-edge-devtools.webhint": false,
+  "vscode-edge-devtools.webhint": false
 }
