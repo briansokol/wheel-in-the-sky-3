@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.2.0",
-    "@heroui/react": "2.7.11",
+    "@heroui/react": "2.8.5",
     "@repo/api-handlers": "*",
     "@repo/shared": "*",
     "@sentry/react": "10.22.0",
@@ -34,13 +34,15 @@
     "react-markdown": "10.1.0",
     "react-router": "7.9.4",
     "seedrandom": "3.0.5",
-    "tailwindcss": "3.4.17"
+    "tailwindcss": "4.1.16"
   },
   "devDependencies": {
     "@fontsource-variable/quicksand": "5.2.10",
     "@repo/eslint": "*",
     "@repo/lint-staged": "*",
     "@repo/prettier": "*",
+    "@tailwindcss/postcss": "4.1.16",
+    "@tailwindcss/vite": "4.1.16",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",
     "@types/canvas-confetti": "1.9.0",
@@ -50,7 +52,6 @@
     "@types/seedrandom": "3.0.8",
     "@vitejs/plugin-react-swc": "4.2.0",
     "@vitest/coverage-v8": "4.0.4",
-    "autoprefixer": "10.4.21",
     "cross-env": "10.1.0",
     "eslint": "9.38.0",
     "jsdom": "27.0.1",
