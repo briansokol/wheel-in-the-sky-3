@@ -90,8 +90,8 @@ describe('WheelAnimationManager', () => {
         });
 
         it('should handle null refs gracefully', () => {
-            const nullWheelRef = { current: null } as RefObject<HTMLDivElement>;
-            const nullBlurRef = { current: null } as RefObject<HTMLDivElement>;
+            const nullWheelRef = { current: null } as unknown as RefObject<HTMLDivElement>;
+            const nullBlurRef = { current: null } as unknown as RefObject<HTMLDivElement>;
 
             const manager = new WheelAnimationManager(mockWheelManager, nullWheelRef, nullBlurRef, mockCallbacks);
 
