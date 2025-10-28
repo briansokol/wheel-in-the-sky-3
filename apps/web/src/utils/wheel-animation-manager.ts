@@ -3,9 +3,9 @@ import { type Coordinates, Easing, InteractionSource, RotationDirection } from '
 import { type RefObject } from 'react';
 import { getCoordinatesFromPointerEvent, getPointerAngle } from './wheel-animation';
 
-const MAX_SPEED = 30;
-const MIN_SPEED = 0.1;
-const MAX_BLUR = 10;
+// const MAX_SPEED = 30;
+// const MIN_SPEED = 0.1;
+// const MAX_BLUR = 10;
 
 /**
  * Interface for animation state change callbacks
@@ -324,12 +324,15 @@ export class WheelAnimationManager {
             this._rotationSpeed *= this._easing === Easing.In ? 1.01 : 0.99;
 
             // Calculate blur based on rotation speed
-            this.rotationBlur =
-                this._rotationSpeed <= MIN_SPEED
-                    ? 0
-                    : this._rotationSpeed >= MAX_SPEED
-                      ? MAX_BLUR
-                      : ((this._rotationSpeed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED)) * MAX_BLUR;
+            // this.rotationBlur =
+            //     this._rotationSpeed <= MIN_SPEED
+            //         ? 0
+            //         : this._rotationSpeed >= MAX_SPEED
+            //           ? MAX_BLUR
+            //           : ((this._rotationSpeed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED)) * MAX_BLUR;
+
+            // TODO: Update blur to be configurable
+            this.rotationBlur = 0;
 
             // Continue animation in next frame
             this._frameId = requestAnimationFrame(() => this.animate());

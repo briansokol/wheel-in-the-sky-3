@@ -137,7 +137,7 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
             ref={wheelRef}
             onMouseDown={onMouseDown}
             onTouchStart={onTouchStart}
-            className={`relative select-none overflow-hidden rounded-full ${isStatic ? '' : 'cursor-grab active:cursor-grabbing'}`}
+            className={`relative overflow-hidden rounded-full select-none ${isStatic ? '' : 'cursor-grab active:cursor-grabbing'}`}
             style={{
                 width: diameter,
                 paddingTop: diameter,
@@ -160,10 +160,10 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
             <div
                 ref={wheelBlurRef}
                 data-testid="wheel-blur"
-                className="absolute left-0 top-0 size-full"
+                className="absolute top-0 left-0 size-full"
                 style={{
                     backdropFilter: `blur(0px)`,
-                    maskImage: 'radial-gradient(transparent 10%, black 50%)',
+                    // maskImage: 'radial-gradient(transparent 10%, black 50%)',
                     willChange: 'auto',
                 }}
             />
