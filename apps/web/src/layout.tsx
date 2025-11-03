@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
+import { ErrorBoundary } from '@/components/error-boundary';
 import { AppNavBar } from '@/components/navbar';
 import { SegmentContext } from './contexts/segment';
 
@@ -14,7 +15,9 @@ export function RootLayout() {
     return (
         <>
             <AppNavBar />
-            <Outlet />
+            <ErrorBoundary>
+                <Outlet />
+            </ErrorBoundary>
         </>
     );
 }
