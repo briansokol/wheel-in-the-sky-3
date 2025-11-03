@@ -1,4 +1,4 @@
-import { type FC, type ReactNode, useState } from 'react';
+import { type FC, type ReactNode, useMemo, useState } from 'react';
 import { RemovedWinnersContext, defaultRemovedWinnersContextValue } from '@/contexts/removed-winners';
 
 interface RemovedWinnersProviderProps {
@@ -17,9 +17,7 @@ export const RemovedWinnersProvider: FC<RemovedWinnersProviderProps> = ({ childr
     // Initialize state with the default value from context
     const [removedWinners, setRemovedWinners] = useState<string[]>(defaultRemovedWinnersContextValue.removedWinners);
 
-    return (
-        <RemovedWinnersContext.Provider value={{ removedWinners, setRemovedWinners }}>
-            {children}
-        </RemovedWinnersContext.Provider>
-    );
+    const value = useMemo(() => ({ removedWinners, setRemovedWinners }), [removedWinners]);
+
+    return <RemovedWinnersContext.Provider value={value}>{children}</RemovedWinnersContext.Provider>;
 };

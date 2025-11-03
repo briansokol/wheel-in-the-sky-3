@@ -61,7 +61,7 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
                 animationManagerRef.current = null;
             }
         };
-    }, [wheelManager, setRotation, setHasWinner]);
+    }, [wheelManager, setRotation, setHasWinner]); // setRotation and setHasWinner are now stable from memoized context
 
     // Event handlers that delegate to the animation manager
     const onMouseDown = useCallback((event: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
