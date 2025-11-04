@@ -60,14 +60,23 @@ export default function WheelPage() {
         }
     }, [setDecodedConfig, setEncodedConfig, decodedConfig, id]);
 
+    // Optimization: Create stable string representation of removedWinners array contents
+    // to prevent unnecessary WheelManager recreation when array reference changes.
+    // The wheelManager only cares about the actual winner names, not the array reference.
+    // We sort the names to ensure consistent key generation regardless of removal order.
+    // Using newline as separator since segment names are parsed by splitting on newlines.
+    const removedWinnersKey = useMemo(() => [...removedWinners].sort().join('\n'), [removedWinners]);
+
     const wheelManager = useMemo(() => {
         if (decodedConfig !== undefined) {
             const newWheelManager = new WheelManager();
-            newWheelManager.init(decodedConfig, removedWinners);
+            // Parse removedWinnersKey back to array for init
+            const winnersArray = removedWinnersKey ? removedWinnersKey.split('\n') : [];
+            newWheelManager.init(decodedConfig, winnersArray);
             return newWheelManager;
         }
         return undefined;
-    }, [decodedConfig, removedWinners]);
+    }, [decodedConfig, removedWinnersKey]);
 
     useDocumentTitle(decodedConfig?.title ? `${decodedConfig.title} | Wheel in the Sky` : 'Wheel in the Sky');
     const viewportSize = useSmallestViewportDimension();
