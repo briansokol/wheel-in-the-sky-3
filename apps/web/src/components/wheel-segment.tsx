@@ -31,6 +31,8 @@ export const WheelSegment: FC<WheelSegmentProps> = ({ segment, showName = true }
         >
             <div
                 data-testid="wheel-segment-name"
+                role="listitem"
+                aria-label={`Wheel segment: ${segment.name}`}
                 className="absolute top-1/2 right-5 origin-[right_center] -translate-y-1/2 text-right text-base sm:text-xl"
                 style={{ color: segment.textColor }}
             >

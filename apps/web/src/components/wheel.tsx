@@ -135,6 +135,11 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
     return (
         <div
             ref={wheelRef}
+            role="application"
+            aria-label="Prize wheel"
+            aria-live="polite"
+            aria-atomic="true"
+            tabIndex={0}
             onMouseDown={onMouseDown}
             onTouchStart={onTouchStart}
             className={`relative overflow-hidden rounded-full select-none ${isStatic ? '' : 'cursor-grab active:cursor-grabbing'}`}

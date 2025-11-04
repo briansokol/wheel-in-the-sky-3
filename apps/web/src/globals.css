@@ -41,6 +41,7 @@
     :root {
         --foreground: #eee;
         --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
+        --focus-ring: #3b82f6;
     }
 
     html,
@@ -51,6 +52,12 @@
         background-size: 100% 100%;
         background-repeat: no-repeat;
         font-family: 'Quicksand', sans-serif;
+    }
+
+    /* Accessibility: Focus indicator for wheel */
+    [role='application']:focus {
+        outline: 2px solid var(--focus-ring);
+        outline-offset: 4px;
     }
 }
 
