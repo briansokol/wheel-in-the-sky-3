@@ -73,13 +73,7 @@ export default function ConfigPage() {
         defaultValues: defaultFormValues,
     });
 
-    const {
-        register,
-        handleSubmit,
-        control,
-        setValue,
-        // formState: { errors },
-    } = methods;
+    const { register, handleSubmit, control, setValue } = methods;
 
     useEffect(() => {
         Object.entries(defaultFormValues).forEach(([key, value]) => {
