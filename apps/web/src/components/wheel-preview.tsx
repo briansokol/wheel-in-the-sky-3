@@ -7,9 +7,9 @@ import { PageColorType } from '@repo/shared/enums/page-colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
 import { Viewport } from '@repo/shared/types/viewport';
 import { buildPageColorConfig, buildWheelColorConfig } from '@repo/shared/utils/configs';
-import { FC, useContext, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Wheel } from '@/components/wheel';
-import { RotationContext } from '@/contexts/rotation';
+import { useRotation } from '@/contexts/rotation';
 import { useBgColor, useFgColor } from '@/hooks/colors';
 import { useCurrentViewport } from '@/hooks/viewport';
 import { calculateStartingRotation } from '@/utils/math';
@@ -45,7 +45,7 @@ export const WheelPreview: FC<WheelPreviewProps> = ({
 }) => {
     const viewport = useCurrentViewport();
 
-    const { setRotation } = useContext(RotationContext);
+    const { setRotation } = useRotation();
 
     const [config, wheelManager] = useMemo(() => {
         const newConfig = new Config();

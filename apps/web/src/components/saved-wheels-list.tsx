@@ -1,12 +1,12 @@
 import { Button, ButtonGroup } from '@heroui/react';
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { FaCircle } from 'react-icons/fa6';
 import { MdSave } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import { MdOutlinePlayCircleFilled } from 'react-icons/md';
 import { useNavigate } from 'react-router';
-import { ConfigContext } from '@/contexts/config';
-import { SegmentContext } from '@/contexts/segment';
+import { useConfig } from '@/contexts/config';
+import { useSegment } from '@/contexts/segment';
 import { dateIsWithinLast5Minutes } from '@/utils/dates';
 import { useSavedWheels } from '@/utils/local-storage';
 
@@ -15,8 +15,8 @@ interface SavedWheelsListProps {
 }
 
 export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
-    const { encodedConfig, decodedConfig } = useContext(ConfigContext);
-    const { setHasWinner } = useContext(SegmentContext);
+    const { encodedConfig, decodedConfig } = useConfig();
+    const { setHasWinner } = useSegment();
     const { savedWheels, saveWheel, removeSavedWheel } = useSavedWheels();
     const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
                     <div className="min-w-0 flex-1 overflow-hidden">
                         <p className="truncate">{wheel.title}</p>
                         {wheel.description && (
-                            <p className="truncate text-sm italic text-gray-400">{wheel.description}</p>
+                            <p className="truncate text-sm text-gray-400 italic">{wheel.description}</p>
                         )}
                     </div>
                     <div>
@@ -65,7 +65,7 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
                                 variant="flat"
                                 color="primary"
                                 onPress={() => {
-                                    setHasWinner?.(false);
+                                    setHasWinner(false);
                                     navigate(`/wheel/v3/${encodeURIComponent(wheel.encodedConfig)}`);
                                     closeDrawer?.();
                                 }}

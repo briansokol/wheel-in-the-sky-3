@@ -1,6 +1,11 @@
 import { Breakpoint, Viewport } from '@repo/shared/types/viewport';
 import { useEffect, useState } from 'react';
 
+/**
+ * Hook that returns the current viewport breakpoint based on window width.
+ * Listens to window resize events and updates accordingly.
+ * @returns Current viewport breakpoint (S, M, L, XL, or XXL)
+ */
 export function useCurrentViewport() {
     const [viewport, setViewport] = useState<Viewport>(Viewport.XXL);
 
@@ -31,8 +36,13 @@ export function useCurrentViewport() {
     return viewport;
 }
 
+/**
+ * Hook that returns the current viewport width.
+ * SSR-safe: Uses lazy initializer to avoid accessing window during server-side rendering.
+ * Defaults to 1920px if window is not available.
+ */
 export function useViewportWidth() {
-    const [width, setWidth] = useState(window.innerWidth);
+    const [width, setWidth] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1920));
 
     useEffect(() => {
         const handleResize = () => {
@@ -49,8 +59,13 @@ export function useViewportWidth() {
     return width;
 }
 
+/**
+ * Hook that returns the current viewport height.
+ * SSR-safe: Uses lazy initializer to avoid accessing window during server-side rendering.
+ * Defaults to 1080px if window is not available.
+ */
 export function useViewportHeight() {
-    const [height, setHeight] = useState(window.innerHeight);
+    const [height, setHeight] = useState(() => (typeof window !== 'undefined' ? window.innerHeight : 1080));
 
     useEffect(() => {
         const handleResize = () => {
@@ -67,6 +82,11 @@ export function useViewportHeight() {
     return height;
 }
 
+/**
+ * Hook that returns the larger of viewport width or height.
+ * Useful for sizing elements that should fit within the viewport.
+ * @returns The larger dimension in pixels
+ */
 export function useLargestViewportDimension() {
     const width = useViewportWidth();
     const height = useViewportHeight();
@@ -74,6 +94,11 @@ export function useLargestViewportDimension() {
     return Math.max(width, height);
 }
 
+/**
+ * Hook that returns the smaller of viewport width or height.
+ * Useful for sizing square elements that should fit within the viewport.
+ * @returns The smaller dimension in pixels
+ */
 export function useSmallestViewportDimension() {
     const width = useViewportWidth();
     const height = useViewportHeight();

@@ -1,18 +1,26 @@
 import { Segment } from '@repo/shared/classes/segment';
-import { type Dispatch, type SetStateAction, createContext } from 'react';
+import { type Dispatch, type SetStateAction, createContext, useContext } from 'react';
 
 interface SegmentContextValue {
-    segment?: Segment;
+    segment: Segment | undefined;
     hasWinner: boolean;
-    setSegment?: Dispatch<SetStateAction<Segment | undefined>>;
-    setHasWinner?: Dispatch<SetStateAction<boolean>>;
+    setSegment: Dispatch<SetStateAction<Segment | undefined>>;
+    setHasWinner: Dispatch<SetStateAction<boolean>>;
 }
 
-export const defaultSegmentContextValue: SegmentContextValue = {
-    segment: undefined,
-    hasWinner: false,
-    setSegment: undefined,
-    setHasWinner: undefined,
-};
+const SegmentContext = createContext<SegmentContextValue | undefined>(undefined);
 
-export const SegmentContext = createContext<SegmentContextValue>(defaultSegmentContextValue);
+/**
+ * Hook to access the Segment context.
+ * Must be used within a SegmentProvider.
+ * @throws Error if used outside of SegmentProvider
+ */
+export function useSegment(): SegmentContextValue {
+    const context = useContext(SegmentContext);
+    if (!context) {
+        throw new Error('useSegment must be used within SegmentProvider');
+    }
+    return context;
+}
+
+export { SegmentContext };

@@ -3,17 +3,17 @@ import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
 import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
-import { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
+import { RefObject, useEffect, useMemo, useRef } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
 import { IoRemoveCircleOutline } from 'react-icons/io5';
 import { LuClipboardCopy } from 'react-icons/lu';
 import { useNavigate, useParams } from 'react-router';
 import { Banner } from '@/components/banner';
 import { Wheel } from '@/components/wheel';
-import { ConfigContext } from '@/contexts/config';
-import { RemovedWinnersContext } from '@/contexts/removed-winners';
-import { RotationContext } from '@/contexts/rotation';
-import { SegmentContext } from '@/contexts/segment';
+import { useConfig } from '@/contexts/config';
+import { useRemovedWinners } from '@/contexts/removed-winners';
+import { useRotation } from '@/contexts/rotation';
+import { useSegment } from '@/contexts/segment';
 import { useBgColor, useFgColor, useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig } from '@/hooks/config';
 import { useSmallestViewportDimension } from '@/hooks/viewport';
@@ -33,16 +33,16 @@ function getBanner(bannerRef: RefObject<HTMLCanvasElement | null>) {
 export default function WheelPage() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { setDecodedConfig, setEncodedConfig } = useContext(ConfigContext);
+    const { setDecodedConfig, setEncodedConfig } = useConfig();
     const { updateWheelIfSaved } = useSavedWheels();
 
     if (id === undefined || id === 'new') {
         navigate('/config/v3/new');
     }
 
-    const { rotation, setRotation } = useContext(RotationContext);
-    const { segment, setSegment, hasWinner, setHasWinner } = useContext(SegmentContext);
-    const { removedWinners, setRemovedWinners } = useContext(RemovedWinnersContext);
+    const { rotation, setRotation } = useRotation();
+    const { segment, setSegment, hasWinner, setHasWinner } = useSegment();
+    const { removedWinners, setRemovedWinners } = useRemovedWinners();
 
     const { data: decodedConfig, isError, isPending } = useDecodedConfig(id);
 
@@ -51,14 +51,12 @@ export default function WheelPage() {
     }, [decodedConfig, id, updateWheelIfSaved]);
 
     useEffect(() => {
-        if (setDecodedConfig && setEncodedConfig) {
-            if (decodedConfig !== undefined && id !== undefined && id !== 'new') {
-                setDecodedConfig(decodedConfig);
-                setEncodedConfig(id);
-            } else {
-                setDecodedConfig(undefined);
-                setEncodedConfig(undefined);
-            }
+        if (decodedConfig !== undefined && id !== undefined && id !== 'new') {
+            setDecodedConfig(decodedConfig);
+            setEncodedConfig(id);
+        } else {
+            setDecodedConfig(undefined);
+            setEncodedConfig(undefined);
         }
     }, [setDecodedConfig, setEncodedConfig, decodedConfig, id]);
 
@@ -76,13 +74,13 @@ export default function WheelPage() {
     const bannerRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        if (setRotation !== undefined && wheelManager !== undefined) {
+        if (wheelManager !== undefined) {
             setRotation(calculateStartingRotation(wheelManager.segments.length));
         }
     }, [setRotation, wheelManager]);
 
     useEffect(() => {
-        if (setSegment !== undefined && wheelManager !== undefined) {
+        if (wheelManager !== undefined) {
             setSegment(wheelManager.getSegmentByRotation(rotation));
         }
     }, [rotation, setSegment, wheelManager]);
@@ -215,7 +213,7 @@ export default function WheelPage() {
                                 className="mx-1"
                                 startContent={<IoRemoveCircleOutline className="text-xl" />}
                                 onPress={() => {
-                                    if (segment?.name && setRemovedWinners && setHasWinner) {
+                                    if (segment?.name) {
                                         setRemovedWinners([...removedWinners, segment.name]);
                                         setHasWinner(false);
                                     }

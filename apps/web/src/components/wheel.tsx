@@ -6,13 +6,12 @@ import {
     type TouchEvent as ReactTouchEvent,
     type RefObject,
     useCallback,
-    useContext,
     useEffect,
     useRef,
 } from 'react';
 import { MemoizedWheelSegment } from '@/components/wheel-segment';
-import { RotationContext } from '@/contexts/rotation';
-import { SegmentContext } from '@/contexts/segment';
+import { useRotation } from '@/contexts/rotation';
+import { useSegment } from '@/contexts/segment';
 import { WheelAnimationManager } from '@/utils/wheel-animation-manager';
 
 /**
@@ -30,8 +29,8 @@ interface WheelProps {
  * The wheel animation is managed outside of React's render cycle by WheelAnimationManager
  */
 export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStatic = false }) => {
-    const { setRotation } = useContext(RotationContext);
-    const { setHasWinner } = useContext(SegmentContext);
+    const { setRotation } = useRotation();
+    const { setHasWinner } = useSegment();
 
     // Reference to the wheel DOM element
     const wheelRef: RefObject<HTMLDivElement | null> = useRef(null);
