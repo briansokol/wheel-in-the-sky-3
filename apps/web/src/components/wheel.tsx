@@ -75,11 +75,12 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
         }
     }, []);
 
-    // Set up global mouse/touch move event listeners
+    // Set up global mouse/touch event listeners
+    // Combines move and up event handlers into a single effect for better performance
     useEffect(() => {
         if (isStatic || !animationManagerRef.current) return;
 
-        // Define event handlers that delegate to the animation manager
+        // Define move event handlers that delegate to the animation manager
         const onMouseMove = (event: MouseEvent) => {
             if (animationManagerRef.current) {
                 animationManagerRef.current.handlePointerMove(event, InteractionSource.Mouse);
@@ -92,22 +93,7 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
             }
         };
 
-        // Add event listeners
-        globalThis.addEventListener('mousemove', onMouseMove);
-        globalThis.addEventListener('touchmove', onTouchMove, { passive: false });
-
-        // Clean up event listeners
-        return () => {
-            globalThis.removeEventListener('mousemove', onMouseMove);
-            globalThis.removeEventListener('touchmove', onTouchMove);
-        };
-    }, [isStatic]);
-
-    // Set up global mouse/touch up event listeners
-    useEffect(() => {
-        if (isStatic || !animationManagerRef.current) return;
-
-        // Define event handlers that delegate to the animation manager
+        // Define up event handlers that delegate to the animation manager
         const onMouseUp = (event: MouseEvent) => {
             if (animationManagerRef.current) {
                 animationManagerRef.current.handlePointerUp(event, InteractionSource.Mouse);
@@ -120,12 +106,16 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
             }
         };
 
-        // Add event listeners
+        // Add all event listeners
+        globalThis.addEventListener('mousemove', onMouseMove);
+        globalThis.addEventListener('touchmove', onTouchMove, { passive: false });
         globalThis.addEventListener('mouseup', onMouseUp);
         globalThis.addEventListener('touchend', onTouchEnd);
 
-        // Clean up event listeners
+        // Clean up all event listeners
         return () => {
+            globalThis.removeEventListener('mousemove', onMouseMove);
+            globalThis.removeEventListener('touchmove', onTouchMove);
             globalThis.removeEventListener('mouseup', onMouseUp);
             globalThis.removeEventListener('touchend', onTouchEnd);
         };
