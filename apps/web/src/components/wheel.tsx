@@ -75,6 +75,39 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
         }
     }, []);
 
+    // Keyboard event handler for accessibility
+    const onKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+        // Only respond to Space or Enter keys
+        if (event.key !== ' ' && event.key !== 'Enter') {
+            return;
+        }
+
+        // Prevent default behavior (e.g., page scroll on Space)
+        event.preventDefault();
+
+        if (!animationManagerRef.current || !wheelRef.current) {
+            return;
+        }
+
+        // Simulate a quick click at the center of the wheel to trigger a spin
+        // This mimics the behavior of clicking the wheel
+        const rect = wheelRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Create a synthetic mouse event for the center of the wheel
+        const syntheticEvent = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            clientX: centerX,
+            clientY: centerY,
+        });
+
+        // Trigger pointer down and up in sequence to simulate a quick click
+        animationManagerRef.current.handlePointerDown(syntheticEvent, InteractionSource.Mouse);
+        animationManagerRef.current.handlePointerUp(syntheticEvent, InteractionSource.Mouse);
+    }, []);
+
     // Set up global mouse/touch event listeners
     // Combines move and up event handlers into a single effect for better performance
     useEffect(() => {
@@ -125,12 +158,13 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
         <div
             ref={wheelRef}
             role="application"
-            aria-label="Prize wheel"
+            aria-label="Prize wheel - Press Space or Enter to spin"
             aria-live="polite"
             aria-atomic="true"
             tabIndex={0}
             onMouseDown={onMouseDown}
             onTouchStart={onTouchStart}
+            onKeyDown={onKeyDown}
             className={`relative overflow-hidden rounded-full select-none ${isStatic ? '' : 'cursor-grab active:cursor-grabbing'}`}
             style={{
                 width: diameter,
