@@ -114,77 +114,124 @@ export default function WheelPage() {
 
     useLockBodyScroll();
 
-    return (
-        !isPending &&
-        !isError &&
-        segment && (
-            <main className="min-h-screen">
-                <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
-                    <FaChevronDown className="relative top-2 z-10 mx-auto text-xl drop-shadow-lg sm:top-4 sm:text-4xl" />
-                    <Wheel
-                        wheelManager={wheelManager}
-                        diameter={
-                            viewportSize < MIN_WHEEL_DIAMETER + WHEEL_PADDING * 2
-                                ? `${viewportSize - WHEEL_PADDING * 2}px`
-                                : `${MIN_WHEEL_DIAMETER}px`
-                        }
-                    />
-                    {hasWinner && (
-                        <Card
-                            isBlurred
-                            className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible bg-background/50 dark:bg-default-100/50"
-                            shadow="lg"
-                        >
-                            {wheelManager?.config?.title && (
-                                <CardHeader className="flex items-center justify-center">
-                                    <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>
-                                </CardHeader>
-                            )}
-                            <CardBody className="overflow-visible">
-                                <p className="flex animate-float items-center justify-center space-x-2 overflow-visible text-center text-xl font-bold sm:text-4xl">
-                                    <span data-testid="winner" aria-label="Winner">
-                                        {segment?.name}
-                                    </span>
-                                </p>
-                            </CardBody>
-                            <CardFooter className="flex items-center justify-center">
-                                <Button
-                                    color="default"
-                                    radius="lg"
-                                    size="md"
-                                    variant="flat"
-                                    className="mx-1"
-                                    startContent={<LuClipboardCopy className="text-xl" />}
-                                    onPress={() => getBanner(bannerRef)}
-                                >
-                                    Copy Banner
-                                </Button>
-                                <Button
-                                    color="default"
-                                    radius="lg"
-                                    size="md"
-                                    variant="flat"
-                                    className="mx-1"
-                                    startContent={<IoRemoveCircleOutline className="text-xl" />}
-                                    onPress={() => {
-                                        if (segment?.name && setRemovedWinners && setHasWinner) {
-                                            setRemovedWinners([...removedWinners, segment.name]);
-                                            setHasWinner(false);
-                                        }
-                                    }}
-                                >
-                                    Remove Winner
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    )}
+    if (isPending) {
+        return (
+            <main className="flex min-h-screen items-center justify-center">
+                <div className="text-center">
+                    <div className="mx-auto mb-4 size-12 animate-spin rounded-full border-4 border-foreground border-t-transparent"></div>
+                    <p className="text-lg">Loading wheel...</p>
                 </div>
-                {hasWinner && (
-                    <div className="invisible fixed -top-96 -left-96">
-                        <Banner bannerRef={bannerRef} wheelManager={wheelManager} winner={segment} />
-                    </div>
-                )}
             </main>
-        )
+        );
+    }
+
+    if (isError) {
+        return (
+            <main className="flex min-h-screen items-center justify-center">
+                <Card className="max-w-md">
+                    <CardHeader className="flex flex-col items-center">
+                        <h2 className="text-xl font-bold">Unable to load wheel</h2>
+                    </CardHeader>
+                    <CardBody className="text-center">
+                        <p className="mb-4">Please check your configuration and try again.</p>
+                    </CardBody>
+                    <CardFooter className="flex justify-center">
+                        <Button color="primary" variant="flat" onPress={() => navigate('/config/v3/new')}>
+                            Go to Configuration
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </main>
+        );
+    }
+
+    if (!segment) {
+        return (
+            <main className="flex min-h-screen items-center justify-center">
+                <Card className="max-w-md">
+                    <CardHeader className="flex flex-col items-center">
+                        <h2 className="text-xl font-bold">No segments found</h2>
+                    </CardHeader>
+                    <CardBody className="text-center">
+                        <p className="mb-4">Please add at least one segment to the wheel.</p>
+                    </CardBody>
+                    <CardFooter className="flex justify-center">
+                        <Button color="primary" variant="flat" onPress={() => navigate('/config/v3/new')}>
+                            Add Segments
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </main>
+        );
+    }
+
+    return (
+        <main className="min-h-screen">
+            <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
+                <FaChevronDown className="relative top-2 z-10 mx-auto text-xl drop-shadow-lg sm:top-4 sm:text-4xl" />
+                <Wheel
+                    wheelManager={wheelManager}
+                    diameter={
+                        viewportSize < MIN_WHEEL_DIAMETER + WHEEL_PADDING * 2
+                            ? `${viewportSize - WHEEL_PADDING * 2}px`
+                            : `${MIN_WHEEL_DIAMETER}px`
+                    }
+                />
+                {hasWinner && (
+                    <Card
+                        isBlurred
+                        className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible bg-background/50 dark:bg-default-100/50"
+                        shadow="lg"
+                    >
+                        {wheelManager?.config?.title && (
+                            <CardHeader className="flex items-center justify-center">
+                                <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>
+                            </CardHeader>
+                        )}
+                        <CardBody className="overflow-visible">
+                            <p className="flex animate-float items-center justify-center space-x-2 overflow-visible text-center text-xl font-bold sm:text-4xl">
+                                <span data-testid="winner" aria-label="Winner">
+                                    {segment?.name}
+                                </span>
+                            </p>
+                        </CardBody>
+                        <CardFooter className="flex items-center justify-center">
+                            <Button
+                                color="default"
+                                radius="lg"
+                                size="md"
+                                variant="flat"
+                                className="mx-1"
+                                startContent={<LuClipboardCopy className="text-xl" />}
+                                onPress={() => getBanner(bannerRef)}
+                            >
+                                Copy Banner
+                            </Button>
+                            <Button
+                                color="default"
+                                radius="lg"
+                                size="md"
+                                variant="flat"
+                                className="mx-1"
+                                startContent={<IoRemoveCircleOutline className="text-xl" />}
+                                onPress={() => {
+                                    if (segment?.name && setRemovedWinners && setHasWinner) {
+                                        setRemovedWinners([...removedWinners, segment.name]);
+                                        setHasWinner(false);
+                                    }
+                                }}
+                            >
+                                Remove Winner
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                )}
+            </div>
+            {hasWinner && (
+                <div className="invisible fixed -top-96 -left-96">
+                    <Banner bannerRef={bannerRef} wheelManager={wheelManager} winner={segment} />
+                </div>
+            )}
+        </main>
     );
 }
