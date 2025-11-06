@@ -1,18 +1,16 @@
 import { Segment } from '@repo/shared/classes/segment';
-import { type FC, type ReactNode, useState } from 'react';
-import { SegmentContext, defaultSegmentContextValue } from '@/contexts/segment';
+import { type FC, type ReactNode, useMemo, useState } from 'react';
+import { SegmentContext } from '@/contexts/segment';
 
 interface SegmentProviderProps {
     children: ReactNode;
 }
 
 export const SegmentProvider: FC<SegmentProviderProps> = ({ children }) => {
-    const [segment, setSegment] = useState<Segment | undefined>(defaultSegmentContextValue.segment);
-    const [hasWinner, setHasWinner] = useState<boolean>(defaultSegmentContextValue.hasWinner);
+    const [segment, setSegment] = useState<Segment | undefined>(undefined);
+    const [hasWinner, setHasWinner] = useState<boolean>(false);
 
-    return (
-        <SegmentContext.Provider value={{ segment, hasWinner, setSegment, setHasWinner }}>
-            {children}
-        </SegmentContext.Provider>
-    );
+    const value = useMemo(() => ({ segment, hasWinner, setSegment, setHasWinner }), [segment, hasWinner]);
+
+    return <SegmentContext.Provider value={value}>{children}</SegmentContext.Provider>;
 };

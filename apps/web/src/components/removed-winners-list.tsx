@@ -1,8 +1,8 @@
 import { Button } from '@heroui/react';
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 import { MdRestore } from 'react-icons/md';
-import { RemovedWinnersContext } from '@/contexts/removed-winners';
-import { SegmentContext } from '@/contexts/segment';
+import { useRemovedWinners } from '@/contexts/removed-winners';
+import { useSegment } from '@/contexts/segment';
 
 interface RemovedWinnersListProps {
     closeDrawer?: () => void;
@@ -12,8 +12,8 @@ interface RemovedWinnersListProps {
  * Component that displays a list of removed winners with the ability to restore them.
  */
 export function RemovedWinnersList({ closeDrawer }: RemovedWinnersListProps) {
-    const { removedWinners, setRemovedWinners } = useContext(RemovedWinnersContext);
-    const { setHasWinner } = useContext(SegmentContext);
+    const { removedWinners, setRemovedWinners } = useRemovedWinners();
+    const { setHasWinner } = useSegment();
 
     /**
      * Restores a winner by removing them from the removed winners list.
@@ -23,8 +23,8 @@ export function RemovedWinnersList({ closeDrawer }: RemovedWinnersListProps) {
      */
     const restoreWinner = useCallback(
         (winner: string) => {
-            setRemovedWinners?.((prevWinners) => prevWinners.filter((w) => w !== winner));
-            setHasWinner?.(false);
+            setRemovedWinners((prevWinners) => prevWinners.filter((w) => w !== winner));
+            setHasWinner(false);
         },
         [setRemovedWinners, setHasWinner]
     );

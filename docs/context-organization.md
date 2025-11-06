@@ -10,6 +10,7 @@ This document explains how AI context is organized for Wheel in the Sky 3 to hel
 docs/
 ├── architecture.md              # Monorepo structure, workspace organization
 ├── development-guidelines.md    # Coding standards, patterns, conventions
+├── ai-agent-workflows.md        # Specialized subagents and when to use them
 ├── context-organization.md      # This file - meta-documentation
 ```
 
@@ -53,6 +54,21 @@ docs/
 
 **Use When**: Writing components, functions, or any code that needs to match project patterns.
 
+### ai-agent-workflows.md
+
+**Purpose**: Documents specialized Claude Code subagents and when they should be used.
+
+**Sections**:
+- Overview of available subagents
+- docs-fetcher: Library/framework documentation retrieval
+- playwright-visual-tester: Browser-based visual testing
+- When to use each subagent (with examples)
+- Best practices for working with subagents
+- Subagent limitations
+- Integration with development workflow
+
+**Use When**: Determining whether to invoke a specialized subagent for documentation lookup or visual testing tasks.
+
 ### CLAUDE.md (Root Context File)
 
 **Purpose**: Serves as the entry point for Claude Code with essential behavioral rules and references.
@@ -90,7 +106,8 @@ When starting a new session, AI agents receive:
 2. Understand essential rules and behavioral expectations
 3. Reference `docs/architecture.md` for architectural decisions
 4. Reference `docs/development-guidelines.md` for coding patterns
-5. Use `docs/context-organization.md` to understand the documentation system
+5. Reference `docs/ai-agent-workflows.md` for subagent usage guidance
+6. Use `docs/context-organization.md` to understand the documentation system
 
 ### Example Scenarios
 
@@ -111,6 +128,18 @@ When starting a new session, AI agents receive:
 2. Determine if code belongs in shared, app-specific, or handlers
 3. Follow established patterns for that location
 
+**Scenario 4: Using a new library**
+1. Consult `docs/ai-agent-workflows.md` for subagent guidance
+2. Invoke docs-fetcher subagent to retrieve library documentation
+3. Use retrieved documentation to implement following best practices
+4. Follow `docs/development-guidelines.md` patterns for integration
+
+**Scenario 5: Testing UI changes**
+1. Implement UI changes following `docs/development-guidelines.md`
+2. Write unit tests for component logic
+3. Optionally invoke playwright-visual-tester subagent for visual validation
+4. Review screenshots and test results
+
 ## Cross-References Between Documents
 
 **architecture.md references**:
@@ -121,9 +150,14 @@ When starting a new session, AI agents receive:
 - architecture.md for code organization
 - context-organization.md for documentation overview
 
+**ai-agent-workflows.md references**:
+- development-guidelines.md for coding standards
+- architecture.md for project structure
+
 **CLAUDE.md references**:
 - architecture.md for monorepo structure
 - development-guidelines.md for coding standards
+- ai-agent-workflows.md for subagent usage
 - context-organization.md for documentation system
 
 ## Maintenance and Updates
@@ -141,6 +175,12 @@ When starting a new session, AI agents receive:
 - New patterns are established
 - Testing approach changes
 - State management approach evolves
+
+**Update `docs/ai-agent-workflows.md` when**:
+- New specialized subagents are added
+- Subagent usage patterns change
+- Tool capabilities are updated
+- Best practices for subagent invocation evolve
 
 **Update CLAUDE.md when**:
 - Behavioral rules change

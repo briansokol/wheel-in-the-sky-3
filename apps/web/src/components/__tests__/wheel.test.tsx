@@ -28,6 +28,7 @@ function createMockWheelManager(): WheelManager {
 function createTestWrapper(): React.FC<{ children: ReactNode }> {
     const TestWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
         const mockSetRotation = vi.fn();
+        const mockSetSegment = vi.fn();
         const mockSetHasWinner = vi.fn();
 
         const RotationContextValue = {
@@ -36,6 +37,8 @@ function createTestWrapper(): React.FC<{ children: ReactNode }> {
         };
 
         const SegmentContextValue = {
+            segment: undefined,
+            setSegment: mockSetSegment,
             hasWinner: false,
             setHasWinner: mockSetHasWinner,
         };

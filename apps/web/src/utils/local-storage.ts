@@ -67,21 +67,27 @@ export function useSavedWheels() {
         [saveWheel]
     );
 
-    const removeSavedWheel = useCallback((wheelId: string) => {
-        const savedWheels = getSavedWheels();
-        if (wheelId in savedWheels) {
-            const { [wheelId]: _unused, ...newWheels } = savedWheels; // eslint-disable-line @typescript-eslint/no-unused-vars
-            localStorage.setItem(WHEEL_STORAGE_KEY, JSON.stringify(newWheels));
-            setSavedWheels(Object.values(newWheels));
-        } else {
-            console.warn(`Wheel with ID ${wheelId} does not exist in saved wheels.`);
-        }
-    }, []);
+    const removeSavedWheel = useCallback(
+        (wheelId: string) => {
+            const savedWheels = getSavedWheels();
+            if (wheelId in savedWheels) {
+                const { [wheelId]: _unused, ...newWheels } = savedWheels; // eslint-disable-line @typescript-eslint/no-unused-vars
+                localStorage.setItem(WHEEL_STORAGE_KEY, JSON.stringify(newWheels));
+                setSavedWheels(Object.values(newWheels));
+            } else {
+                console.warn(`Wheel with ID ${wheelId} does not exist in saved wheels.`);
+            }
+        },
+        [setSavedWheels]
+    );
 
-    const getSavedWheelArray = useCallback((newValue: string | null) => {
-        const updatedWheels: SavedWheels = newValue ? JSON.parse(newValue) : {};
-        setSavedWheels(Object.values(updatedWheels));
-    }, []);
+    const getSavedWheelArray = useCallback(
+        (newValue: string | null) => {
+            const updatedWheels: SavedWheels = newValue ? JSON.parse(newValue) : {};
+            setSavedWheels(Object.values(updatedWheels));
+        },
+        [setSavedWheels]
+    );
 
     const getSavedWheelsEvent = useCallback(
         (event: StorageEvent) => {

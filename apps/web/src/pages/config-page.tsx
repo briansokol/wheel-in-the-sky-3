@@ -1,4 +1,17 @@
-import { Button, Card, CardBody, Input, Link, Select, SelectItem, Skeleton, Switch, Textarea } from '@heroui/react';
+import {
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    Input,
+    Link,
+    Select,
+    SelectItem,
+    Skeleton,
+    Switch,
+    Textarea,
+} from '@heroui/react';
 import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
 import { pageColorSelectOptions, wheelColorSelectOptions } from '@repo/shared/constants/config';
@@ -60,13 +73,7 @@ export default function ConfigPage() {
         defaultValues: defaultFormValues,
     });
 
-    const {
-        register,
-        handleSubmit,
-        control,
-        setValue,
-        // formState: { errors },
-    } = methods;
+    const { register, handleSubmit, control, setValue } = methods;
 
     useEffect(() => {
         Object.entries(defaultFormValues).forEach(([key, value]) => {
@@ -116,284 +123,309 @@ export default function ConfigPage() {
         [encodeConfig, navigate]
     );
 
+    if (isPending) {
+        return (
+            <main className="flex min-h-screen items-center justify-center">
+                <div className="text-center">
+                    <div className="mx-auto mb-4 size-12 animate-spin rounded-full border-4 border-foreground border-t-transparent"></div>
+                    <p className="text-lg">Loading configuration...</p>
+                </div>
+            </main>
+        );
+    }
+
+    if (isError) {
+        return (
+            <main className="flex min-h-screen items-center justify-center">
+                <Card className="max-w-md">
+                    <CardHeader className="flex flex-col items-center">
+                        <h2 className="text-xl font-bold">Unable to load configuration</h2>
+                    </CardHeader>
+                    <CardBody className="text-center">
+                        <p className="mb-4">The configuration could not be loaded. Please try creating a new wheel.</p>
+                    </CardBody>
+                    <CardFooter className="flex justify-center">
+                        <Button color="primary" variant="flat" onPress={() => navigate('/config/v3/new')}>
+                            Create New Wheel
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </main>
+        );
+    }
+
     return (
         <main className="flex flex-col items-center px-4 py-8">
-            {!isError && (
-                <>
-                    <div className="fixed z-30 container mx-auto max-w-3xl">
-                        <div className="relative space-y-6">
-                            <Card shadow="lg" isBlurred>
-                                <CardBody className="relative min-h-16">
-                                    {previewIsCollapsed ? (
-                                        <div className="my-auto size-full text-center">Expand to See Wheel Preview</div>
-                                    ) : isLoaded ? (
-                                        <WheelPreview
-                                            names={names ?? defaultFormValues.names}
-                                            title={title ?? defaultFormValues.title}
-                                            description="Preview of the wheel with the current configuration"
-                                            randomizeOrder={randomizeOrder ?? defaultFormValues.randomizeOrder}
-                                            wheelColorType={parsedWheelColorType}
-                                            baseColor={baseColor ?? defaultFormValues.baseColor}
-                                            randomizeColor={randomizeColor ?? defaultFormValues.randomizeColor}
-                                            pageColorType={parsedPageColorType}
-                                            backgroundColor={backgroundColor ?? defaultFormValues.backgroundColor}
-                                            colors={deserializedCustomColors}
-                                            showNames={showNames ?? defaultFormValues.showNames}
-                                            height="24rem"
+            <>
+                <div className="fixed z-30 container mx-auto max-w-3xl">
+                    <div className="relative space-y-6">
+                        <Card shadow="lg" isBlurred>
+                            <CardBody className="relative min-h-16">
+                                {previewIsCollapsed ? (
+                                    <div className="my-auto size-full text-center">Expand to See Wheel Preview</div>
+                                ) : isLoaded ? (
+                                    <WheelPreview
+                                        names={names ?? defaultFormValues.names}
+                                        title={title ?? defaultFormValues.title}
+                                        description="Preview of the wheel with the current configuration"
+                                        randomizeOrder={randomizeOrder ?? defaultFormValues.randomizeOrder}
+                                        wheelColorType={parsedWheelColorType}
+                                        baseColor={baseColor ?? defaultFormValues.baseColor}
+                                        randomizeColor={randomizeColor ?? defaultFormValues.randomizeColor}
+                                        pageColorType={parsedPageColorType}
+                                        backgroundColor={backgroundColor ?? defaultFormValues.backgroundColor}
+                                        colors={deserializedCustomColors}
+                                        showNames={showNames ?? defaultFormValues.showNames}
+                                        height="24rem"
+                                    />
+                                ) : (
+                                    <Skeleton data-testid="skeleton" className="h-96 w-full rounded-lg" />
+                                )}
+                                <Button
+                                    isIconOnly
+                                    variant="shadow"
+                                    color="secondary"
+                                    className="absolute top-3 right-3"
+                                    aria-label={previewIsCollapsed ? 'Show wheel preview' : 'Hide wheel preview'}
+                                    onPress={() => setPreviewIsCollapsed(!previewIsCollapsed)}
+                                >
+                                    {previewIsCollapsed ? <FaAngleDown /> : <FaAngleUp />}
+                                </Button>
+                            </CardBody>
+                        </Card>
+                    </div>
+                </div>
+                <div className="container mx-auto max-w-3xl">
+                    <div className={`mb-8 ${previewIsCollapsed ? 'h-12' : 'h-96'}`}></div>
+                    <div className="relative space-y-6">
+                        <h1 className="text-4xl font-bold">Configuration</h1>
+                        <FormProvider {...methods}>
+                            <form onSubmit={handleSubmit(onSubmit)} className="relative">
+                                <input type="hidden" {...register('id')} />
+                                <div className="mb-12">
+                                    {isLoaded ? (
+                                        <Textarea
+                                            {...register('names', { required: true })}
+                                            label="Wheel Segments"
+                                            labelPlacement="outside"
+                                            placeholder="One per line"
+                                            isRequired
+                                            description="The labels that will appear on the wheel segments"
+                                            errorMessage="You must have at least 1 segment to make a wheel!"
                                         />
                                     ) : (
-                                        <Skeleton data-testid="skeleton" className="h-96 w-full rounded-lg" />
+                                        <Skeleton data-testid="skeleton" className="h-28 w-full rounded-lg" />
                                     )}
-                                    <Button
-                                        isIconOnly
-                                        variant="shadow"
-                                        color="secondary"
-                                        className="absolute top-3 right-3"
-                                        aria-label={previewIsCollapsed ? 'Show wheel preview' : 'Hide wheel preview'}
-                                        onPress={() => setPreviewIsCollapsed(!previewIsCollapsed)}
-                                    >
-                                        {previewIsCollapsed ? <FaAngleDown /> : <FaAngleUp />}
-                                    </Button>
-                                </CardBody>
-                            </Card>
-                        </div>
-                    </div>
-                    <div className="container mx-auto max-w-3xl">
-                        <div className={`mb-8 ${previewIsCollapsed ? 'h-12' : 'h-96'}`}></div>
-                        <div className="relative space-y-6">
-                            <h1 className="text-4xl font-bold">Configuration</h1>
-                            <FormProvider {...methods}>
-                                <form onSubmit={handleSubmit(onSubmit)} className="relative">
-                                    <input type="hidden" {...register('id')} />
-                                    <div className="mb-12">
-                                        {isLoaded ? (
-                                            <Textarea
-                                                {...register('names', { required: true })}
-                                                label="Wheel Segments"
+                                </div>
+                                <div className="mb-8">
+                                    {isLoaded ? (
+                                        <Input
+                                            {...register('title')}
+                                            label="Wheel Title"
+                                            labelPlacement="outside"
+                                            placeholder="Enter a title for your wheel"
+                                        />
+                                    ) : (
+                                        <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
+                                    )}
+                                </div>
+                                <div className="mt-12 mb-8">
+                                    {isLoaded ? (
+                                        <Input
+                                            {...register('description')}
+                                            label="Wheel Description"
+                                            labelPlacement="outside"
+                                            placeholder="Describe your wheel"
+                                            description="Helpful when adding bookmarks"
+                                        />
+                                    ) : (
+                                        <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
+                                    )}
+                                </div>
+                                <div className="mt-8 mb-6">
+                                    {isLoaded ? (
+                                        <Switch {...register('randomizeOrder')}>Randomize Order Every So Often</Switch>
+                                    ) : (
+                                        <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
+                                    )}
+                                </div>
+                                <div className="mt-6 mb-12">
+                                    {isLoaded ? (
+                                        <Switch {...register('showNames')}>Show Labels on Wheel</Switch>
+                                    ) : (
+                                        <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
+                                    )}
+                                </div>
+                                <div className="my-12">
+                                    {isLoaded ? (
+                                        <>
+                                            <Select
+                                                {...register('colorSchemeType', { required: true })}
+                                                data-testid="wheel-color-select"
+                                                items={wheelColorSelectOptions}
+                                                label="Wheel Color Scheme"
                                                 labelPlacement="outside"
-                                                placeholder="One per line"
+                                                disallowEmptySelection
                                                 isRequired
-                                                description="The labels that will appear on the wheel segments"
-                                                errorMessage="You must have at least 1 segment to make a wheel!"
-                                            />
-                                        ) : (
-                                            <Skeleton data-testid="skeleton" className="h-28 w-full rounded-lg" />
-                                        )}
-                                    </div>
-                                    <div className="mb-8">
-                                        {isLoaded ? (
-                                            <Input
-                                                {...register('title')}
-                                                label="Wheel Title"
-                                                labelPlacement="outside"
-                                                placeholder="Enter a title for your wheel"
-                                            />
-                                        ) : (
-                                            <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
-                                        )}
-                                    </div>
-                                    <div className="mt-12 mb-8">
-                                        {isLoaded ? (
-                                            <Input
-                                                {...register('description')}
-                                                label="Wheel Description"
-                                                labelPlacement="outside"
-                                                placeholder="Describe your wheel"
-                                                description="Helpful when adding bookmarks"
-                                            />
-                                        ) : (
-                                            <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
-                                        )}
-                                    </div>
-                                    <div className="mt-8 mb-6">
-                                        {isLoaded ? (
-                                            <Switch {...register('randomizeOrder')}>
-                                                Randomize Order Every So Often
-                                            </Switch>
-                                        ) : (
-                                            <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
-                                        )}
-                                    </div>
-                                    <div className="mt-6 mb-12">
-                                        {isLoaded ? (
-                                            <Switch {...register('showNames')}>Show Labels on Wheel</Switch>
-                                        ) : (
-                                            <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
-                                        )}
-                                    </div>
-                                    <div className="my-12">
-                                        {isLoaded ? (
-                                            <>
-                                                <Select
-                                                    {...register('colorSchemeType', { required: true })}
-                                                    data-testid="wheel-color-select"
-                                                    items={wheelColorSelectOptions}
-                                                    label="Wheel Color Scheme"
-                                                    labelPlacement="outside"
-                                                    disallowEmptySelection
-                                                    isRequired
-                                                    description={wheelColorTypeDesc}
-                                                    defaultSelectedKeys={[
-                                                        `${config?.wheelColorConfig?.wheelColorType ?? defaultWheelColorConfig.wheelColorType}`,
-                                                    ]}
-                                                    popoverProps={{ shouldBlockScroll: true }}
-                                                    renderValue={(items) => {
-                                                        return items.map((item) => (
-                                                            <div key={item.key} className="my-2 flex flex-col">
-                                                                <span className="text-medium">{item.data?.label}</span>
-                                                            </div>
-                                                        ));
-                                                    }}
-                                                >
-                                                    {(option) => (
-                                                        <SelectItem key={option.id} textValue={`${option.id}`}>
-                                                            <div className="flex flex-col">
-                                                                <span className="text-medium">{option.label}</span>
-                                                                <span className="text-small text-default-500">
-                                                                    {option.description}
-                                                                </span>
-                                                            </div>
-                                                        </SelectItem>
-                                                    )}
-                                                </Select>
-                                                {parsedWheelColorType !== WheelColorType.Random && (
-                                                    <div className="mb-3">
-                                                        <div>
-                                                            {parsedWheelColorType === WheelColorType.Custom
-                                                                ? 'Choose a color'
-                                                                : 'Base Color'}
+                                                description={wheelColorTypeDesc}
+                                                defaultSelectedKeys={[
+                                                    `${config?.wheelColorConfig?.wheelColorType ?? defaultWheelColorConfig.wheelColorType}`,
+                                                ]}
+                                                popoverProps={{ shouldBlockScroll: true }}
+                                                renderValue={(items) => {
+                                                    return items.map((item) => (
+                                                        <div key={item.key} className="my-2 flex flex-col">
+                                                            <span className="text-medium">{item.data?.label}</span>
                                                         </div>
-                                                        <ColorPicker
-                                                            singleColorName="baseColor"
-                                                            multiColorName="customColors"
-                                                            allowMultiColor={
-                                                                parsedWheelColorType === WheelColorType.Custom
-                                                            }
-                                                        />
-                                                    </div>
+                                                    ));
+                                                }}
+                                            >
+                                                {(option) => (
+                                                    <SelectItem key={option.id} textValue={`${option.id}`}>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-medium">{option.label}</span>
+                                                            <span className="text-small text-default-500">
+                                                                {option.description}
+                                                            </span>
+                                                        </div>
+                                                    </SelectItem>
                                                 )}
-                                                {(parsedWheelColorType === WheelColorType.Monochromatic ||
-                                                    parsedWheelColorType === WheelColorType.Analogous) && (
-                                                    <div className="mb-3">
-                                                        <Switch {...register('randomizeColor')}>
-                                                            Randomize Color Order
-                                                        </Switch>
+                                            </Select>
+                                            {parsedWheelColorType !== WheelColorType.Random && (
+                                                <div className="mb-3">
+                                                    <div>
+                                                        {parsedWheelColorType === WheelColorType.Custom
+                                                            ? 'Choose a color'
+                                                            : 'Base Color'}
                                                     </div>
+                                                    <ColorPicker
+                                                        singleColorName="baseColor"
+                                                        multiColorName="customColors"
+                                                        allowMultiColor={parsedWheelColorType === WheelColorType.Custom}
+                                                    />
+                                                </div>
+                                            )}
+                                            {(parsedWheelColorType === WheelColorType.Monochromatic ||
+                                                parsedWheelColorType === WheelColorType.Analogous) && (
+                                                <div className="mb-3">
+                                                    <Switch {...register('randomizeColor')}>
+                                                        Randomize Color Order
+                                                    </Switch>
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
+                                    )}
+                                </div>
+                                <div className="my-12">
+                                    {isLoaded ? (
+                                        <>
+                                            <Select
+                                                {...register('backgroundColorType', { required: true })}
+                                                data-testid="app-background-color-select"
+                                                items={pageColorSelectOptions}
+                                                label="Page Background Color"
+                                                labelPlacement="outside"
+                                                disallowEmptySelection
+                                                isRequired
+                                                description={currentPageColorTypeDesc}
+                                                defaultSelectedKeys={[
+                                                    `${config?.pageColorConfig?.backgroundColorType ?? defaultPageColorConfig.backgroundColorType}`,
+                                                ]}
+                                                popoverProps={{ shouldBlockScroll: true }}
+                                                renderValue={(items) => {
+                                                    return items.map((item) => (
+                                                        <div key={item.key} className="my-2 flex flex-col">
+                                                            <span className="text-medium">{item.data?.label}</span>
+                                                        </div>
+                                                    ));
+                                                }}
+                                            >
+                                                {(option) => (
+                                                    <SelectItem key={option.id} textValue={`${option.id}`}>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-medium">{option.label}</span>
+                                                            <span className="text-small text-default-500">
+                                                                {option.description}
+                                                            </span>
+                                                        </div>
+                                                    </SelectItem>
                                                 )}
-                                            </>
-                                        ) : (
-                                            <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
-                                        )}
-                                    </div>
-                                    <div className="my-12">
-                                        {isLoaded ? (
-                                            <>
-                                                <Select
-                                                    {...register('backgroundColorType', { required: true })}
-                                                    data-testid="app-background-color-select"
-                                                    items={pageColorSelectOptions}
-                                                    label="Page Background Color"
-                                                    labelPlacement="outside"
-                                                    disallowEmptySelection
-                                                    isRequired
-                                                    description={currentPageColorTypeDesc}
-                                                    defaultSelectedKeys={[
-                                                        `${config?.pageColorConfig?.backgroundColorType ?? defaultPageColorConfig.backgroundColorType}`,
-                                                    ]}
-                                                    popoverProps={{ shouldBlockScroll: true }}
-                                                    renderValue={(items) => {
-                                                        return items.map((item) => (
-                                                            <div key={item.key} className="my-2 flex flex-col">
-                                                                <span className="text-medium">{item.data?.label}</span>
-                                                            </div>
-                                                        ));
-                                                    }}
-                                                >
-                                                    {(option) => (
-                                                        <SelectItem key={option.id} textValue={`${option.id}`}>
-                                                            <div className="flex flex-col">
-                                                                <span className="text-medium">{option.label}</span>
-                                                                <span className="text-small text-default-500">
-                                                                    {option.description}
-                                                                </span>
-                                                            </div>
-                                                        </SelectItem>
-                                                    )}
-                                                </Select>
-                                                {parsedPageColorType === PageColorType.Single && (
-                                                    <div className="mb-3">
-                                                        <div>Background Color</div>
-                                                        <ColorPicker
-                                                            singleColorName="backgroundColor"
-                                                            allowMultiColor={false}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
-                                        )}
-                                    </div>
-                                    <div className="my-12">
-                                        {isLoaded ? (
-                                            <div className="flex justify-between">
-                                                <div className="flex gap-4">
-                                                    {id !== 'new' && (
-                                                        <Button
-                                                            className="text-base"
-                                                            startContent={<MdSave className="text-2xl" />}
-                                                            color="primary"
-                                                            type="submit"
-                                                            title="This button will update the existing wheel"
-                                                        >
-                                                            Update Existing Wheel
-                                                        </Button>
-                                                    )}
+                                            </Select>
+                                            {parsedPageColorType === PageColorType.Single && (
+                                                <div className="mb-3">
+                                                    <div>Background Color</div>
+                                                    <ColorPicker
+                                                        singleColorName="backgroundColor"
+                                                        allowMultiColor={false}
+                                                    />
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
+                                    )}
+                                </div>
+                                <div className="my-12">
+                                    {isLoaded ? (
+                                        <div className="flex justify-between">
+                                            <div className="flex gap-4">
+                                                {id !== 'new' && (
                                                     <Button
                                                         className="text-base"
-                                                        startContent={<MdOutlineAddCircle className="text-2xl" />}
-                                                        color={id === 'new' ? 'primary' : 'secondary'}
-                                                        variant={id === 'new' ? 'solid' : 'flat'}
-                                                        title="If you have saved this wheel, this button will create a new wheel and not overwrite the saved wheel"
-                                                        onPress={() => {
-                                                            methods.setValue('id', Config.generateId());
-                                                            methods.handleSubmit(onSubmit)();
-                                                        }}
+                                                        startContent={<MdSave className="text-2xl" />}
+                                                        color="primary"
+                                                        type="submit"
+                                                        title="This button will update the existing wheel"
                                                     >
-                                                        Create New Wheel
+                                                        Update Existing Wheel
                                                     </Button>
-                                                </div>
+                                                )}
                                                 <Button
-                                                    as={Link}
-                                                    href={`${PageBaseRoute.ConfigV3}/new`}
                                                     className="text-base"
-                                                    startContent={<MdClear className="text-2xl" />}
-                                                    color="danger"
-                                                    variant="flat"
+                                                    startContent={<MdOutlineAddCircle className="text-2xl" />}
+                                                    color={id === 'new' ? 'primary' : 'secondary'}
+                                                    variant={id === 'new' ? 'solid' : 'flat'}
+                                                    title="If you have saved this wheel, this button will create a new wheel and not overwrite the saved wheel"
                                                     onPress={() => {
-                                                        methods.reset();
+                                                        methods.setValue('id', Config.generateId());
+                                                        methods.handleSubmit(onSubmit)();
                                                     }}
-                                                    title="This button will reset the form to its default values"
                                                 >
-                                                    Reset Form
+                                                    Create New Wheel
                                                 </Button>
                                             </div>
-                                        ) : (
-                                            <div className="flex justify-between">
-                                                <div className="flex gap-4">
-                                                    <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
-                                                    <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
-                                                </div>
+                                            <Button
+                                                as={Link}
+                                                href={`${PageBaseRoute.ConfigV3}/new`}
+                                                className="text-base"
+                                                startContent={<MdClear className="text-2xl" />}
+                                                color="danger"
+                                                variant="flat"
+                                                onPress={() => {
+                                                    methods.reset();
+                                                }}
+                                                title="This button will reset the form to its default values"
+                                            >
+                                                Reset Form
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-between">
+                                            <div className="flex gap-4">
+                                                <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
                                                 <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
                                             </div>
-                                        )}
-                                    </div>
-                                </form>
-                            </FormProvider>
-                        </div>
+                                            <Skeleton data-testid="skeleton" className="h-14 w-24 rounded-lg" />
+                                        </div>
+                                    )}
+                                </div>
+                            </form>
+                        </FormProvider>
                     </div>
-                </>
-            )}
+                </div>
+            </>
         </main>
     );
 }

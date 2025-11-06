@@ -1,12 +1,14 @@
-import { type FC, type ReactNode, useState } from 'react';
-import { RotationContext, defaultRotationContextValue } from '@/contexts/rotation';
+import { type FC, type ReactNode, useMemo, useState } from 'react';
+import { RotationContext } from '@/contexts/rotation';
 
 interface RotationProviderProps {
     children: ReactNode;
 }
 
 export const RotationProvider: FC<RotationProviderProps> = ({ children }) => {
-    const [rotation, setRotation] = useState<number>(defaultRotationContextValue.rotation);
+    const [rotation, setRotation] = useState<number>(0);
 
-    return <RotationContext.Provider value={{ rotation, setRotation }}>{children}</RotationContext.Provider>;
+    const value = useMemo(() => ({ rotation, setRotation }), [rotation]);
+
+    return <RotationContext.Provider value={value}>{children}</RotationContext.Provider>;
 };

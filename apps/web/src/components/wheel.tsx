@@ -6,13 +6,12 @@ import {
     type TouchEvent as ReactTouchEvent,
     type RefObject,
     useCallback,
-    useContext,
     useEffect,
     useRef,
 } from 'react';
 import { MemoizedWheelSegment } from '@/components/wheel-segment';
-import { RotationContext } from '@/contexts/rotation';
-import { SegmentContext } from '@/contexts/segment';
+import { useRotation } from '@/contexts/rotation';
+import { useSegment } from '@/contexts/segment';
 import { WheelAnimationManager } from '@/utils/wheel-animation-manager';
 
 /**
@@ -30,8 +29,8 @@ interface WheelProps {
  * The wheel animation is managed outside of React's render cycle by WheelAnimationManager
  */
 export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStatic = false }) => {
-    const { setRotation } = useContext(RotationContext);
-    const { setHasWinner } = useContext(SegmentContext);
+    const { setRotation } = useRotation();
+    const { setHasWinner } = useSegment();
 
     // Reference to the wheel DOM element
     const wheelRef: RefObject<HTMLDivElement | null> = useRef(null);
@@ -61,7 +60,7 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
                 animationManagerRef.current = null;
             }
         };
-    }, [wheelManager, setRotation, setHasWinner]);
+    }, [wheelManager, setRotation, setHasWinner]); // setRotation and setHasWinner are now stable from memoized context
 
     // Event handlers that delegate to the animation manager
     const onMouseDown = useCallback((event: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -76,11 +75,45 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
         }
     }, []);
 
-    // Set up global mouse/touch move event listeners
+    // Keyboard event handler for accessibility
+    const onKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+        // Only respond to Space or Enter keys
+        if (event.key !== ' ' && event.key !== 'Enter') {
+            return;
+        }
+
+        // Prevent default behavior (e.g., page scroll on Space)
+        event.preventDefault();
+
+        if (!animationManagerRef.current || !wheelRef.current) {
+            return;
+        }
+
+        // Simulate a quick click at the center of the wheel to trigger a spin
+        // This mimics the behavior of clicking the wheel
+        const rect = wheelRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Create a synthetic mouse event for the center of the wheel
+        const syntheticEvent = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            clientX: centerX,
+            clientY: centerY,
+        });
+
+        // Trigger pointer down and up in sequence to simulate a quick click
+        animationManagerRef.current.handlePointerDown(syntheticEvent, InteractionSource.Mouse);
+        animationManagerRef.current.handlePointerUp(syntheticEvent, InteractionSource.Mouse);
+    }, []);
+
+    // Set up global mouse/touch event listeners
+    // Combines move and up event handlers into a single effect for better performance
     useEffect(() => {
         if (isStatic || !animationManagerRef.current) return;
 
-        // Define event handlers that delegate to the animation manager
+        // Define move event handlers that delegate to the animation manager
         const onMouseMove = (event: MouseEvent) => {
             if (animationManagerRef.current) {
                 animationManagerRef.current.handlePointerMove(event, InteractionSource.Mouse);
@@ -93,22 +126,7 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
             }
         };
 
-        // Add event listeners
-        globalThis.addEventListener('mousemove', onMouseMove);
-        globalThis.addEventListener('touchmove', onTouchMove, { passive: false });
-
-        // Clean up event listeners
-        return () => {
-            globalThis.removeEventListener('mousemove', onMouseMove);
-            globalThis.removeEventListener('touchmove', onTouchMove);
-        };
-    }, [isStatic]);
-
-    // Set up global mouse/touch up event listeners
-    useEffect(() => {
-        if (isStatic || !animationManagerRef.current) return;
-
-        // Define event handlers that delegate to the animation manager
+        // Define up event handlers that delegate to the animation manager
         const onMouseUp = (event: MouseEvent) => {
             if (animationManagerRef.current) {
                 animationManagerRef.current.handlePointerUp(event, InteractionSource.Mouse);
@@ -121,12 +139,16 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
             }
         };
 
-        // Add event listeners
+        // Add all event listeners
+        globalThis.addEventListener('mousemove', onMouseMove);
+        globalThis.addEventListener('touchmove', onTouchMove, { passive: false });
         globalThis.addEventListener('mouseup', onMouseUp);
         globalThis.addEventListener('touchend', onTouchEnd);
 
-        // Clean up event listeners
+        // Clean up all event listeners
         return () => {
+            globalThis.removeEventListener('mousemove', onMouseMove);
+            globalThis.removeEventListener('touchmove', onTouchMove);
             globalThis.removeEventListener('mouseup', onMouseUp);
             globalThis.removeEventListener('touchend', onTouchEnd);
         };
@@ -135,8 +157,14 @@ export const Wheel: FC<WheelProps> = ({ wheelManager, diameter = '400px', isStat
     return (
         <div
             ref={wheelRef}
+            role="application"
+            aria-label="Prize wheel - Press Space or Enter to spin"
+            aria-live="polite"
+            aria-atomic="true"
+            tabIndex={0}
             onMouseDown={onMouseDown}
             onTouchStart={onTouchStart}
+            onKeyDown={onKeyDown}
             className={`relative overflow-hidden rounded-full select-none ${isStatic ? '' : 'cursor-grab active:cursor-grabbing'}`}
             style={{
                 width: diameter,

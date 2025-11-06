@@ -1,20 +1,23 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
+import { ErrorBoundary } from '@/components/error-boundary';
 import { AppNavBar } from '@/components/navbar';
-import { SegmentContext } from './contexts/segment';
+import { useSegment } from './contexts/segment';
 
 export function RootLayout() {
-    const { setHasWinner } = useContext(SegmentContext);
+    const { setHasWinner } = useSegment();
     const location = useLocation();
 
     useEffect(() => {
-        setHasWinner?.(false);
+        setHasWinner(false);
     }, [location, setHasWinner]);
 
     return (
         <>
             <AppNavBar />
-            <Outlet />
+            <ErrorBoundary>
+                <Outlet />
+            </ErrorBoundary>
         </>
     );
 }

@@ -80,6 +80,7 @@ For detailed project information, architecture, and coding patterns:
 
 - **Architecture & Monorepo Structure**: See `docs/architecture.md`
 - **Development Standards & Patterns**: See `docs/development-guidelines.md`
+- **AI Agent Workflows & Subagents**: See `docs/ai-agent-workflows.md`
 - **Documentation Organization**: See `docs/context-organization.md`
 
 All project-specific information is in the `docs/` directory. Reference these files when making architectural or implementation decisions.
