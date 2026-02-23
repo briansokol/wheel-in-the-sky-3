@@ -14,7 +14,7 @@ export default defineConfig({
                 '**/*.config.{js,ts,mjs,mts}',
                 '**/*.d.ts',
                 '**/vitest*.{js,ts,mjs,mts}',
-                './packages/eslint/**',
+                './packages/oxlint/**',
                 './packages/prettier/**',
                 './packages/lint-staged/**',
                 './packages/e2e/**',
