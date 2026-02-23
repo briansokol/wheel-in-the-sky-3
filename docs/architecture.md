@@ -70,23 +70,23 @@ packages/
 **Ask these questions to determine placement**:
 
 1. **Is this core wheel/spinner business logic?**
-    - YES → Add to `packages/shared`
-    - Example: New WheelManager method, segment calculation, color logic
+   - YES → Add to `packages/shared`
+   - Example: New WheelManager method, segment calculation, color logic
 
 2. **Is this an API endpoint or handler?**
-    - YES → Add to `packages/api-handlers`
-    - Example: New route for configuration, new validation endpoint
+   - YES → Add to `packages/api-handlers`
+   - Example: New route for configuration, new validation endpoint
 
 3. **Is this a React component or page?**
-    - YES → Add to `apps/web/src/`
-    - Example: New UI component, new page, new page layout
+   - YES → Add to `apps/web/src/`
+   - Example: New UI component, new page, new page layout
 
 4. **Is this shared between web and API?**
-    - YES → Add to `packages/shared`
-    - Example: Shared types, validation schemas, utility functions
+   - YES → Add to `packages/shared`
+   - Example: Shared types, validation schemas, utility functions
 
 5. **Is this a type definition?**
-    - YES → Add to `packages/shared/src/types/` (if shared) or local to component (if app-specific)
+   - YES → Add to `packages/shared/src/types/` (if shared) or local to component (if app-specific)
 
 ### Common Placements
 

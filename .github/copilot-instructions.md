@@ -15,6 +15,7 @@ Generate exactly what is requested. Don't add features, refactoring, or "improve
 ### 2. Follow TypeScript Strict Mode
 
 All code must:
+
 - Use TypeScript strict mode (no `any` types)
 - Have explicit type annotations on function parameters and returns
 - Define interfaces for all object shapes
@@ -23,6 +24,7 @@ All code must:
 ### 3. Maintain Monorepo Structure
 
 Understand and respect the monorepo organization:
+
 - Place code in correct workspace (shared, web, or api-handlers)
 - Core logic goes in `@repo/shared`
 - React components go in `apps/web`
@@ -32,6 +34,7 @@ Understand and respect the monorepo organization:
 ### 4. Follow Project Patterns
 
 Write code matching established patterns:
+
 - Use React Context for app-level state
 - Use React Query for server state
 - Use React Hook Form for form state
@@ -41,6 +44,7 @@ Write code matching established patterns:
 ### 5. AGPL-3.0 License Compliance
 
 This is copyleft software under AGPL-3.0. When modifying:
+
 - Preserve existing copyright headers
 - Document significant changes in CHANGELOG.md
 - Understand that modifications may require source code sharing
@@ -63,6 +67,7 @@ This is copyleft software under AGPL-3.0. When modifying:
 ### 8. Ask for Clarification
 
 If requirements are unclear, ambiguous, or conflict with documented patterns:
+
 - Ask specific clarifying questions
 - Don't make assumptions
 - Wait for explicit user guidance before proceeding

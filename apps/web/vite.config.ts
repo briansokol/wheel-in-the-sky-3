@@ -1,7 +1,7 @@
+import path from 'node:path';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react-swc';
-import path from 'node:path';
 import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
 

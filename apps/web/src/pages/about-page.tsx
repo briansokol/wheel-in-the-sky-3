@@ -140,7 +140,7 @@ export default function AboutPage() {
                                 },
                                 h2(props) {
                                     return (
-                                        <h2 className="mb-4 mt-12 border-b-1 text-2xl font-bold">{props.children}</h2>
+                                        <h2 className="mt-12 mb-4 border-b-1 text-2xl font-bold">{props.children}</h2>
                                     );
                                 },
                                 h3(props) {
