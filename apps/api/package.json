@@ -13,12 +13,12 @@
   },
   "dependencies": {
     "@repo/shared": "*",
-    "hono": "4.10.3",
+    "hono": "4.12.2",
     "typescript": "5.9.3"
   },
   "devDependencies": {
     "@types/node": "24.9.1",
     "cp": "0.2.0",
-    "wrangler": "4.45.0"
+    "wrangler": "4.67.1"
   }
 }
