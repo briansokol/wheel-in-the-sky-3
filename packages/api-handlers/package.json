@@ -18,8 +18,8 @@
     "@ctrl/tinycolor": "4.2.0",
     "@hono/zod-validator": "0.7.6",
     "@repo/shared": "*",
-    "@sentry/cli": "2.57.0",
-    "@sentry/cloudflare": "10.22.0",
+    "@sentry/cli": "3.2.2",
+    "@sentry/cloudflare": "10.39.0",
     "hono": "4.12.2",
     "zod": "4.3.6"
   },
