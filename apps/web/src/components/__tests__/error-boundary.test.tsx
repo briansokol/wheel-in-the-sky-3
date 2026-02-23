@@ -10,6 +10,15 @@ function ThrowError({ shouldThrow }: { shouldThrow: boolean }) {
     return <div>No error</div>;
 }
 
+// Test component used to verify error boundaries catch errors in nested components
+function NestedComponent() {
+    return (
+        <div>
+            <ThrowError shouldThrow={true} />
+        </div>
+    );
+}
+
 describe('ErrorBoundary', () => {
     // Suppress console errors during tests
     const originalError = console.error;
@@ -149,14 +158,6 @@ describe('ErrorBoundary', () => {
     });
 
     it('should catch errors in nested components', () => {
-        function NestedComponent() {
-            return (
-                <div>
-                    <ThrowError shouldThrow={true} />
-                </div>
-            );
-        }
-
         render(
             <ErrorBoundary>
                 <NestedComponent />

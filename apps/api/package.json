@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev --local --ip=0.0.0.0",
-    "lint": "eslint .",
+    "lint": "oxlint .",
     "types": "wrangler types && cp worker-configuration.d.ts ../../packages/api-handlers/worker-configuration.d.ts",
     "deploy": "wrangler deploy --minify"
   },

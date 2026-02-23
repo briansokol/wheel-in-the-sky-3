@@ -1,10 +1,10 @@
 /**
  * Configuration for lint-staged
- * Runs ESLint
+ * Runs Oxlint
  * @see https://github.com/lint-staged/lint-staged?tab=readme-ov-file#configuration
  */
-export const eslint = {
-    '*.{js,jsx,ts,tsx}': 'eslint --fix',
+export const oxlint = {
+    '*.{js,jsx,ts,tsx}': 'oxlint --fix',
 };
 
 /**

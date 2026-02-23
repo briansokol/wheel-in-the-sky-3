@@ -8,8 +8,7 @@ import { api } from '@/utils/api';
 export function useDecodedConfig(encodedConfig?: string): UseQueryResult<Config | undefined> {
     return useQuery({
         queryKey: ['decodeConfig', encodedConfig],
-        queryFn: async ({ queryKey }): Promise<Config | undefined> => {
-            const [, encodedConfig] = queryKey;
+        queryFn: async (): Promise<Config | undefined> => {
             let newConfig: Config | undefined;
 
             if (typeof encodedConfig === 'string' && encodedConfig.toLowerCase() !== 'new') {

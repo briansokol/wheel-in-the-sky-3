@@ -6,7 +6,7 @@
     "dev": "vite --host",
     "build": "tsc -b && vite build --outDir=../api/public",
     "build:with-sentry": "cross-env WITH_SENTRY=true npm run build",
-    "lint": "eslint .",
+    "lint": "oxlint .",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
     "test": "vitest",
