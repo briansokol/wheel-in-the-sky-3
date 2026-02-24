@@ -11,6 +11,7 @@
     "yoavbls.pretty-ts-errors",
     "vercel.turbo-vsc",
     "bradlc.vscode-tailwindcss",
-    "oxc.oxc-vscode"
+    "oxc.oxc-vscode",
+    "esbenp.prettier-vscode"
   ]
 }

@@ -1,30 +1,34 @@
 {
   "name": "wheel-in-the-sky-3",
   "version": "3.0.0-SNAPSHOT",
-  "license": "AGPL-3.0-only",
   "private": true,
+  "license": "AGPL-3.0-only",
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "postbuild": "cp ./CHANGELOG.md ./apps/api/public/CHANGELOG.md",
     "build:with-sentry": "turbo run build:with-sentry",
     "postbuild:with-sentry": "npm run postbuild",
-    "dev": "turbo run dev",
-    "deploy": "turbo run deploy",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,css}\"",
-    "types": "turbo run types",
     "check-types": "turbo run check-types",
-    "sherif": "sherif",
-    "test": "vitest",
-    "test:ci": "vitest run --coverage",
+    "deploy": "turbo run deploy",
+    "dev": "turbo run dev",
     "e2e": "turbo run e2e",
-    "e2e:ui": "turbo run e2e:ui",
     "e2e:ci": "turbo run e2e:ci",
     "e2e:debug": "turbo run e2e:debug",
     "e2e:report": "turbo run e2e:report",
+    "e2e:ui": "turbo run e2e:ui",
+    "format": "prettier --write \"**/*.{ts,tsx,md,css}\"",
+    "lint": "turbo run lint",
     "ncu": "npx ncu --interactive --install=never --workspaces --root",
-    "prepare": "husky"
+    "prepare": "husky",
+    "sherif": "sherif",
+    "test": "vitest",
+    "test:ci": "vitest run --coverage",
+    "types": "turbo run types"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "4.0.18",
@@ -36,12 +40,8 @@
     "turbo": "2.8.10",
     "vitest": "4.0.18"
   },
-  "engines": {
-    "node": "25.x"
-  },
   "packageManager": "npm@11.10.1",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  "engines": {
+    "node": "24.x"
+  }
 }
