@@ -23,8 +23,8 @@ export async function decodeConfig(input: string): Promise<SerializedConfigManag
         const decodedInput = decodeURIComponent(input);
         const decompressedText = await decompressFromGzip(decodedInput);
         return JSON.parse(decompressedText);
-    } catch {
-        throw new Error('Invalid config');
+    } catch (error) {
+        throw new Error('Invalid config', { cause: error });
     }
 }
 
