@@ -4,16 +4,14 @@
     "aaron-bond.better-comments",
     "kamikillerto.vscode-colorize",
     "editorconfig.editorconfig",
-    "dbaeumer.vscode-eslint",
-    "github.copilot",
-    "github.copilot-chat",
     "github.vscode-pull-request-github",
-    "esbenp.prettier-vscode",
     "gruntfuggly.todo-tree",
     "vitest.explorer",
     "ms-edgedevtools.vscode-edge-devtools",
     "yoavbls.pretty-ts-errors",
     "vercel.turbo-vsc",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "oxc.oxc-vscode",
+    "esbenp.prettier-vscode"
   ]
 }

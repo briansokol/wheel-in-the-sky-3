@@ -63,11 +63,11 @@ export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorN
             </div>
             {allowMultiColor && multiColorName && (
                 <div data-testid="picker-color-list" className="flex flex-wrap">
-                    {colors.map((color, i) => (
+                    {colors.map((colorHex, i) => (
                         <Button
-                            key={color}
-                            className="relative mb-3 mr-3"
-                            style={{ background: color }}
+                            key={colorHex}
+                            className="relative mr-3 mb-3"
+                            style={{ background: colorHex }}
                             onPress={removeColor(i)}
                         ></Button>
                     ))}

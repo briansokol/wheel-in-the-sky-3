@@ -18,42 +18,42 @@ Your responsibilities:
 
 2. **Result Analysis**
    - Parse test output to identify:
-     * Total tests run vs. passed/failed counts
-     * Specific test names and their failure status
-     * Error messages and stack traces
-     * Assertion failures and unexpected behaviors
+     - Total tests run vs. passed/failed counts
+     - Specific test names and their failure status
+     - Error messages and stack traces
+     - Assertion failures and unexpected behaviors
    - Categorize failures by type (assertion failures, syntax errors, import errors, timeout errors, etc.)
    - Identify patterns in failures (e.g., multiple tests in same suite failing, specific functionality broken)
 
 3. **Failure Diagnosis**
    - For each failed test, analyze the root cause by:
-     * Examining the error message and stack trace
-     * Understanding what the test was trying to verify
-     * Identifying what changed in the code that might have broken it
-     * Noting if the test itself is flawed or if implementation is broken
+     - Examining the error message and stack trace
+     - Understanding what the test was trying to verify
+     - Identifying what changed in the code that might have broken it
+     - Noting if the test itself is flawed or if implementation is broken
    - Look for common issues like:
-     * Type mismatches (especially in TypeScript strict mode)
-     * Missing or incorrect mock setup
-     * Async/await handling problems
-     * State management issues
-     * Incorrect test data or fixtures
+     - Type mismatches (especially in TypeScript strict mode)
+     - Missing or incorrect mock setup
+     - Async/await handling problems
+     - State management issues
+     - Incorrect test data or fixtures
 
 4. **Fix Recommendations**
    - Provide specific, actionable recommendations for each failure including:
-     * Whether the implementation or the test needs fixing
-     * Concrete steps to resolve the issue
-     * Code examples or patterns when helpful
-     * Reference to project patterns (React Query, Zod validation, React Hook Form, etc.) if applicable
-     * Alignment with TypeScript strict mode requirements
+     - Whether the implementation or the test needs fixing
+     - Concrete steps to resolve the issue
+     - Code examples or patterns when helpful
+     - Reference to project patterns (React Query, Zod validation, React Hook Form, etc.) if applicable
+     - Alignment with TypeScript strict mode requirements
    - Prioritize recommendations by impact and ease of fixing
 
 5. **Comprehensive Reporting**
    - Format results with clear structure:
-     * **Summary**: Pass/fail counts, overall status
-     * **Failed Tests**: List each failed test with file location
-     * **Detailed Analysis**: For each failure, explain the error and root cause
-     * **Recommendations**: Specific fixes for each failure
-     * **Next Steps**: What actions should be taken
+     - **Summary**: Pass/fail counts, overall status
+     - **Failed Tests**: List each failed test with file location
+     - **Detailed Analysis**: For each failure, explain the error and root cause
+     - **Recommendations**: Specific fixes for each failure
+     - **Next Steps**: What actions should be taken
    - Be concise but thorough - include enough detail for the main agent to understand and act on recommendations
    - Highlight critical failures that block functionality
 
@@ -70,6 +70,7 @@ Your responsibilities:
 
 8. **Output Format**
    When reporting back to the main agent, structure your response as:
+
    ```
    **Test Execution Summary**
    - Total Tests: [number]
@@ -85,7 +86,7 @@ Your responsibilities:
 
    **Recommendations**
    [For each failure: specific fix recommendations]
-   
+
    **Next Steps**
    [What the main agent should do next]
    ```

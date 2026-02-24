@@ -7,6 +7,7 @@ Guidelines for writing code in Wheel in the Sky 3. These standards help maintain
 **Strict Mode**: All code uses TypeScript strict mode. No `any` types unless unavoidable.
 
 **Type Requirements**:
+
 - All function parameters must have explicit types
 - All function return types should be explicit
 - Use `interface` for object shapes
@@ -14,6 +15,7 @@ Guidelines for writing code in Wheel in the Sky 3. These standards help maintain
 - Export all public types and interfaces
 
 **Examples**:
+
 ```typescript
 // ✅ Good
 interface Segment {
@@ -35,39 +37,43 @@ function addSegment(segment: any) {
 ## Naming Conventions
 
 **Components**: PascalCase
+
 ```typescript
 // ✅ Good
-function WheelSpinner() { }
-function ConfigPage() { }
-function ActionAccordion() { }
+function WheelSpinner() {}
+function ConfigPage() {}
+function ActionAccordion() {}
 
 // ❌ Avoid
-function wheelSpinner() { }
-function configPage() { }
+function wheelSpinner() {}
+function configPage() {}
 ```
 
 **Functions and Variables**: camelCase
+
 ```typescript
 // ✅ Good
-function calculateSegmentColor() { }
+function calculateSegmentColor() {}
 const segmentCount = 10;
 
 // ❌ Avoid
-function CalculateSegmentColor() { }
+function CalculateSegmentColor() {}
 const SegmentCount = 10;
 ```
 
 **Constants**: UPPER_SNAKE_CASE (if module-level) or camelCase (if local)
+
 ```typescript
 // ✅ Good
 export const MAX_SEGMENTS = 50;
-const primaryColor = "hsl(0, 100%, 50%)";
+const primaryColor = 'hsl(0, 100%, 50%)';
 
 // ❌ Avoid
 const max_segments = 50;
 ```
 
 **File Names**:
+
 - Components: PascalCase (e.g., `WheelSpinner.tsx`)
 - Utilities: camelCase (e.g., `colorUtils.ts`)
 - Types: lowercase with `.types.ts` extension (e.g., `config.types.ts`)
@@ -80,11 +86,13 @@ const max_segments = 50;
 **State Management Layers**:
 
 1. **Local State**: Use `useState` for component-specific state
+
    ```typescript
    const [isOpen, setIsOpen] = useState(false);
    ```
 
 2. **Context State**: Use React Context for app-level state (see `apps/web/src/contexts/`)
+
    ```typescript
    const { config, setConfig } = useContext(ConfigContext);
    ```
@@ -98,11 +106,13 @@ const max_segments = 50;
    ```
 
 **Component Size**: Keep components focused on single responsibility. Extract smaller components when:
+
 - Component exceeds ~200 lines
 - Multiple independent behaviors exist
 - Component has deeply nested JSX
 
 **Props Typing**:
+
 ```typescript
 interface WheelProps {
   segments: Segment[];
@@ -124,6 +134,7 @@ function Wheel({ segments, onSegmentClick, isSpinning = false }: WheelProps) {
 **React Hook Form**: Use for form state (multi-field forms, validation)
 
 **Never use**:
+
 - Redux (overkill for this project)
 - MobX (unnecessary complexity)
 - Zustand (Context + Query is sufficient)
@@ -131,6 +142,7 @@ function Wheel({ segments, onSegmentClick, isSpinning = false }: WheelProps) {
 ## Form Handling
 
 **React Hook Form + Zod Validation**:
+
 ```typescript
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -155,20 +167,24 @@ function ConfigForm() {
 ## Testing Expectations
 
 **Unit Tests**: Write Vitest tests for business logic
+
 - Location: Co-located with source files (`.test.ts` or `.test.tsx`)
 - Scope: Test functions, utilities, hooks independently
 - Tools: Vitest, @testing-library/react
 
 **Component Tests**: Use React Testing Library for component testing
+
 - Test user interactions, not implementation details
 - Use `getByRole`, `getByLabelText` for queries
 - Avoid testing internal state directly
 
 **E2E Tests**: Use Playwright for complete workflows
+
 - Test user journeys across app and API
 - Located in `packages/e2e/`
 
 **Test Coverage**: Aim for meaningful coverage, not 100% number chasing. Test:
+
 - Critical business logic
 - Edge cases and error states
 - Component interactions
@@ -177,6 +193,7 @@ function ConfigForm() {
 ## Animation Patterns
 
 **Framer Motion**: Use for all animations
+
 ```typescript
 import { motion } from 'framer-motion';
 
@@ -193,6 +210,7 @@ import { motion } from 'framer-motion';
 ## Error Handling
 
 **Try/Catch for Async Operations**:
+
 ```typescript
 async function loadConfig() {
   try {
@@ -213,16 +231,18 @@ async function loadConfig() {
 ## Imports Organization
 
 **Order**:
+
 1. React and external libraries
 2. Internal shared packages (`@repo/shared`, etc.)
 3. Local utilities and types
 4. Components (relative paths)
 
 **Example**:
+
 ```typescript
-import React, { useState } from 'react';
+import { type Segment, WheelManager } from '@repo/shared';
 import { motion } from 'framer-motion';
-import { WheelManager, type Segment } from '@repo/shared';
+import React, { useState } from 'react';
 import { useAppConfig } from '../contexts/ConfigContext';
 import { colorUtils } from '../utils/colors';
 import { WheelDisplay } from './WheelDisplay';
@@ -231,11 +251,13 @@ import { WheelDisplay } from './WheelDisplay';
 ## JSDoc Documentation
 
 **When to Write JSDoc**:
+
 - All exported functions and classes
 - Complex functions (>20 lines or non-obvious logic)
 - Public APIs in `packages/shared`
 
 **Format**:
+
 ```typescript
 /**
  * Calculates the winning segment for a rotation angle.
@@ -249,6 +271,7 @@ export function getWinningSegment(angle: number, segmentCount: number): number {
 ```
 
 **Avoid**:
+
 - Over-documenting obvious code
 - Repeating what the code clearly shows
 - Comments that don't add value
@@ -264,6 +287,7 @@ export function getWinningSegment(angle: number, segmentCount: number): number {
 **API Handler Validation**: Use `@hono/zod-validator` for request validation
 
 **Example**:
+
 ```typescript
 import { z } from 'zod';
 
@@ -280,33 +304,40 @@ export type Segment = z.infer<typeof SegmentSchema>;
 ## File Organization
 
 **Pages** (`apps/web/src/pages/`):
+
 - One file per page
 - Contains page-level logic and layout
 - Imports components from `../components/`
 
 **Components** (`apps/web/src/components/`):
+
 - Reusable UI components
 - One component per file or related components in folder
 - Keep components focused and testable
 
 **Hooks** (`apps/web/src/hooks/`):
+
 - Custom React hooks
 - Extracted logic that's reused across components
 
 **Contexts** (`apps/web/src/contexts/`):
+
 - React Context providers
 - One context per file
 
 **Utils** (`apps/web/src/utils/` and `packages/shared/src/utils/`):
+
 - Utility functions
 - Shared utilities in `packages/shared`
 - App-specific utilities in `apps/web/src/utils`
 
 **Types** (`apps/web/src/types/` and `packages/shared/src/types/`):
+
 - Type definitions
 - Use `.types.ts` file extension
 
 **Tests**:
+
 - Co-locate with source files
 - Use `.test.ts` or `.test.tsx` extension
 
@@ -317,6 +348,7 @@ export type Segment = z.infer<typeof SegmentSchema>;
 **Workspace Installations**: In this monorepo, use the `--workspace` flag to specify the target workspace instead of navigating into the workspace directory.
 
 **Correct Pattern**:
+
 ```bash
 # ✅ Good - Use --workspace from root
 npm install --save-exact --workspace apps/web lodash
@@ -331,6 +363,7 @@ This keeps the monorepo structure intact and avoids unintended side effects from
 ## Common Patterns
 
 **Query Pattern** (fetching data):
+
 ```typescript
 import { useQuery } from '@tanstack/react-query';
 
@@ -351,6 +384,7 @@ function WheelList() {
 ```
 
 **Context Pattern** (app state):
+
 ```typescript
 const ConfigContext = createContext<ConfigContextType | null>(null);
 
@@ -372,14 +406,13 @@ export function useConfig() {
 ```
 
 **Hook Pattern** (reusable logic):
+
 ```typescript
 function useWheelState(initialConfig: WheelConfig) {
-  const [wheelManager, setWheelManager] = useState(
-    () => new WheelManager(initialConfig)
-  );
+  const [wheelManager, setWheelManager] = useState(() => new WheelManager(initialConfig));
 
   const addSegment = (segment: Segment) => {
-    setWheelManager(prev => {
+    setWheelManager((prev) => {
       const updated = new WheelManager(prev);
       updated.addSegment(segment);
       return updated;
@@ -393,6 +426,7 @@ function useWheelState(initialConfig: WheelConfig) {
 ## Code Review Checklist
 
 Before committing, verify:
+
 - ✅ TypeScript strict mode compliant (no `any` types)
 - ✅ All types explicitly declared
 - ✅ Naming follows conventions (PascalCase/camelCase)
@@ -407,6 +441,7 @@ Before committing, verify:
 ## License Compliance
 
 **AGPL-3.0 License**: This project is copyleft software. Important implications:
+
 - Source code changes must be contributed back
 - Proprietary modifications require legal review
 - Deployment = distribution in AGPL
@@ -414,6 +449,7 @@ Before committing, verify:
 - Maintain copyright notices in files
 
 When modifying code:
+
 - Preserve existing copyright headers
 - Add yourself as contributor if substantial change
 - Document significant modifications in CHANGELOG.md

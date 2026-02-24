@@ -188,7 +188,7 @@ export class WheelManager {
     }
 
     private _sortColors(colors: TinyColor[]): TinyColor[] {
-        return colors.sort(function (a, b) {
+        return colors.toSorted(function (a, b) {
             return a.getBrightness() - b.getBrightness();
         });
     }

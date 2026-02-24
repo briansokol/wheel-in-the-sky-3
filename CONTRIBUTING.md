@@ -26,16 +26,16 @@ We welcome code contributions! To ensure a smooth review process:
 
 - Ensure you have **git hooks enabled** for pre-commit checks. If you're unsure, run the following command:
 
-    ```bash
-    npm run prepare
-    ```
+  ```bash
+  npm run prepare
+  ```
 
-    - Make sure your IDE is set up to run git hooks if you're using a GUI to handle commits (We recommend using Visual Studio Code).
+  - Make sure your IDE is set up to run git hooks if you're using a GUI to handle commits (We recommend using Visual Studio Code).
 
 - Make sure your changes include appropriate **unit tests**
-    - Add new tests for new functionality
-    - Update existing tests for modified functionality
-    - Ensure all tests pass before submitting
+  - Add new tests for new functionality
+  - Update existing tests for modified functionality
+  - Ensure all tests pass before submitting
 
 ### PR Process
 

@@ -1,11 +1,18 @@
+import path from 'node:path';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react-swc';
-import path from 'node:path';
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
 
-const plugins = [react(), tailwindcss()];
+const plugins = [
+    react({
+        babel: {
+            plugins: ['babel-plugin-react-compiler'],
+        },
+    }),
+    tailwindcss(),
+];
 if (process.env.WITH_SENTRY) {
     plugins.push(
         sentryVitePlugin({

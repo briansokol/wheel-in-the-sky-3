@@ -3,7 +3,7 @@
  * @type {import("prettier").Config}
  */
 export const base = {
-    plugins: ['@trivago/prettier-plugin-sort-imports'],
+    plugins: ['prettier-plugin-packagejson', '@trivago/prettier-plugin-sort-imports'],
     tabWidth: 4,
     printWidth: 120,
     trailingComma: 'es5',
@@ -11,10 +11,12 @@ export const base = {
     quoteProps: 'consistent',
     overrides: [
         {
-            files: '*.{css,scss}',
+            files: '*.{css,scss,md}',
             options: {
                 tabWidth: 2,
             },
+        },
+        {
             files: '*.{json,jsonc}',
             options: {
                 tabWidth: 2,
@@ -22,7 +24,7 @@ export const base = {
             },
         },
     ],
-    importOrder: ['<THIRD_PARTY_MODULES>', '<TYPE>^@/(.*)$', '^@/(.*)$', '<TYPE>^[./]', '^[./]'],
+    importOrder: ['<BUILTIN_MODULES>', '<THIRD_PARTY_MODULES>', '<TYPE>^@/(.*)$', '^@/(.*)$', '<TYPE>^[./]', '^[./]'],
     importOrderSeparation: false,
     importOrderSortSpecifiers: true,
     importOrderGroupNamespaceSpecifiers: true,

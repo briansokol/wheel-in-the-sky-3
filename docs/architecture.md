@@ -15,7 +15,7 @@ packages/
 ├── shared/                 # Core business logic (WheelManager, Config, Segment)
 ├── api-handlers/           # Hono route handlers
 ├── e2e/                    # Playwright end-to-end tests
-├── eslint/                 # Shared ESLint configuration
+├── oxlint/                 # Shared Oxlint configuration
 ├── prettier/               # Shared Prettier configuration
 └── lint-staged/            # Shared lint-staged configuration
 ```
@@ -23,18 +23,21 @@ packages/
 ### Workspace Purposes
 
 **`apps/web`** - React Single Page Application
+
 - User-facing frontend built with React 19 and TypeScript
 - Vite bundled, outputs to `apps/api/public/`
 - React Router for client-side navigation
 - Communicates with API handlers for wheel configuration encoding
 
 **`apps/api`** - Hono API on Cloudflare Workers
+
 - Deploys to Cloudflare Workers edge compute
 - Imports handlers from `@repo/api-handlers`
 - Serves web app from `public/` directory
 - Handles wheel configuration encoding/decoding
 
 **`packages/shared`** - Core Business Logic
+
 - Framework-agnostic wheel domain logic
 - Contains: WheelManager (wheel state), Config (serialization), Segment (segment representation)
 - Zod validators for type-safe configuration
@@ -42,17 +45,20 @@ packages/
 - Imported by both web app and API handlers
 
 **`packages/api-handlers`** - API Handlers
+
 - Hono route handlers for API endpoints
 - Separates API logic from Cloudflare Worker runtime
 - Handlers are independently testable
 - Exports for both server and client consumption
 
 **`packages/e2e`** - End-to-End Tests
+
 - Playwright test suite
 - Tests complete workflows across app and API
 - Isolated from web/api build dependencies
 
-**Configuration Packages** - ESLint, Prettier, lint-staged
+**Configuration Packages** - Oxlint, Prettier, lint-staged
+
 - Centralized tooling configuration
 - Used by all workspaces
 - DRY principle: single source of truth for quality standards
@@ -84,16 +90,16 @@ packages/
 
 ### Common Placements
 
-| What | Where | Why |
-|------|-------|-----|
-| WheelManager methods | `packages/shared/src/classes/` | Domain logic, used by both web and handlers |
-| Zod validators | `packages/shared/src/validators/` | Reusable validation, shared by web/API |
-| React components | `apps/web/src/components/` | UI-specific, only web needs it |
-| API route handlers | `packages/api-handlers/src/server/` | API logic, independent from Cloudflare runtime |
-| Utility functions | `packages/shared/src/utils/` or local | If used multiple places, add to shared |
-| Tests | Co-located with source (`.test.ts` or `.test.tsx`) | Easy to maintain alongside code |
-| Page components | `apps/web/src/pages/` | React Router pages |
-| Context providers | `apps/web/src/contexts/` | React-specific state management |
+| What                 | Where                                              | Why                                            |
+| -------------------- | -------------------------------------------------- | ---------------------------------------------- |
+| WheelManager methods | `packages/shared/src/classes/`                     | Domain logic, used by both web and handlers    |
+| Zod validators       | `packages/shared/src/validators/`                  | Reusable validation, shared by web/API         |
+| React components     | `apps/web/src/components/`                         | UI-specific, only web needs it                 |
+| API route handlers   | `packages/api-handlers/src/server/`                | API logic, independent from Cloudflare runtime |
+| Utility functions    | `packages/shared/src/utils/` or local              | If used multiple places, add to shared         |
+| Tests                | Co-located with source (`.test.ts` or `.test.tsx`) | Easy to maintain alongside code                |
+| Page components      | `apps/web/src/pages/`                              | React Router pages                             |
+| Context providers    | `apps/web/src/contexts/`                           | React-specific state management                |
 
 ## Core Domain Classes
 
@@ -104,6 +110,7 @@ packages/
 **Location**: `packages/shared/src/classes/WheelManager.ts`
 
 **Responsibilities**:
+
 - Segment management (add, remove, update)
 - Color assignment and randomization
 - Winner tracking and removal
@@ -119,6 +126,7 @@ packages/
 **Location**: `packages/shared/src/classes/Config.ts`
 
 **Responsibilities**:
+
 - Create configuration from WheelManager state
 - Parse configuration from serialized format
 - Fluent builder pattern for construction
@@ -133,6 +141,7 @@ packages/
 **Location**: `packages/shared/src/classes/Segment.ts`
 
 **Responsibilities**:
+
 - Segment data (name, color, index)
 - Segment properties and relationships
 - Segment validation
@@ -155,6 +164,7 @@ All business logic centralized in `packages/shared`, avoiding duplication. Both 
 ### 3. React Context for State Management
 
 Multiple context providers manage app state:
+
 - `ConfigProvider`: Wheel configuration
 - `RotationProvider`: Wheel spinning state
 - `SegmentProvider`: Segment selection
@@ -170,26 +180,28 @@ Backend runs on Cloudflare Workers edge compute. Web app bundled to `apps/api/pu
 
 ## Technology Stack Overview
 
-**Frontend Runtime**: React 19.1.0, TypeScript 5.8.3
-**Frontend Build**: Vite 6.3.5 with @vitejs/plugin-react-swc
-**Backend Runtime**: Hono 4.8.2 on Cloudflare Workers
-**Monorepo**: Turborepo 2.5.4
-**Validation**: Zod 3.25.67
-**Testing**: Vitest 3.2.4, Playwright, React Testing Library
-**Code Quality**: ESLint 9.29.0, Prettier 3.5.3
-**Error Tracking**: Sentry (v9.30.0)
+**Frontend Runtime**: React, TypeScript
+**Frontend Build**: Vite with @vitejs/plugin-react-swc
+**Backend Runtime**: Hono on Cloudflare Workers
+**Monorepo**: Turborepo
+**Validation**: Zod
+**Testing**: Vitest, Playwright, React Testing Library
+**Code Quality**: Oxlint, Prettier
+**Error Tracking**: Sentry
 
 ## Deployment Model
 
 **Environment**: Cloudflare Workers (edge computing)
 
 **Build Process**:
+
 1. `npm run build` bundles web app with Vite
 2. Output goes to `apps/api/public/`
 3. `wrangler deploy` deploys `apps/api` to Cloudflare Workers
 4. Edge location serves both web app and API
 
 **Characteristics**:
+
 - No traditional server infrastructure
 - Global CDN edge deployment
 - Stateless design (config shared via URL)

@@ -65,7 +65,7 @@ export default function WheelPage() {
     // The wheelManager only cares about the actual winner names, not the array reference.
     // We sort the names to ensure consistent key generation regardless of removal order.
     // Using newline as separator since segment names are parsed by splitting on newlines.
-    const removedWinnersKey = useMemo(() => [...removedWinners].sort().join('\n'), [removedWinners]);
+    const removedWinnersKey = useMemo(() => [...removedWinners].toSorted().join('\n'), [removedWinners]);
 
     const wheelManager = useMemo(() => {
         if (decodedConfig !== undefined) {

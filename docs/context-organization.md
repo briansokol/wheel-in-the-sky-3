@@ -15,6 +15,7 @@ docs/
 ```
 
 **Root context files**:
+
 - `CLAUDE.md` - Primary context file for Claude Code (references docs/)
 - `.github/copilot-instructions.md` - Context file for GitHub Copilot (mirrors CLAUDE.md)
 
@@ -25,6 +26,7 @@ docs/
 **Purpose**: Helps AI agents understand the project structure and where code belongs.
 
 **Sections**:
+
 - Monorepo structure and workspace purposes
 - Where code belongs (decision flow for new features)
 - Core domain classes (WheelManager, Config, Segment)
@@ -39,6 +41,7 @@ docs/
 **Purpose**: Provides coding standards and patterns for consistent code generation.
 
 **Sections**:
+
 - TypeScript and type safety requirements
 - Naming conventions (PascalCase, camelCase, etc.)
 - Component composition patterns
@@ -59,6 +62,7 @@ docs/
 **Purpose**: Documents specialized Claude Code subagents and when they should be used.
 
 **Sections**:
+
 - Overview of available subagents
 - docs-fetcher: Library/framework documentation retrieval
 - playwright-visual-tester: Browser-based visual testing
@@ -74,6 +78,7 @@ docs/
 **Purpose**: Serves as the entry point for Claude Code with essential behavioral rules and references.
 
 **Content**:
+
 - Self-documenting header about content separation
 - Core behavioral rules for code generation
 - Minimal project identification
@@ -94,6 +99,7 @@ Example: "For development standards, see docs/development-guidelines.md"
 ### Initial Context Setup
 
 When starting a new session, AI agents receive:
+
 1. Root context file (CLAUDE.md or .github/copilot-instructions.md)
 2. Essential behavioral rules from root file
 3. References to detailed docs/ files for specific topics
@@ -112,29 +118,34 @@ When starting a new session, AI agents receive:
 ### Example Scenarios
 
 **Scenario 1: Adding a new API endpoint**
+
 1. Consult `docs/architecture.md` for API handler placement
 2. Check `docs/development-guidelines.md` for validation patterns
 3. Reference existing handlers in `packages/api-handlers/`
 4. Implement following documented patterns
 
 **Scenario 2: Creating a new React component**
+
 1. Consult `docs/development-guidelines.md` for component patterns
 2. Check naming conventions (PascalCase)
 3. Review state management approach (Context/Query)
 4. Implement following patterns with JSDoc documentation
 
 **Scenario 3: Making architectural decisions**
+
 1. Consult `docs/architecture.md` for code placement decision tree
 2. Determine if code belongs in shared, app-specific, or handlers
 3. Follow established patterns for that location
 
 **Scenario 4: Using a new library**
+
 1. Consult `docs/ai-agent-workflows.md` for subagent guidance
 2. Invoke docs-fetcher subagent to retrieve library documentation
 3. Use retrieved documentation to implement following best practices
 4. Follow `docs/development-guidelines.md` patterns for integration
 
 **Scenario 5: Testing UI changes**
+
 1. Implement UI changes following `docs/development-guidelines.md`
 2. Write unit tests for component logic
 3. Optionally invoke playwright-visual-tester subagent for visual validation
@@ -143,18 +154,22 @@ When starting a new session, AI agents receive:
 ## Cross-References Between Documents
 
 **architecture.md references**:
+
 - development-guidelines.md for coding patterns
 - context-organization.md (this file) for documentation overview
 
 **development-guidelines.md references**:
+
 - architecture.md for code organization
 - context-organization.md for documentation overview
 
 **ai-agent-workflows.md references**:
+
 - development-guidelines.md for coding standards
 - architecture.md for project structure
 
 **CLAUDE.md references**:
+
 - architecture.md for monorepo structure
 - development-guidelines.md for coding standards
 - ai-agent-workflows.md for subagent usage
@@ -165,24 +180,28 @@ When starting a new session, AI agents receive:
 ### When to Update Documentation
 
 **Update `docs/architecture.md` when**:
+
 - Monorepo structure changes (new workspace, moved code)
 - Architectural patterns change
 - Core domain classes change significantly
 - Deployment model or technology stack updates
 
 **Update `docs/development-guidelines.md` when**:
+
 - Coding standards change
 - New patterns are established
 - Testing approach changes
 - State management approach evolves
 
 **Update `docs/ai-agent-workflows.md` when**:
+
 - New specialized subagents are added
 - Subagent usage patterns change
 - Tool capabilities are updated
 - Best practices for subagent invocation evolve
 
 **Update CLAUDE.md when**:
+
 - Behavioral rules change
 - Core principles shift
 - References to docs/ files need updating
@@ -199,6 +218,7 @@ When starting a new session, AI agents receive:
 ### Solo Developer Notes
 
 **Effort**: Updates take ~15-30 minutes per change
+
 - Usually updating one or two docs/ files
 - Quick reference update in CLAUDE.md
 - Done alongside code changes
@@ -206,15 +226,18 @@ When starting a new session, AI agents receive:
 ## Content Separation Principle
 
 **Root files** (CLAUDE.md, .github/copilot-instructions.md):
+
 - ✅ DO: Behavioral rules, project identification, references
 - ❌ DON'T: Project descriptions, framework details, code examples
 
 **docs/ files**:
+
 - ✅ DO: Detailed guidance, examples, implementation patterns
 - ✅ DO: Project-specific information, architecture, standards
 - ❌ DON'T: Behavioral rules (those go in root)
 
 **Example**:
+
 - ❌ CLAUDE.md says "Use Zod for validation"
 - ✅ docs/development-guidelines.md explains Zod validation patterns
 - ✅ CLAUDE.md references development-guidelines.md
@@ -222,12 +245,14 @@ When starting a new session, AI agents receive:
 ## Consistency Between AI Tools
 
 **CLAUDE.md and .github/copilot-instructions.md must stay in sync**:
+
 - Same behavioral rules
 - Same references to docs/
 - Same project identification
 - Same license compliance emphasis
 
 **docs/ files are shared by both tools**:
+
 - No tool-specific variations
 - Both tools reference same documentation
 - Consistency across all AI development
@@ -237,10 +262,12 @@ When starting a new session, AI agents receive:
 **Critical Principle**: Content exists in ONE place only.
 
 **Example of violation**:
+
 - CLAUDE.md includes full architecture explanation (should reference docs/architecture.md)
 - .github/copilot-instructions.md duplicates content from CLAUDE.md (should mirror, not duplicate)
 
 **Correct approach**:
+
 - CLAUDE.md: "For architecture details, see docs/architecture.md"
 - .github/copilot-instructions.md: Same reference to docs/architecture.md
 - Both files stay concise by using references
@@ -248,6 +275,7 @@ When starting a new session, AI agents receive:
 ## AI Agent Expectations
 
 **AI agents are expected to**:
+
 - Read root context file first
 - Follow references to detailed documentation
 - Understand decision flows from architecture.md
@@ -259,6 +287,7 @@ When starting a new session, AI agents receive:
 - Document complex logic with JSDoc
 
 **AI agents should NOT**:
+
 - Ignore documented patterns
 - Assume alternative approaches
 - Generate code that violates TypeScript strict mode

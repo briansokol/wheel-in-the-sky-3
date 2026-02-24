@@ -42,7 +42,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 ### Added
 
 - Add ability to persist some wheel state in local storage by giving each wheel a unique ID behind the scenes.
-    - You will need to edit and re-save any existing wheels to get access to features that require the unique ID.
+  - You will need to edit and re-save any existing wheels to get access to features that require the unique ID.
 - Add ability to remove previous winners from the wheel using unique ID to persist winners.
 
 ### Security

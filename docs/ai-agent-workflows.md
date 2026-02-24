@@ -15,10 +15,12 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 **Model**: Haiku (fast, efficient for documentation lookup)
 
 **Tools Available**:
+
 - `mcp__context7__resolve-library-id`: Look up library IDs from context7
 - `mcp__context7__get-library-docs`: Fetch complete documentation
 
 **When to Use**:
+
 - User asks for information about a specific library or framework
 - Setting up a new feature that requires understanding library APIs
 - Need to verify current best practices for a dependency
@@ -40,6 +42,7 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 ```
 
 **Common Library IDs**:
+
 - NextJS: `/vercel/next.js`
 - React: `/reactjs/react.dev`
 - Vitest: `/vitest-dev/vitest`
@@ -47,6 +50,7 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 - Drizzle ORM: `/replit/drizzle-orm`
 
 **Workflow Integration**:
+
 1. User mentions needing to use a new library
 2. Proactively invoke docs-fetcher to retrieve documentation
 3. Use the documentation to provide accurate implementation guidance
@@ -59,6 +63,7 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 **Model**: Haiku (fast, efficient for browser automation)
 
 **Tools Available**:
+
 - Browser navigation and control
 - Screenshot capture and comparison
 - Element interaction (click, type, hover)
@@ -67,6 +72,7 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 - Console message inspection
 
 **When to Use**:
+
 - User adds or modifies UI components and wants visual verification
 - Need to validate that styling changes don't introduce regressions
 - Testing complete user workflows in a browser environment
@@ -90,12 +96,14 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 ```
 
 **Application Context**:
+
 - Development server typically runs on `localhost:5173` (Vite default)
 - Production deployment on Cloudflare Workers
 - React SPA with client-side routing
 - Tests should verify wheel spinner, configuration, and segment management UI
 
 **Testing Methodology**:
+
 1. Open application in browser
 2. Navigate to relevant page/feature
 3. Capture baseline screenshots
@@ -104,6 +112,7 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 6. Compare states and report findings
 
 **Workflow Integration**:
+
 1. User implements UI feature
 2. Optionally invoke playwright-visual-tester for validation
 3. Agent navigates application and captures screenshots
@@ -115,10 +124,12 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 ### When to Invoke Subagents
 
 **Proactive Invocation**:
+
 - Docs-fetcher: When user mentions adopting a new library or asks about library-specific patterns
 - Playwright-visual-tester: When user explicitly requests visual testing or validation
 
 **User-Requested Invocation**:
+
 - User explicitly asks for documentation lookup
 - User requests visual testing or UI validation
 - User wants to verify a complete workflow
@@ -126,12 +137,14 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 ### Subagent Communication
 
 **Clear Instructions**: When invoking a subagent, provide:
+
 - Specific task description
 - Relevant context (library name, UI component, feature scope)
 - Expected output format
 - Any constraints or requirements
 
 **Example**:
+
 ```
 Good: "Use docs-fetcher to retrieve React Query documentation,
        focusing on mutation patterns and error handling for our API handlers"
@@ -142,6 +155,7 @@ Avoid: "Look up React Query docs"
 ### Integration with Development Workflow
 
 **Standard Development Flow**:
+
 1. User requests feature implementation
 2. Main agent determines if subagent assistance would be helpful
 3. Invoke appropriate subagent(s) if needed
@@ -149,6 +163,7 @@ Avoid: "Look up React Query docs"
 5. Complete feature implementation following project patterns
 
 **Testing Flow**:
+
 1. Implement feature following development-guidelines.md
 2. Write unit tests (Vitest) for business logic
 3. Optionally use playwright-visual-tester for UI validation
@@ -157,12 +172,14 @@ Avoid: "Look up React Query docs"
 ## Subagent Limitations
 
 ### docs-fetcher Limitations
+
 - Only retrieves documentation from context7 MCP server
 - Cannot access documentation not indexed by context7
 - May not have the most recent documentation updates
 - Cannot interpret or modify documentation content
 
 ### playwright-visual-tester Limitations
+
 - Requires application to be running (dev server or deployed)
 - Cannot test features that require backend functionality not yet implemented
 - Screenshots capture visual state but don't verify business logic
@@ -173,6 +190,7 @@ Avoid: "Look up React Query docs"
 This documentation will be updated as new specialized subagents are added to the Claude Code workflow.
 
 **Potential Future Subagents**:
+
 - Code review and analysis agents
 - Performance profiling agents
 - Security scanning agents

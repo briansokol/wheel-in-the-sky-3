@@ -1,4 +1,4 @@
-export declare const eslint: Record<string, string>;
+export declare const oxlint: Record<string, string>;
 
 export declare const prettier: Record<string, string>;
 

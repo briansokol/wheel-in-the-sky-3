@@ -13,7 +13,7 @@ This application is a monorepo managed by [Turborepo](https://turbo.build/repo/d
 - `web`: A [React](https://react.dev/)-based web application bundled with [Vite](https://vite.dev/).
 - `api`: A [Hono](https://hono.dev/) application shell.
 - `@repo/api-handlers`: [Hono](https://hono.dev/) route handlers that are imported into the `api` application. Also exports a client library to the `web` application.
-- `@repo/eslint`: Composable shared [ESLint] configurations for the project.
+- `@repo/oxlint`: Composable shared [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) configurations for the project.
 - `@repo/lint-staged`: [lint-staged](https://github.com/lint-staged/lint-staged) configurations shared to each package.
 - `@repo/prettier`: [Prettier](https://prettier.io/) configurations for frontend and backend work.
 - `@repo/shared`: Includes additional code that is used by the frontend and backend, including enums, types, and [Zod](https://zod.dev/) validators.
@@ -88,7 +88,7 @@ Any code committed into the `main` branch will be released to production. Code m
 
 Using lint-staged, each commit will run these step locally, which much pass before you can push your changes:
 
-- Lint: Runs ESLint on all staged files.
+- Lint: Runs Oxlint on all staged files.
 - Prettier: Formats all staged files.
 - Vitest: Runs relavant unit tests for staged files.
 

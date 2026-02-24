@@ -2,22 +2,22 @@
   "name": "api",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "wrangler dev --local --ip=0.0.0.0",
-    "lint": "eslint .",
-    "types": "wrangler types && cp worker-configuration.d.ts ../../packages/api-handlers/worker-configuration.d.ts",
-    "deploy": "wrangler deploy --minify"
-  },
   "exports": {
     "client": "./src/client.ts"
   },
+  "scripts": {
+    "deploy": "wrangler deploy --minify",
+    "dev": "wrangler dev --local --ip=0.0.0.0",
+    "lint": "oxlint .",
+    "types": "wrangler types && cp worker-configuration.d.ts ../../packages/api-handlers/worker-configuration.d.ts"
+  },
   "dependencies": {
     "@repo/shared": "*",
-    "hono": "4.10.3"
+    "hono": "4.12.2"
   },
   "devDependencies": {
-    "@types/node": "24.9.1",
     "cp": "0.2.0",
-    "wrangler": "4.45.0"
+    "typescript": "5.9.3",
+    "wrangler": "4.68.0"
   }
 }

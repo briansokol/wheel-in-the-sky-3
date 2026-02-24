@@ -29,22 +29,22 @@ export function useSavedWheels() {
     const saveWheel = useCallback(
         (decodedConfig?: Config, encodedConfig?: string) => {
             if (decodedConfig && encodedConfig && encodedConfig !== 'new') {
-                const savedWheels = getSavedWheels();
+                const currentWheels = getSavedWheels();
 
                 const wheelId = decodedConfig.id;
                 const currentTime = new Date().toISOString();
 
-                savedWheels[wheelId] = {
+                currentWheels[wheelId] = {
                     id: wheelId,
                     title: decodedConfig.title || decodedConfig.names.join(', ').substring(0, 100),
                     description: decodedConfig.description || undefined,
                     encodedConfig,
-                    createdAt: savedWheels[wheelId]?.createdAt || currentTime,
+                    createdAt: currentWheels[wheelId]?.createdAt || currentTime,
                     updatedAt: currentTime,
                 };
 
-                localStorage.setItem(WHEEL_STORAGE_KEY, JSON.stringify(savedWheels));
-                setSavedWheels(Object.values(savedWheels));
+                localStorage.setItem(WHEEL_STORAGE_KEY, JSON.stringify(currentWheels));
+                setSavedWheels(Object.values(currentWheels));
             }
         },
         [setSavedWheels]
@@ -54,11 +54,11 @@ export function useSavedWheels() {
         (decodedConfig?: Config, encodedConfig?: string) => {
             if (saveWheel) {
                 if (decodedConfig) {
-                    const savedWheels = getSavedWheels();
+                    const currentWheels = getSavedWheels();
 
                     const wheelId = decodedConfig.id;
 
-                    if (savedWheels[wheelId] && savedWheels[wheelId].encodedConfig !== encodedConfig) {
+                    if (currentWheels[wheelId] && currentWheels[wheelId].encodedConfig !== encodedConfig) {
                         saveWheel(decodedConfig, encodedConfig);
                     }
                 }
@@ -69,9 +69,9 @@ export function useSavedWheels() {
 
     const removeSavedWheel = useCallback(
         (wheelId: string) => {
-            const savedWheels = getSavedWheels();
-            if (wheelId in savedWheels) {
-                const { [wheelId]: _unused, ...newWheels } = savedWheels; // eslint-disable-line @typescript-eslint/no-unused-vars
+            const currentWheels = getSavedWheels();
+            if (wheelId in currentWheels) {
+                const { [wheelId]: _unused, ...newWheels } = currentWheels; // eslint-disable-line @typescript-eslint/no-unused-vars
                 localStorage.setItem(WHEEL_STORAGE_KEY, JSON.stringify(newWheels));
                 setSavedWheels(Object.values(newWheels));
             } else {

@@ -23,8 +23,8 @@ export async function decodeConfig(input: string): Promise<SerializedConfigManag
         const decodedInput = decodeURIComponent(input);
         const decompressedText = await decompressFromGzip(decodedInput);
         return JSON.parse(decompressedText);
-    } catch {
-        throw new Error('Invalid config');
+    } catch (error) {
+        throw new Error('Invalid config', { cause: error });
     }
 }
 
@@ -124,6 +124,6 @@ export async function decompressFromGzip(input: string): Promise<string> {
         const textDecoder = new TextDecoder();
         return textDecoder.decode(combinedChunks);
     } catch (error) {
-        throw new Error(`Failed to decompress gzip string: ${error}`);
+        throw new Error(`Failed to decompress gzip string: ${error}`, { cause: error });
     }
 }
