@@ -8,7 +8,7 @@ import { Page } from '@playwright/test';
  * Saves data to localStorage via page context.
  */
 export async function setLocalStorage(page: Page, key: string, value: string): Promise<void> {
-    await page.addInitScript(
+    await page.evaluate(
         ({ key, value }) => {
             localStorage.setItem(key, value);
         },
@@ -60,23 +60,13 @@ export async function getAllLocalStorage(page: Page): Promise<Record<string, str
 
 /**
  * Simulates storage quota exceeded by mocking localStorage.setItem.
+ * Must be called before navigating to the page under test.
  */
 export async function mockStorageQuotaExceeded(page: Page): Promise<void> {
-    await page.addInitScript(() => {
+    await page.evaluate(() => {
         Storage.prototype.setItem = function () {
-            throw new Error('QuotaExceededError: DOM Exception 22');
+            throw new DOMException('QuotaExceededError', 'QuotaExceededError');
         };
-    });
-}
-
-/**
- * Restores normal localStorage behavior after mocking.
- */
-export async function resetStorageMock(page: Page): Promise<void> {
-    await page.addInitScript(() => {
-        // This would need actual implementation to reset
-        // For now, just clear it
-        localStorage.clear();
     });
 }
 

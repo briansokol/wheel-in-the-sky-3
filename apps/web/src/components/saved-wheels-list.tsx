@@ -27,7 +27,7 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
     return (
         <div className="flex flex-col gap-4">
             {savedWheels.map((wheel) => (
-                <div key={wheel.id} className="flex w-full items-center gap-2">
+                <div key={wheel.id} data-testid="saved-wheel-item" className="flex w-full items-center gap-2">
                     <div className="shrink-0">
                         <div
                             className={`rounded-full border-2 p-1 ${

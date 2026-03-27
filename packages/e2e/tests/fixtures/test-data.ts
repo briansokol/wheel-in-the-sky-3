@@ -57,17 +57,6 @@ export const BACKGROUND_OPTIONS = {
     },
 };
 
-/**
- * Encodes a simple config for testing.
- * Note: In real tests, this should use the actual API to encode,
- * but this provides a fallback for testing.
- */
-export function createMockEncodedConfig(): string {
-    // Return a valid but minimal encoded config
-    // This would need to be replaced with actual API encoding in real tests
-    return 'eyJ2ZXJzaW9uIjozLCJpZCI6InRlc3Qtd2hlZWwiLCJ0aXRsZSI6IlRlc3QiLCJkZXNjcmlwdGlvbiI6IiIsIm5hbWVzIjpbIkFsaWNlIiwiQm9iIiwiQ2hhcmxpZSJdfQ==';
-}
-
 export const TEST_TIMEOUT = {
     short: 5000,
     normal: 10000,

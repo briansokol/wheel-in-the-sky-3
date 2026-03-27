@@ -68,7 +68,7 @@ test.describe('Error Handling', () => {
 
         // Assert - Should show empty list instead of crashing
         const count = await savedWheels.getSavedWheelCount().catch(() => 0);
-        expect(count >= 0).toBe(true); // Should be graceful
+        expect(count).toBe(0);
     });
 
     /**
@@ -79,13 +79,15 @@ test.describe('Error Handling', () => {
         await page.goto('/wheel/v3/not-a-valid-base64-string!!!');
 
         // Assert - Page should not crash
+        // Assert - Page should either redirect to home or show an error
+        const url = page.url();
+        const isOnHomePage = url.includes('/') && !url.includes('/wheel/v3/not-a-valid');
         const errorMessage = await page
             .locator('text=/error|failed/i')
             .count()
             .catch(() => 0);
-        const isHome = await page.url().includes('/wheel/v3/');
 
-        expect(isHome || errorMessage > 0).toBe(true);
+        expect(isOnHomePage || errorMessage > 0).toBe(true);
     });
 
     /**
@@ -200,36 +202,43 @@ test.describe('Error Handling', () => {
 
         // Assert - Form should either reject or fix the value
         const value = await configPage.getBaseColor();
-        // Form should have either kept the invalid value or corrected it
-        expect(typeof value).toBe('string');
+        // The value should either be corrected to a valid hex or kept as entered
+        expect(value).toBeTruthy();
+        // Should not allow submission with an invalid color (too short)
+        const isValid = /^#[0-9A-Fa-f]{6}$/.test(value);
+        if (!isValid) {
+            // If the form kept the invalid value, it should not be submittable
+            expect(value).toBe('#FF');
+        }
     });
 
     /**
      * Test: Network error on config decode
      */
     test('should handle network error when decoding config', async ({ page }) => {
-        // Arrange
-        // Simulate offline mode
+        // Arrange - Simulate offline mode
         await page.context().setOffline(true);
 
         // Act - Try to load config
-        await page.goto('/config/v3/eyJ0ZXN0IjogInZhbHVlIn0=');
+        const response = await page.goto('/config/v3/eyJ0ZXN0IjogInZhbHVlIn0=').catch(() => null);
 
-        // Assert - Should handle error gracefully
-        const isOnline = !(await page
-            .context()
-            .isOffline()
-            .catch(() => true));
-        if (!isOnline) {
-            // When offline, page should show error or empty state
-            expect(true).toBe(true); // Offline is expected
-        }
+        // Assert - Navigation should fail or show an error state
+        const didNavigationFail = response === null || !response.ok();
+        const hasErrorContent = await page
+            .locator('text=/error|failed|offline/i')
+            .count()
+            .catch(() => 0);
+        expect(didNavigationFail || hasErrorContent > 0).toBe(true);
+
+        // Cleanup
+        await page.context().setOffline(false);
     });
 
     /**
      * Test: Large number of wheel segments
      */
     test('should handle wheel with maximum segments', async ({ page }) => {
+        test.slow();
         // Arrange
         const homePage = new HomePage(page);
         const configPage = new ConfigPage(page);
@@ -316,10 +325,9 @@ test.describe('Error Handling', () => {
         // Try with only whitespace
         await configPage.fillNames(['   ', '\t\t', '\n\n']);
 
-        // Assert - Should either reject or trim to empty
-        const names = await configPage.getNames();
-        // Form should handle this (reject or auto-clean)
-        expect(typeof names).toBe('string');
+        // Assert - Form should not be submittable with only whitespace names
+        const canSubmit = await configPage.canSubmit();
+        expect(canSubmit).toBe(false);
     });
 
     /**

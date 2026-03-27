@@ -89,7 +89,7 @@ test.describe('Saved Wheels', () => {
 
         // Assert - Should navigate to saved wheel
         await page.waitForURL(/\/wheel\/v3\//);
-        expect(page.url()).not.toBe('http://localhost:5173/');
+        expect(page.url()).toContain('/wheel/v3/');
     });
 
     /**

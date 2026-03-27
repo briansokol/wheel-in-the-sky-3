@@ -26,11 +26,11 @@ export class SavedWheelsDrawer extends BasePage {
         this._drawer = page.getByRole('dialog');
         this._savedWheelsAccordion = page.locator('[role="region"]').filter({ hasText: /Saved Wheels/ });
         this._removedWinnersAccordion = page.locator('[role="region"]').filter({ hasText: /Removed Winners/ });
-        this._wheelListItems = page.locator('[class*="saved-wheel"]');
+        this._wheelListItems = page.getByTestId('saved-wheel-item');
         this._saveCurrentWheelButton = page.getByRole('button', { name: /save current wheel/i });
-        this._loadButtons = page.getByRole('button', { name: /load/i });
-        this._deleteButtons = page.getByRole('button', { name: /delete/i });
-        this._removedWinnersList = page.locator('[class*="removed-winner"]');
+        this._loadButtons = page.getByRole('button', { name: /load this wheel/i });
+        this._deleteButtons = page.getByRole('button', { name: /delete saved wheel/i });
+        this._removedWinnersList = page.getByTestId('removed-winner-item');
     }
 
     /**
@@ -73,7 +73,7 @@ export class SavedWheelsDrawer extends BasePage {
         const titles: string[] = [];
 
         for (let i = 0; i < count; i++) {
-            const title = await this._wheelListItems.nth(i).locator('[class*="title"]').textContent();
+            const title = await this._wheelListItems.nth(i).locator('p').first().textContent();
             if (title) {
                 titles.push(title.trim());
             }
@@ -87,7 +87,7 @@ export class SavedWheelsDrawer extends BasePage {
      * @param index - Index of the wheel to load
      */
     public async loadWheelByIndex(index: number): Promise<void> {
-        const loadButton = this._wheelListItems.nth(index).getByRole('button', { name: /load/i });
+        const loadButton = this._wheelListItems.nth(index).getByRole('button', { name: /load this wheel/i });
         await loadButton.click();
     }
 
@@ -97,7 +97,7 @@ export class SavedWheelsDrawer extends BasePage {
      */
     public async loadWheelByTitle(title: string): Promise<void> {
         const wheelItem = this._wheelListItems.filter({ hasText: title }).first();
-        const loadButton = wheelItem.getByRole('button', { name: /load/i });
+        const loadButton = wheelItem.getByRole('button', { name: /load this wheel/i });
         await loadButton.click();
     }
 
@@ -106,7 +106,7 @@ export class SavedWheelsDrawer extends BasePage {
      * @param index - Index of the wheel to delete
      */
     public async deleteWheelByIndex(index: number): Promise<void> {
-        const deleteButton = this._wheelListItems.nth(index).getByRole('button', { name: /delete/i });
+        const deleteButton = this._wheelListItems.nth(index).getByRole('button', { name: /delete saved wheel/i });
         await deleteButton.click();
     }
 
@@ -116,7 +116,7 @@ export class SavedWheelsDrawer extends BasePage {
      */
     public async deleteWheelByTitle(title: string): Promise<void> {
         const wheelItem = this._wheelListItems.filter({ hasText: title }).first();
-        const deleteButton = wheelItem.getByRole('button', { name: /delete/i });
+        const deleteButton = wheelItem.getByRole('button', { name: /delete saved wheel/i });
         await deleteButton.click();
     }
 
@@ -169,27 +169,28 @@ export class SavedWheelsDrawer extends BasePage {
 
     /**
      * Checks if a specific wheel is marked as the active/current wheel.
+     * Active wheels have a primary-colored icon (via text-primary class).
      * @param index - Index of the wheel to check
      */
     public async isWheelActive(index: number): Promise<boolean> {
         const wheelItem = this._wheelListItems.nth(index);
-        const activeBorder = wheelItem.locator('[class*="border"]');
-        return activeBorder.isVisible();
+        const activeIcon = wheelItem.locator('[title="Active Wheel"], [title*="Active Wheel"]');
+        return activeIcon.isVisible().catch(() => false);
     }
 
     /**
-     * Gets recently saved wheel indicator (usually green border).
+     * Gets recently saved wheel indicator (green border circle).
      */
     public async getRecentlySavedIndicator(): Promise<boolean> {
-        const recentlyTag = this.page.locator('[class*="recently-saved"]').first();
-        return recentlyTag.isVisible();
+        const recentlyTag = this.page.locator('[title*="Recently Saved"]').first();
+        return recentlyTag.isVisible().catch(() => false);
     }
 
     /**
-     * Gets recently updated wheel indicator (usually blue border).
+     * Gets recently updated wheel indicator (blue border circle).
      */
     public async getRecentlyUpdatedIndicator(): Promise<boolean> {
-        const recentlyTag = this.page.locator('[class*="recently-updated"]').first();
-        return recentlyTag.isVisible();
+        const recentlyTag = this.page.locator('[title*="Recently Updated"]').first();
+        return recentlyTag.isVisible().catch(() => false);
     }
 }

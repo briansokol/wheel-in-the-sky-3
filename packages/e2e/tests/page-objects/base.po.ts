@@ -23,13 +23,4 @@ export class BasePage {
     public async goto(url: string): Promise<void> {
         await this.page.goto(url);
     }
-
-    /**
-     * Waits for a specific amount of time.
-     * @param ms - Milliseconds to wait
-     * @returns Promise that resolves after the specified time
-     */
-    public async wait(ms: number): Promise<void> {
-        await this.page.waitForTimeout(ms);
-    }
 }

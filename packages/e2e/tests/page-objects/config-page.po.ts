@@ -39,14 +39,14 @@ export class ConfigPage extends BasePage {
         this._namesTextarea = page.locator('textarea[placeholder*="One per line"]');
         this._titleInput = page.locator('input[placeholder*="Enter a title"]');
         this._descriptionInput = page.locator('input[placeholder*="Describe your wheel"]');
-        this._randomizeOrderSwitch = page.locator('input[type="checkbox"]').nth(0);
-        this._showNamesSwitch = page.locator('input[type="checkbox"]').nth(1);
+        this._randomizeOrderSwitch = page.getByLabel('Randomize Order Every So Often');
+        this._showNamesSwitch = page.getByLabel('Show Labels on Wheel');
         this._wheelColorSelect = page.getByTestId('wheel-color-select');
         this._baseColorPicker = page.locator('[data-testid="picker-color-list"]').first();
         this._baseColorHexInput = page.locator('input[pattern="^#"]').first();
         this._customColorsContainer = page.getByTestId('picker-color-list');
         this._addColorButton = page.getByRole('button', { name: /add/i }).filter({ hasText: /color/i });
-        this._randomizeColorSwitch = page.locator('input[type="checkbox"]').nth(2);
+        this._randomizeColorSwitch = page.getByLabel('Randomize Color Order');
         this._appBackgroundColorSelect = page.getByTestId('app-background-color-select');
         this._backgroundColorPicker = page.locator('[data-testid="picker-color-list"]').nth(1);
         this._backgroundColorHexInput = page.locator('input[pattern="^#"]').nth(1);
@@ -160,7 +160,7 @@ export class ConfigPage extends BasePage {
      * Gets the currently selected color scheme.
      */
     public async getSelectedColorScheme(): Promise<string | null> {
-        return this._wheelColorSelect.inputValue();
+        return this._wheelColorSelect.locator('[data-slot="value"]').textContent();
     }
 
     /**
@@ -237,7 +237,7 @@ export class ConfigPage extends BasePage {
      * Gets the currently selected background color option.
      */
     public async getSelectedBackgroundColor(): Promise<string | null> {
-        return this._appBackgroundColorSelect.inputValue();
+        return this._appBackgroundColorSelect.locator('[data-slot="value"]').textContent();
     }
 
     /**
@@ -315,8 +315,6 @@ export class ConfigPage extends BasePage {
      * Checks if the form is valid and can be submitted.
      */
     public async canSubmit(): Promise<boolean> {
-        const form = this.page.locator('form');
-        const invalidElements = await form.locator(':invalid').count();
-        return invalidElements === 0;
+        return this._createNewWheelButton.isEnabled();
     }
 }

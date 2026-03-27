@@ -32,7 +32,7 @@ export function RemovedWinnersList({ closeDrawer }: RemovedWinnersListProps) {
     return (
         <div className="flex flex-col gap-4">
             {removedWinners.map((winner) => (
-                <div key={winner} className="flex items-center justify-between">
+                <div key={winner} data-testid="removed-winner-item" className="flex items-center justify-between">
                     <p className="max-w-[80%] truncate" title={winner}>
                         {winner}
                     </p>
