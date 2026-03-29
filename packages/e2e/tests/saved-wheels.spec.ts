@@ -196,6 +196,9 @@ test.describe('Saved Wheels', () => {
 
         const initialCount = await savedWheels.getSavedWheelCount();
 
+        // Close drawer before navigating via navbar
+        await savedWheels.closeDrawer();
+
         // Modify the wheel
         const navbar = new NavBar(page);
         await navbar.clickChangeWheel();

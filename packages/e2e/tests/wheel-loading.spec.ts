@@ -163,21 +163,20 @@ test.describe('Wheel Loading', () => {
      */
     test('should handle corrupted encoded config', async ({ page }) => {
         // Arrange
-        const configPage = new ConfigPage(page);
 
         // Act - Navigate with corrupted config
         const corruptedConfig = 'eyJpbnZhbGlkIjogImpzb24ifX0='; // Invalid JSON
         await page.goto(`/config/v3/${corruptedConfig}`);
 
-        // Assert - Page should handle the error
-        // Either show error or fallback to new wheel
-        const isErrorVisible = await page
-            .locator('text=/error|failed/i')
-            .isVisible()
-            .catch(() => false);
-        const isNewWheelForm = await configPage.getPageTitle().then((title) => title?.includes('Create'));
+        // Assert - Should show error state with "Unable to load" message
+        const errorHeading = page.locator('text=/unable to load/i');
+        const isErrorVisible = await errorHeading.isVisible({ timeout: 5000 }).catch(() => false);
 
-        expect(isErrorVisible || isNewWheelForm).toBe(true);
+        // Or the page may show the "Create New Wheel" button as part of error recovery
+        const createButton = page.getByRole('button', { name: /Create New Wheel/i });
+        const hasCreateButton = await createButton.isVisible({ timeout: 2000 }).catch(() => false);
+
+        expect(isErrorVisible || hasCreateButton).toBe(true);
     });
 
     /**
@@ -187,6 +186,7 @@ test.describe('Wheel Loading', () => {
         // Arrange
         const homePage = new HomePage(page);
         const configPage = new ConfigPage(page);
+        const wheelPage = new WheelPage(page);
         // Act - Create wheel with specific config
         await homePage.goto();
         await homePage.clickMakeWheelButton();
@@ -274,7 +274,7 @@ test.describe('Wheel Loading', () => {
         await configPage.toggleShowNames();
         await configPage.selectColorScheme('Monochromatic');
         await configPage.setBaseColor('#FF0000');
-        await configPage.selectBackgroundColor('Single');
+        await configPage.selectBackgroundColor('Single Color');
         await configPage.setBackgroundColor('#FFFFFF');
 
         await configPage.clickCreateNewWheel();

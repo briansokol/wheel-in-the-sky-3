@@ -78,16 +78,12 @@ test.describe('Error Handling', () => {
         // Arrange & Act
         await page.goto('/wheel/v3/not-a-valid-base64-string!!!');
 
-        // Assert - Page should not crash
-        // Assert - Page should either redirect to home or show an error
-        const url = page.url();
-        const isOnHomePage = url.includes('/') && !url.includes('/wheel/v3/not-a-valid');
-        const errorMessage = await page
-            .locator('text=/error|failed/i')
-            .count()
-            .catch(() => 0);
+        // Assert - Page should not crash and should show error state
+        // The wheel page shows "Unable to load wheel" for invalid configs
+        const errorHeading = page.locator('text=/unable to load/i');
+        const isErrorVisible = await errorHeading.isVisible({ timeout: 5000 }).catch(() => false);
 
-        expect(isOnHomePage || errorMessage > 0).toBe(true);
+        expect(isErrorVisible).toBe(true);
     });
 
     /**
@@ -95,20 +91,20 @@ test.describe('Error Handling', () => {
      */
     test('should handle malformed JSON in config', async ({ page }) => {
         // Arrange
-        const configPage = new ConfigPage(page);
 
         // Act - Use invalid JSON base64
         const invalidJson = Buffer.from('{invalid json}').toString('base64');
         await page.goto(`/config/v3/${invalidJson}`);
 
-        // Assert - Should either show error or redirect to new wheel
-        const errorVisible = await page
-            .locator('text=/error/i')
-            .isVisible()
-            .catch(() => false);
-        const isNewForm = await configPage.getPageTitle().then((t) => t?.includes('Create'));
+        // Assert - Should show error state with "Unable to load configuration"
+        const errorHeading = page.locator('text=/unable to load/i');
+        const isErrorVisible = await errorHeading.isVisible({ timeout: 5000 }).catch(() => false);
 
-        expect(errorVisible || isNewForm).toBe(true);
+        // Or the page may show the "Create New Wheel" button as part of the error recovery
+        const createButton = page.getByRole('button', { name: /Create New Wheel/i });
+        const hasCreateButton = await createButton.isVisible({ timeout: 2000 }).catch(() => false);
+
+        expect(isErrorVisible || hasCreateButton).toBe(true);
     });
 
     /**
@@ -124,9 +120,12 @@ test.describe('Error Handling', () => {
         await homePage.clickMakeWheelButton();
         await configPage.waitForPageLoad();
 
-        // Assert - Cannot submit without names
-        const canSubmit = await configPage.canSubmit();
-        expect(canSubmit).toBe(false);
+        // Try submitting without names - should stay on config page
+        await configPage.clickCreateNewWheel();
+
+        // Assert - Should remain on config page (form validation prevents navigation)
+        await page.waitForTimeout(1000);
+        expect(page.url()).toContain('/config/v3/');
     });
 
     /**
@@ -325,9 +324,12 @@ test.describe('Error Handling', () => {
         // Try with only whitespace
         await configPage.fillNames(['   ', '\t\t', '\n\n']);
 
-        // Assert - Form should not be submittable with only whitespace names
-        const canSubmit = await configPage.canSubmit();
-        expect(canSubmit).toBe(false);
+        // Try submitting - should stay on config page
+        await configPage.clickCreateNewWheel();
+
+        // Assert - Should remain on config page (whitespace-only names should not create a wheel)
+        await page.waitForTimeout(1000);
+        expect(page.url()).toContain('/config/v3/');
     });
 
     /**

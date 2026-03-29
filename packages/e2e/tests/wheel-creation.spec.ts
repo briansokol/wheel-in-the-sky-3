@@ -190,7 +190,7 @@ test.describe('Wheel Creation', () => {
         await configPage.waitForPageLoad();
 
         await configPage.fillNames(SAMPLE_WHEELS.basic.names);
-        await configPage.selectBackgroundColor('Single');
+        await configPage.selectBackgroundColor('Single Color');
         await configPage.setBackgroundColor(bgColor.color);
 
         // Create the wheel

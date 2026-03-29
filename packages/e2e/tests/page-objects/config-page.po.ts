@@ -43,13 +43,13 @@ export class ConfigPage extends BasePage {
         this._showNamesSwitch = page.getByLabel('Show Labels on Wheel');
         this._wheelColorSelect = page.getByTestId('wheel-color-select');
         this._baseColorPicker = page.locator('[data-testid="picker-color-list"]').first();
-        this._baseColorHexInput = page.locator('input[pattern="^#"]').first();
+        this._baseColorHexInput = page.getByLabel('Chosen Color').first();
         this._customColorsContainer = page.getByTestId('picker-color-list');
         this._addColorButton = page.getByRole('button', { name: /add/i }).filter({ hasText: /color/i });
         this._randomizeColorSwitch = page.getByLabel('Randomize Color Order');
         this._appBackgroundColorSelect = page.getByTestId('app-background-color-select');
         this._backgroundColorPicker = page.locator('[data-testid="picker-color-list"]').nth(1);
-        this._backgroundColorHexInput = page.locator('input[pattern="^#"]').nth(1);
+        this._backgroundColorHexInput = page.getByLabel('Chosen Color').nth(1);
         this._createNewWheelButton = page.getByRole('button', { name: /Create New Wheel/i });
         this._updateWheelButton = page.getByRole('button', { name: /Update Existing Wheel/i });
         this._resetFormButton = page.getByRole('button', { name: /Reset Form/i });
@@ -227,7 +227,7 @@ export class ConfigPage extends BasePage {
      * Selects a page background color option.
      * @param option - Background option ('Default' or 'Single')
      */
-    public async selectBackgroundColor(option: 'Default' | 'Single'): Promise<void> {
+    public async selectBackgroundColor(option: 'Night (Default)' | 'Single Color'): Promise<void> {
         // HeroUI Select component - click to open dropdown, then click the option
         await this._appBackgroundColorSelect.click();
         await this.page.getByRole('listbox').getByText(option, { exact: true }).click();
