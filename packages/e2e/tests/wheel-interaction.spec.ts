@@ -71,6 +71,7 @@ test.describe('Wheel Interaction', () => {
      * Test: Multiple spins produce different winners
      */
     test('should produce different winners on multiple spins', async ({ page }) => {
+        test.slow(); // Multiple spins can take longer in some browsers
         // Arrange
         const homePage = new HomePage(page);
         const configPage = new ConfigPage(page);
@@ -112,13 +113,15 @@ test.describe('Wheel Interaction', () => {
     /**
      * Test: Copy winner banner to clipboard
      */
-    test('should copy winner banner to clipboard', async ({ page, context }) => {
+    test('should copy winner banner to clipboard', async ({ page, context, browserName }) => {
+        // Firefox doesn't support clipboard permissions via grantPermissions
+        test.skip(browserName === 'firefox', 'Firefox does not support clipboard permissions');
         // Arrange
         const homePage = new HomePage(page);
         const configPage = new ConfigPage(page);
         const wheelPage = new WheelPage(page);
 
-        // Mock clipboard API to capture the copy
+        // Grant clipboard permissions for Chromium
         await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 
         // Act - Create wheel and spin
@@ -251,7 +254,7 @@ test.describe('Wheel Interaction', () => {
 
         // Assert - Winner should be removed from removed winners list
         const remainingRemovedWinners = await page
-            .locator('[class*="removed-winner"]')
+            .getByTestId('removed-winner-item')
             .allTextContents()
             .catch(() => []);
         expect(remainingRemovedWinners).not.toContain(winner);
@@ -261,6 +264,7 @@ test.describe('Wheel Interaction', () => {
      * Test: Multiple removed winners accumulate
      */
     test('should accumulate multiple removed winners', async ({ page }) => {
+        test.slow(); // Multiple spins can take longer in some browsers
         // Arrange
         const homePage = new HomePage(page);
         const configPage = new ConfigPage(page);
@@ -292,7 +296,7 @@ test.describe('Wheel Interaction', () => {
         // Assert - All removed winners should be in the drawer
         await savedWheels.openDrawer();
         const allRemovedWinners = await savedWheels.getRemovedWinners();
-        expect(allRemovedWinners.length).toBeGreaterThanOrEqual(1);
+        expect(allRemovedWinners.length).toBe(3);
     });
 
     /**
@@ -314,16 +318,15 @@ test.describe('Wheel Interaction', () => {
         await page.waitForURL(/\/wheel\/v3\//);
         await wheelPage.waitForWheelLoad();
 
-        // Spin wheel
+        // Spin wheel and wait for winner (indicates spin completed)
         await wheelPage.spinWheel();
-        await wheelPage.waitForSpinToComplete(TEST_TIMEOUT.spin);
+        await wheelPage.waitForWinner(TEST_TIMEOUT.spin);
 
         // Get rotation after spin
         const finalRotation = await wheelPage.getWheelRotation();
 
-        // Assert - Rotation should have changed (or be equal if we landed on same angle)
-        // The important thing is that the wheel actually spun
-        expect(typeof finalRotation).toBe('number');
+        // Assert - The wheel spun (rotation is extracted from CSS transform)
+        expect(finalRotation).toBeGreaterThanOrEqual(0);
     });
 
     /**
@@ -351,7 +354,6 @@ test.describe('Wheel Interaction', () => {
         // Assert - Winner should be one of the names
         const winner = await wheelPage.getWinnerName();
         expect(SAMPLE_WHEELS.basic.names).toContain(winner);
-        expect(winner?.length).toBeGreaterThan(0);
     });
 
     /**

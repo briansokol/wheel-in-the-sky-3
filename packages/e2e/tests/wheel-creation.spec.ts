@@ -231,7 +231,7 @@ test.describe('Wheel Creation', () => {
     /**
      * Test: Preview is visible and toggleable
      */
-    test('should show wheel preview on config page', async ({ page }) => {
+    test('should toggle wheel preview on config page', async ({ page }) => {
         // Arrange
         const homePage = new HomePage(page);
         const configPage = new ConfigPage(page);
@@ -243,15 +243,14 @@ test.describe('Wheel Creation', () => {
 
         await configPage.fillNames(SAMPLE_WHEELS.basic.names);
 
-        // Assert - preview should be visible
+        // Preview starts collapsed by default
+        // Toggle preview on
+        await configPage.togglePreview();
         expect(await configPage.isPreviewVisible()).toBe(true);
 
-        // Toggle preview off and on
+        // Toggle preview off
         await configPage.togglePreview();
         expect(await configPage.isPreviewVisible()).toBe(false);
-
-        await configPage.togglePreview();
-        expect(await configPage.isPreviewVisible()).toBe(true);
     });
 
     /**
@@ -267,9 +266,11 @@ test.describe('Wheel Creation', () => {
         await homePage.clickMakeWheelButton();
         await configPage.waitForPageLoad();
 
-        // Assert - button should be disabled or form should be invalid
-        const canSubmit = await configPage.canSubmit();
-        expect(canSubmit).toBe(false);
+        // Try to submit without names
+        await configPage.clickCreateNewWheel();
+
+        // Assert - Should remain on config page (form validation prevents navigation)
+        await expect(page).toHaveURL(/\/config\/v3\//, { timeout: 2000 });
     });
 
     /**

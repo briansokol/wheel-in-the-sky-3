@@ -19,8 +19,12 @@ interface SavedWheel {
 type SavedWheels = Record<string, SavedWheel>;
 
 export function getSavedWheels(): SavedWheels {
-    const savedWheels = localStorage.getItem(WHEEL_STORAGE_KEY);
-    return savedWheels ? JSON.parse(savedWheels) : {};
+    try {
+        const savedWheels = localStorage.getItem(WHEEL_STORAGE_KEY);
+        return savedWheels ? JSON.parse(savedWheels) : {};
+    } catch {
+        return {};
+    }
 }
 
 export function useSavedWheels() {
@@ -83,8 +87,12 @@ export function useSavedWheels() {
 
     const getSavedWheelArray = useCallback(
         (newValue: string | null) => {
-            const updatedWheels: SavedWheels = newValue ? JSON.parse(newValue) : {};
-            setSavedWheels(Object.values(updatedWheels));
+            try {
+                const updatedWheels: SavedWheels = newValue ? JSON.parse(newValue) : {};
+                setSavedWheels(Object.values(updatedWheels));
+            } catch {
+                setSavedWheels([]);
+            }
         },
         [setSavedWheels]
     );

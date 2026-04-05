@@ -105,7 +105,7 @@ describe('getSavedWheels', () => {
     it('should return empty object when localStorage contains invalid JSON', () => {
         localStorageMock.setItem('savedWheels', 'invalid-json');
 
-        expect(() => getSavedWheels()).toThrow();
+        expect(getSavedWheels()).toEqual({});
     });
 });
 

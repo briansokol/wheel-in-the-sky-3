@@ -41,7 +41,6 @@ export const COLOR_SCHEMES = {
     },
     random: {
         type: 'Random',
-        baseColor: '#000000', // Not used for Random, but included for completeness
     },
 };
 

@@ -12,8 +12,6 @@ export class SavedWheelsDrawer extends BasePage {
     private readonly _removedWinnersAccordion: Locator;
     private readonly _wheelListItems: Locator;
     private readonly _saveCurrentWheelButton: Locator;
-    private readonly _loadButtons: Locator;
-    private readonly _deleteButtons: Locator;
     private readonly _removedWinnersList: Locator;
 
     /**
@@ -28,8 +26,6 @@ export class SavedWheelsDrawer extends BasePage {
         this._removedWinnersAccordion = page.locator('[role="region"]').filter({ hasText: /Removed Winners/ });
         this._wheelListItems = page.getByTestId('saved-wheel-item');
         this._saveCurrentWheelButton = page.getByRole('button', { name: /save current wheel/i });
-        this._loadButtons = page.getByRole('button', { name: /load this wheel/i });
-        this._deleteButtons = page.getByRole('button', { name: /delete saved wheel/i });
         this._removedWinnersList = page.getByTestId('removed-winner-item');
     }
 

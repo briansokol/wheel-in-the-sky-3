@@ -172,7 +172,7 @@ test.describe('Saved Wheels', () => {
     /**
      * Test: Update existing saved wheel vs create new
      */
-    test('should update existing saved wheel on re-save', async ({ page }) => {
+    test('should auto-update existing saved wheel when modified', async ({ page }) => {
         // Arrange
         const homePage = new HomePage(page);
         const configPage = new ConfigPage(page);
@@ -210,14 +210,12 @@ test.describe('Saved Wheels', () => {
         await page.waitForURL(/\/wheel\/v3\//);
         await wheelPage.waitForWheelLoad();
 
-        // Save again
+        // Open drawer - the saved wheel should have been auto-updated
         await savedWheels.openDrawer();
-        await savedWheels.clickSaveCurrentWheel();
-        await page.waitForTimeout(TEST_DELAYS.animation);
 
-        // Assert - Count should be same (updated, not new)
+        // Assert - Count should be the same (updated in-place, not a new entry)
         const finalCount = await savedWheels.getSavedWheelCount();
-        expect(finalCount).toBeLessThanOrEqual(initialCount + 1);
+        expect(finalCount).toBe(initialCount);
     });
 
     /**
@@ -323,10 +321,9 @@ test.describe('Saved Wheels', () => {
         await savedWheels.clickSaveCurrentWheel();
         await page.waitForTimeout(TEST_DELAYS.animation);
 
-        // Assert - First wheel should have recently saved indicator
+        // Assert - First wheel should have active wheel indicator
         const isActive = await savedWheels.isWheelActive(0);
-        // Active indicator should show this is the current/recently saved wheel
-        expect(isActive).toBeDefined();
+        expect(isActive).toBe(true);
     });
 
     /**

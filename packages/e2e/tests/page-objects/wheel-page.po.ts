@@ -28,7 +28,7 @@ export class WheelPage extends BasePage {
         this._wheelApplication = page.locator('[role="application"]');
         this._wheelElement = this._wheelApplication; // The wheel is the application div
         this._wheelSegments = page.getByTestId('wheel-segment');
-        this._winnerCard = page.locator('[role="dialog"]').first();
+        this._winnerCard = page.getByTestId('winner');
         this._winnerText = page.getByTestId('winner');
         this._wheelBlur = page.getByTestId('wheel-blur');
         this._copyBannerButton = page.getByRole('button', { name: /copy banner/i });

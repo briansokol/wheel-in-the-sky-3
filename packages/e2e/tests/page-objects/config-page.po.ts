@@ -48,16 +48,13 @@ export class ConfigPage extends BasePage {
         this._addColorButton = page.getByRole('button', { name: /add/i }).filter({ hasText: /color/i });
         this._randomizeColorSwitch = page.getByLabel('Randomize Color Order');
         this._appBackgroundColorSelect = page.getByTestId('app-background-color-select');
-        this._backgroundColorPicker = page.locator('[data-testid="picker-color-list"]').nth(1);
-        this._backgroundColorHexInput = page.getByLabel('Chosen Color').nth(1);
+        this._backgroundColorPicker = page.locator('[data-testid="picker-color-list"]').last();
+        this._backgroundColorHexInput = page.getByLabel('Chosen Color').last();
         this._createNewWheelButton = page.getByRole('button', { name: /Create New Wheel/i });
         this._updateWheelButton = page.getByRole('button', { name: /Update Existing Wheel/i });
         this._resetFormButton = page.getByRole('button', { name: /Reset Form/i });
         this._wheelPreview = page.getByTestId('wheel-preview');
-        this._previewToggleButton = page
-            .getByRole('button')
-            .filter({ hasText: /Preview/i })
-            .first();
+        this._previewToggleButton = page.getByRole('button', { name: /wheel preview/i });
     }
 
     /**
@@ -150,10 +147,15 @@ export class ConfigPage extends BasePage {
      * Selects a wheel color scheme.
      * @param scheme - Color scheme to select (Monochromatic, Analogous, Custom, Random)
      */
-    public async selectColorScheme(scheme: 'Monochromatic' | 'Analogous' | 'Custom' | 'Random'): Promise<void> {
-        // HeroUI Select component - click to open dropdown, then click the option
+    public async selectColorScheme(
+        scheme: 'Monochromatic' | 'Analogous' | 'Triad' | 'Tetrad' | 'Custom' | 'Random'
+    ): Promise<void> {
+        // HeroUI Select - scroll into view, click to open dropdown, then select option
+        await this._wheelColorSelect.scrollIntoViewIfNeeded();
         await this._wheelColorSelect.click();
-        await this.page.getByRole('listbox').getByText(scheme, { exact: true }).click();
+        const listbox = this.page.getByRole('listbox');
+        await listbox.waitFor({ state: 'visible' });
+        await listbox.getByRole('option').filter({ hasText: scheme }).click();
     }
 
     /**
@@ -168,6 +170,8 @@ export class ConfigPage extends BasePage {
      * @param hexColor - Hex color code (e.g., '#FF0000')
      */
     public async setBaseColor(hexColor: string): Promise<void> {
+        await this._baseColorHexInput.scrollIntoViewIfNeeded();
+        await this._baseColorHexInput.clear();
         await this._baseColorHexInput.fill(hexColor);
     }
 
@@ -227,10 +231,20 @@ export class ConfigPage extends BasePage {
      * Selects a page background color option.
      * @param option - Background option ('Default' or 'Single')
      */
-    public async selectBackgroundColor(option: 'Night (Default)' | 'Single Color'): Promise<void> {
-        // HeroUI Select component - click to open dropdown, then click the option
+    public async selectBackgroundColor(
+        option: 'Night (Default)' | 'Day' | 'Dawn' | 'Twilight' | 'Single Color'
+    ): Promise<void> {
+        // Ensure no other listbox is open before clicking
+        await this.page
+            .getByRole('listbox')
+            .waitFor({ state: 'hidden' })
+            .catch(() => {});
+        // HeroUI Select - scroll into view, click to open dropdown, then select option
+        await this._appBackgroundColorSelect.scrollIntoViewIfNeeded();
         await this._appBackgroundColorSelect.click();
-        await this.page.getByRole('listbox').getByText(option, { exact: true }).click();
+        const listbox = this.page.getByRole('listbox');
+        await listbox.waitFor({ state: 'visible' });
+        await listbox.getByRole('option').filter({ hasText: option }).click();
     }
 
     /**
@@ -245,6 +259,8 @@ export class ConfigPage extends BasePage {
      * @param hexColor - Hex color code
      */
     public async setBackgroundColor(hexColor: string): Promise<void> {
+        await this._backgroundColorHexInput.scrollIntoViewIfNeeded();
+        await this._backgroundColorHexInput.clear();
         await this._backgroundColorHexInput.fill(hexColor);
     }
 
@@ -312,9 +328,13 @@ export class ConfigPage extends BasePage {
     }
 
     /**
-     * Checks if the form is valid and can be submitted.
+     * Checks if the form can be submitted by verifying the appropriate button is visible and enabled.
+     * When editing an existing wheel, checks the Update button; otherwise checks the Create button.
      */
     public async canSubmit(): Promise<boolean> {
+        if (await this._updateWheelButton.isVisible().catch(() => false)) {
+            return this._updateWheelButton.isEnabled();
+        }
         return this._createNewWheelButton.isEnabled();
     }
 }

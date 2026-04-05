@@ -147,36 +147,27 @@ test.describe('Wheel Loading', () => {
      * Test: Invalid encoded config shows error
      */
     test('should handle invalid encoded config gracefully', async ({ page }) => {
-        // Arrange
-        // Act - Navigate with invalid config
+        // Arrange & Act - Navigate with invalid config
         await page.goto('/wheel/v3/invalid-base64-config!!!');
 
-        // Assert - Should handle error (page should either show error message or navigate)
-        // The behavior depends on app implementation
-        // For now, just verify page doesn't crash
-        const errorText = await page.locator('text=/error|invalid/i').count();
-        expect(errorText >= 0).toBe(true); // Page loaded without crashing
+        // Assert - Should show error state
+        await expect(page.getByText(/unable to load/i)).toBeVisible({ timeout: 10000 });
     });
 
     /**
      * Test: Corrupted encoded config shows error
      */
     test('should handle corrupted encoded config', async ({ page }) => {
-        // Arrange
-
-        // Act - Navigate with corrupted config
+        // Arrange & Act - Navigate with corrupted config
         const corruptedConfig = 'eyJpbnZhbGlkIjogImpzb24ifX0='; // Invalid JSON
         await page.goto(`/config/v3/${corruptedConfig}`);
 
-        // Assert - Should show error state with "Unable to load" message
-        const errorHeading = page.locator('text=/unable to load/i');
-        const isErrorVisible = await errorHeading.isVisible({ timeout: 5000 }).catch(() => false);
-
-        // Or the page may show the "Create New Wheel" button as part of error recovery
+        // Assert - Config page redirects to /config/v3/new on invalid config,
+        // or shows "Unable to load configuration" error with a recovery button
         const createButton = page.getByRole('button', { name: /Create New Wheel/i });
-        const hasCreateButton = await createButton.isVisible({ timeout: 2000 }).catch(() => false);
+        const errorHeading = page.getByText(/unable to load/i);
 
-        expect(isErrorVisible || hasCreateButton).toBe(true);
+        await expect(createButton.or(errorHeading)).toBeVisible({ timeout: 10000 });
     });
 
     /**
@@ -270,8 +261,13 @@ test.describe('Wheel Loading', () => {
         await configPage.fillNames(SAMPLE_WHEELS.detailed.names);
         await configPage.fillTitle(SAMPLE_WHEELS.detailed.title);
         await configPage.fillDescription(SAMPLE_WHEELS.detailed.description);
+
+        // Record initial toggle states and toggle them
+        const initialRandomize = await configPage.isRandomizeOrderChecked();
         await configPage.toggleRandomizeOrder();
+        const initialShowNames = await configPage.isShowNamesChecked();
         await configPage.toggleShowNames();
+
         await configPage.selectColorScheme('Monochromatic');
         await configPage.setBaseColor('#FF0000');
         await configPage.selectBackgroundColor('Single Color');
@@ -287,11 +283,11 @@ test.describe('Wheel Loading', () => {
         await configPage.goto(encodedConfig || 'new');
         await configPage.waitForPageLoad();
 
-        // Assert - All options should be preserved
+        // Assert - All options should be preserved (toggles should be opposite of initial)
         expect(await configPage.getTitle()).toBe(SAMPLE_WHEELS.detailed.title);
         expect(await configPage.getDescription()).toBe(SAMPLE_WHEELS.detailed.description);
-        expect(await configPage.isRandomizeOrderChecked()).toBe(true);
-        expect(await configPage.isShowNamesChecked()).toBe(true);
+        expect(await configPage.isRandomizeOrderChecked()).toBe(!initialRandomize);
+        expect(await configPage.isShowNamesChecked()).toBe(!initialShowNames);
         expect(await configPage.getSelectedColorScheme()).toContain('Monochromatic');
         expect(await configPage.getSelectedBackgroundColor()).toContain('Single');
     });
