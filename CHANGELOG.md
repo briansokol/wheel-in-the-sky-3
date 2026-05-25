@@ -16,6 +16,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 
 ### Changed
 
+- Wheel configuration share links now use a versioned `?c=` query parameter with URL-safe encoding.
 - Wheel no longer "floats" to the center of the segment. It will stop where it stops.
 - Wheel is now individual DOM elements instead of a gradient. This helps ensure consistency across browsers.
 - Spinning is handled by custom-written code.

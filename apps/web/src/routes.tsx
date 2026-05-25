@@ -14,8 +14,8 @@ export function Router() {
         <Routes>
             <Route path="/" element={<RootLayout />}>
                 <Route index element={<HomePage />} />
-                <Route path="wheel/v3/:id?" element={<WheelPage />} />
-                <Route path="config/v3/:id?" element={<ConfigPage />} />
+                <Route path="wheel" element={<WheelPage />} />
+                <Route path="config" element={<ConfigPage />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="404" element={<NotFoundPage />} />
                 <Route path=":oldId" element={<LegacyPage />} />

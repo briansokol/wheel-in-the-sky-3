@@ -8,5 +8,5 @@ export function isPage(pathname: string, page: PageBaseRoute): boolean {
     if (page === PageBaseRoute.Home) {
         return pathname === page;
     }
-    return pathname.startsWith(page);
+    return pathname === page || pathname.startsWith(`${page}/`) || pathname.startsWith(`${page}?`);
 }

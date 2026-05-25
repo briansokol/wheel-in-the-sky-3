@@ -7,9 +7,10 @@ import { RefObject, useEffect, useMemo, useRef } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
 import { IoRemoveCircleOutline } from 'react-icons/io5';
 import { LuClipboardCopy } from 'react-icons/lu';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { Banner } from '@/components/banner';
 import { Wheel } from '@/components/wheel';
+import { PageBaseRoute } from '@/constants/routes';
 import { useConfig } from '@/contexts/config';
 import { useRemovedWinners } from '@/contexts/removed-winners';
 import { useRotation } from '@/contexts/rotation';
@@ -32,33 +33,36 @@ function getBanner(bannerRef: RefObject<HTMLCanvasElement | null>) {
 
 export default function WheelPage() {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const encodedConfig = searchParams.get('c') ?? undefined;
     const { setDecodedConfig, setEncodedConfig } = useConfig();
     const { updateWheelIfSaved } = useSavedWheels();
 
-    if (id === undefined || id === 'new') {
-        navigate('/config/v3/new');
-    }
+    useEffect(() => {
+        if (encodedConfig === undefined) {
+            navigate(PageBaseRoute.Config);
+        }
+    }, [encodedConfig, navigate]);
 
     const { rotation, setRotation } = useRotation();
     const { segment, setSegment, hasWinner, setHasWinner } = useSegment();
     const { removedWinners, setRemovedWinners } = useRemovedWinners();
 
-    const { data: decodedConfig, isError, isPending } = useDecodedConfig(id);
+    const { data: decodedConfig, isError, isPending } = useDecodedConfig(encodedConfig);
 
     useEffect(() => {
-        updateWheelIfSaved(decodedConfig, id);
-    }, [decodedConfig, id, updateWheelIfSaved]);
+        updateWheelIfSaved(decodedConfig, encodedConfig);
+    }, [decodedConfig, encodedConfig, updateWheelIfSaved]);
 
     useEffect(() => {
-        if (decodedConfig !== undefined && id !== undefined && id !== 'new') {
+        if (decodedConfig !== undefined && encodedConfig !== undefined) {
             setDecodedConfig(decodedConfig);
-            setEncodedConfig(id);
+            setEncodedConfig(encodedConfig);
         } else {
             setDecodedConfig(undefined);
             setEncodedConfig(undefined);
         }
-    }, [setDecodedConfig, setEncodedConfig, decodedConfig, id]);
+    }, [setDecodedConfig, setEncodedConfig, decodedConfig, encodedConfig]);
 
     // Optimization: Create stable string representation of removedWinners array contents
     // to prevent unnecessary WheelManager recreation when array reference changes.
@@ -143,7 +147,7 @@ export default function WheelPage() {
                         <p className="mb-4">Please check your configuration and try again.</p>
                     </CardBody>
                     <CardFooter className="flex justify-center">
-                        <Button color="primary" variant="flat" onPress={() => navigate('/config/v3/new')}>
+                        <Button color="primary" variant="flat" onPress={() => navigate(PageBaseRoute.Config)}>
                             Go to Configuration
                         </Button>
                     </CardFooter>
@@ -163,7 +167,7 @@ export default function WheelPage() {
                         <p className="mb-4">Please add at least one segment to the wheel.</p>
                     </CardBody>
                     <CardFooter className="flex justify-center">
-                        <Button color="primary" variant="flat" onPress={() => navigate('/config/v3/new')}>
+                        <Button color="primary" variant="flat" onPress={() => navigate(PageBaseRoute.Config)}>
                             Add Segments
                         </Button>
                     </CardFooter>

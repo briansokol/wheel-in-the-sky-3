@@ -1,8 +1,6 @@
 import { Config } from '@repo/shared/classes/config';
 import { ConfigFormInputs } from '@repo/shared/types/config';
 import { type UseQueryResult, useMutation, useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import { api } from '@/utils/api';
 
 export function useDecodedConfig(encodedConfig?: string): UseQueryResult<Config | undefined> {
@@ -48,14 +46,4 @@ export function useEncodeConfigMutation() {
         },
         retry: 1,
     });
-}
-
-export function useValidConfigCheck(id: string | undefined, isError: boolean) {
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (id === undefined || isError) {
-            navigate('/config/v3/new');
-        }
-    }, [id, isError, navigate]);
 }

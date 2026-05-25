@@ -18,7 +18,7 @@ export default function HomePage() {
                     Whether you&apos;re planning a raffle, need a creative way to choose teams, or want to settle
                     debates, Wheel in the Sky makes it effortless and entertaining.
                 </p>
-                <Button as={Link} href="/config/v3/new" className="mt-8" size="lg" color="primary" variant="shadow">
+                <Button as={Link} href="/config" className="mt-8" size="lg" color="primary" variant="shadow">
                     Make a Wheel
                 </Button>
             </div>
