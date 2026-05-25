@@ -1,0 +1,5 @@
+- TypeScript strict mode across the repo.
+- React 19, React Router 7, TanStack React Query 5, React Hook Form 7, Zod, HeroUI v3, Tailwind CSS v4.
+- Vite powers the web build; Cloudflare Workers + Hono power the API.
+- Package manager is npm workspaces (`npm@11`).
+- Tests use Vitest; E2E lives under `packages/e2e`.

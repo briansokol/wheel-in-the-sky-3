@@ -1,0 +1,5 @@
+- Keep TypeScript strict and explicit; avoid `any`.
+- Use React Context for app-wide state, React Query for server state, and React Hook Form for forms.
+- Keep shared logic in `packages/shared`; keep web-only UI in `apps/web`.
+- Match existing component naming: PascalCase components, camelCase functions/variables.
+- Prefer minimal edits that stay within the existing file/module unless a broader change is required.
