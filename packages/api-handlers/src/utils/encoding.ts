@@ -1,31 +1,46 @@
 import { SerializedConfigManager } from '@repo/shared/types/config';
 
+const CONFIG_ENCODING_VERSION = 'v4.';
+
 /**
- * Compresses and encodes the input object to a base64 string.
+ * Compresses and encodes the input object to a versioned base64url string.
  *
  * @param {SerializedConfigManager} input - The input object to be encoded.
- * @returns {Promise<string>} The compressed and encoded base64 string.
+ * @returns {Promise<string>} The compressed and encoded base64url string.
  */
 export async function encodeConfig(input: SerializedConfigManager): Promise<string> {
     const compressedBuffer = await compressWithGzip(JSON.stringify(input));
-    return encodeURIComponent(compressedBuffer);
+    return `${CONFIG_ENCODING_VERSION}${toBase64Url(compressedBuffer)}`;
 }
 
 /**
- * Decodes and decompresses the input base64 string to an object.
+ * Decodes and decompresses the input versioned base64url string to an object.
  *
- * @param {string} input - The base64 string to be decoded.
+ * @param {string} input - The versioned base64url string to be decoded.
  * @returns {Promise<SerializedConfigManager>} The decoded and decompressed object.
  * @throws {Error} If the input string is invalid.
  */
 export async function decodeConfig(input: string): Promise<SerializedConfigManager> {
     try {
-        const decodedInput = decodeURIComponent(input);
+        if (!input.startsWith(CONFIG_ENCODING_VERSION)) {
+            throw new Error('Unsupported config encoding version');
+        }
+
+        const decodedInput = fromBase64Url(input.slice(CONFIG_ENCODING_VERSION.length));
         const decompressedText = await decompressFromGzip(decodedInput);
         return JSON.parse(decompressedText);
     } catch (error) {
         throw new Error('Invalid config', { cause: error });
     }
+}
+
+function toBase64Url(input: string): string {
+    return input.replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
+}
+
+function fromBase64Url(input: string): string {
+    const base64 = input.replaceAll('-', '+').replaceAll('_', '/');
+    return base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
 }
 
 /**

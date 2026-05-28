@@ -17,16 +17,19 @@ import {
 } from '@heroui/react';
 import { useCallback, useMemo, useState } from 'react';
 import { FaList } from 'react-icons/fa6';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
 import { PageBaseRoute } from '@/constants/routes';
 import { isPage } from '@/utils/routes';
 import { ActionAccordion } from './action-accordion';
 
 export function AppNavBar() {
     const { pathname } = useLocation();
-    const params = useParams();
-    const configId = params?.id ?? 'new';
-    const uriEncodedConfigId = useMemo(() => encodeURIComponent(configId), [configId]);
+    const [searchParams] = useSearchParams();
+    const currentEncodedConfig = searchParams.get('c');
+    const configQuery = useMemo(
+        () => (currentEncodedConfig ? `?c=${currentEncodedConfig}` : ''),
+        [currentEncodedConfig]
+    );
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onOpenChange: onDrawerOpenChange } = useDisclosure();
@@ -39,26 +42,26 @@ export function AppNavBar() {
         (Component: typeof NavbarItem | typeof NavbarMenuItem) => {
             return (
                 <>
-                    {configId !== 'new' && (
-                        <Component isActive={isPage(pathname, PageBaseRoute.WheelV3)}>
+                    {currentEncodedConfig && (
+                        <Component isActive={isPage(pathname, PageBaseRoute.Wheel)}>
                             <Link
                                 color="foreground"
-                                aria-current={isPage(pathname, PageBaseRoute.WheelV3) ? 'page' : 'false'}
-                                href={`/wheel/v3/${uriEncodedConfigId}`}
+                                aria-current={isPage(pathname, PageBaseRoute.Wheel) ? 'page' : 'false'}
+                                href={`${PageBaseRoute.Wheel}${configQuery}`}
                                 onPress={closeMenu}
                             >
                                 Wheel
                             </Link>
                         </Component>
                     )}
-                    <Component isActive={isPage(pathname, PageBaseRoute.ConfigV3)}>
+                    <Component isActive={isPage(pathname, PageBaseRoute.Config)}>
                         <Link
                             color="foreground"
-                            aria-current={isPage(pathname, PageBaseRoute.ConfigV3) ? 'page' : 'false'}
-                            href={`/config/v3/${uriEncodedConfigId}`}
+                            aria-current={isPage(pathname, PageBaseRoute.Config) ? 'page' : 'false'}
+                            href={`${PageBaseRoute.Config}${configQuery}`}
                             onPress={closeMenu}
                         >
-                            {configId === 'new' ? 'Create Wheel' : 'Change Wheel'}
+                            {currentEncodedConfig ? 'Change Wheel' : 'Create Wheel'}
                         </Link>
                     </Component>
                     <Component isActive={isPage(pathname, PageBaseRoute.About)}>
@@ -74,7 +77,7 @@ export function AppNavBar() {
                 </>
             );
         },
-        [configId, uriEncodedConfigId, pathname, closeMenu]
+        [currentEncodedConfig, configQuery, pathname, closeMenu]
     );
 
     const navbarItems = useMemo(() => {

@@ -16,7 +16,7 @@ export function ActionAccordion({ pathname, closeDrawer }: ActionAccordionProps)
                 <SavedWheelsList closeDrawer={closeDrawer} />
             </AccordionItem>
             <AccordionItem key="removed-winners" aria-label="Removed Winners" title="Removed Winners">
-                {isPage(pathname, PageBaseRoute.WheelV3) ? <RemovedWinnersList closeDrawer={closeDrawer} /> : null}
+                {isPage(pathname, PageBaseRoute.Wheel) ? <RemovedWinnersList closeDrawer={closeDrawer} /> : null}
             </AccordionItem>
         </Accordion>
     );

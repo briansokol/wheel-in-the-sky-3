@@ -24,12 +24,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { MdClear, MdOutlineAddCircle, MdSave } from 'react-icons/md';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { ColorPicker } from '@/components/color-picker';
 import { WheelPreview } from '@/components/wheel-preview';
 import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
-import { useDecodedConfig, useEncodeConfigMutation, useValidConfigCheck } from '@/hooks/config';
+import { useDecodedConfig, useEncodeConfigMutation } from '@/hooks/config';
 
 function getDefaultFormValues(config: Config | undefined): ConfigFormInputs {
     return {
@@ -49,12 +49,11 @@ function getDefaultFormValues(config: Config | undefined): ConfigFormInputs {
 }
 
 export default function ConfigPage() {
-    const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const requestedConfig = searchParams.get('c') ?? 'new';
     const navigate = useNavigate();
 
-    const { data: config, isError, isPending } = useDecodedConfig(id);
-
-    useValidConfigCheck(id, isError);
+    const { data: config, isError, isPending } = useDecodedConfig(requestedConfig);
 
     const defaultFormValues = useMemo(() => {
         return getDefaultFormValues(config);
@@ -117,7 +116,7 @@ export default function ConfigPage() {
         async (data) => {
             const { encodedConfig } = await encodeConfig(data);
             if (encodedConfig) {
-                navigate(`/wheel/v3/${encodedConfig}`);
+                navigate(`${PageBaseRoute.Wheel}?c=${encodedConfig}`);
             }
         },
         [encodeConfig, navigate]
@@ -145,7 +144,7 @@ export default function ConfigPage() {
                         <p className="mb-4">The configuration could not be loaded. Please try creating a new wheel.</p>
                     </CardBody>
                     <CardFooter className="flex justify-center">
-                        <Button color="primary" variant="flat" onPress={() => navigate('/config/v3/new')}>
+                        <Button color="primary" variant="flat" onPress={() => navigate(PageBaseRoute.Config)}>
                             Create New Wheel
                         </Button>
                     </CardFooter>
@@ -371,7 +370,7 @@ export default function ConfigPage() {
                                     {isLoaded ? (
                                         <div className="flex justify-between">
                                             <div className="flex gap-4">
-                                                {id !== 'new' && (
+                                                {requestedConfig !== 'new' && (
                                                     <Button
                                                         className="text-base"
                                                         startContent={<MdSave className="text-2xl" />}
@@ -385,8 +384,8 @@ export default function ConfigPage() {
                                                 <Button
                                                     className="text-base"
                                                     startContent={<MdOutlineAddCircle className="text-2xl" />}
-                                                    color={id === 'new' ? 'primary' : 'secondary'}
-                                                    variant={id === 'new' ? 'solid' : 'flat'}
+                                                    color={requestedConfig === 'new' ? 'primary' : 'secondary'}
+                                                    variant={requestedConfig === 'new' ? 'solid' : 'flat'}
                                                     title="If you have saved this wheel, this button will create a new wheel and not overwrite the saved wheel"
                                                     onPress={() => {
                                                         methods.setValue('id', Config.generateId());
@@ -398,7 +397,7 @@ export default function ConfigPage() {
                                             </div>
                                             <Button
                                                 as={Link}
-                                                href={`${PageBaseRoute.ConfigV3}/new`}
+                                                href={PageBaseRoute.Config}
                                                 className="text-base"
                                                 startContent={<MdClear className="text-2xl" />}
                                                 color="danger"

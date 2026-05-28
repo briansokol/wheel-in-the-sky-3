@@ -16,6 +16,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 
 ### Changed
 
+- Wheel configuration share links now use a versioned `?c=` query parameter with URL-safe encoding.
 - Wheel no longer "floats" to the center of the segment. It will stop where it stops.
 - Wheel is now individual DOM elements instead of a gradient. This helps ensure consistency across browsers.
 - Spinning is handled by custom-written code.
@@ -30,6 +31,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 
 - Greensock, which ~~is~~ _was_ closed source (and expensive), is no longer used to handle the spinning.
 - App sounds have been removed. They were difficult to support across browser implementations, and were often buggy. They may return in the future, no promises.
+- Older version 3 share links (`/wheel/v3/:id` and `/config/v3/:id`) are no longer supported. Re-create and re-share affected wheels using the new `?c=` links.
 
 ### Security
 

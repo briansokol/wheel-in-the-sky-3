@@ -45,7 +45,7 @@ describe('encodingApi', () => {
 
     describe('POST /encode', () => {
         it('should encode config from form data and return encoded result', async () => {
-            vi.mocked(encodeConfig).mockResolvedValue('encoded-config-string');
+            vi.mocked(encodeConfig).mockResolvedValue('v4.encoded-config-string');
 
             const response = await encodingApi.request('/encode', {
                 method: 'POST',
@@ -57,13 +57,13 @@ describe('encodingApi', () => {
             const responseData = await response.json();
 
             expect(response.status).toBe(200);
-            expect(responseData).toEqual({ encodedConfig: 'encoded-config-string' });
+            expect(responseData).toEqual({ encodedConfig: 'v4.encoded-config-string' });
             expect(encodeConfig).toHaveBeenCalled();
         });
 
         it('should handle single color background', async () => {
             mockFormData.backgroundColorType = PageColorType.Single.toString();
-            vi.mocked(encodeConfig).mockResolvedValue('encoded-config-string');
+            vi.mocked(encodeConfig).mockResolvedValue('v4.encoded-config-string');
 
             const response = await encodingApi.request('/encode', {
                 method: 'POST',
@@ -75,7 +75,7 @@ describe('encodingApi', () => {
             const responseData = await response.json();
 
             expect(response.status).toBe(200);
-            expect(responseData).toEqual({ encodedConfig: 'encoded-config-string' });
+            expect(responseData).toEqual({ encodedConfig: 'v4.encoded-config-string' });
             expect(encodeConfig).toHaveBeenCalled();
         });
 
@@ -100,7 +100,7 @@ describe('encodingApi', () => {
     describe('POST /decode', () => {
         it('should decode an encoded config string and return the resulting object', async () => {
             const mockRequestData = {
-                encodedConfig: 'encoded-config-string',
+                encodedConfig: 'v4.encoded-config-string',
             };
             const mockDecodedConfig = new Config();
 
@@ -117,7 +117,7 @@ describe('encodingApi', () => {
 
             expect(response.status).toBe(200);
             expect(responseData).toEqual(mockDecodedConfig);
-            expect(decodeConfig).toHaveBeenCalledWith('encoded-config-string');
+            expect(decodeConfig).toHaveBeenCalledWith('v4.encoded-config-string');
         });
 
         it('should handle errors during decoding', async () => {

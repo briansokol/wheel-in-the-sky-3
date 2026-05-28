@@ -5,6 +5,7 @@ import { MdSave } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import { MdOutlinePlayCircleFilled } from 'react-icons/md';
 import { useNavigate } from 'react-router';
+import { PageBaseRoute } from '@/constants/routes';
 import { useConfig } from '@/contexts/config';
 import { useSegment } from '@/contexts/segment';
 import { dateIsWithinLast5Minutes } from '@/utils/dates';
@@ -66,7 +67,7 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
                                 color="primary"
                                 onPress={() => {
                                     setHasWinner(false);
-                                    navigate(`/wheel/v3/${encodeURIComponent(wheel.encodedConfig)}`);
+                                    navigate(`${PageBaseRoute.Wheel}?c=${wheel.encodedConfig}`);
                                     closeDrawer?.();
                                 }}
                                 className="text-2xl"

@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router';
 import { Encoder } from '@/compatibility/v2/classes/encoder';
 import { ConfigV2QueryParams } from '@/compatibility/v2/types';
 import { convertConfigV2ToConfigV3 } from '@/compatibility/v2/utils';
+import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useEncodeConfigMutation } from '@/hooks/config';
 
@@ -46,7 +47,7 @@ export default function LegacyPage() {
                 </p>
                 <Button
                     as={Link}
-                    href={`/wheel/v3/${newConfig}`}
+                    href={newConfig ? `${PageBaseRoute.Wheel}?c=${newConfig}` : PageBaseRoute.Wheel}
                     className="mt-8"
                     size="lg"
                     color="primary"

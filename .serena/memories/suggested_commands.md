@@ -1,0 +1,7 @@
+- `npm run dev` - run the workspace dev servers.
+- `npm run build` - full repo build via Turbo.
+- `npm run check-types` - full repo typecheck via Turbo.
+- `npm run lint` - full repo lint via Turbo.
+- `npm run test` - run Vitest.
+- `npm -w apps/web run build` - build the web app and emit to `apps/api/public`.
+- `npm -w apps/web run check-types` - typecheck the web app only.

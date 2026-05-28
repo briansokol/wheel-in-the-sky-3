@@ -1,5 +1,6 @@
 import { Button, Divider, Link } from '@heroui/react';
 import { defaultPageColorConfig } from '@repo/shared/constants/colors';
+import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 
 export default function HomePage() {
@@ -18,7 +19,14 @@ export default function HomePage() {
                     Whether you&apos;re planning a raffle, need a creative way to choose teams, or want to settle
                     debates, Wheel in the Sky makes it effortless and entertaining.
                 </p>
-                <Button as={Link} href="/config/v3/new" className="mt-8" size="lg" color="primary" variant="shadow">
+                <Button
+                    as={Link}
+                    href={PageBaseRoute.Config}
+                    className="mt-8"
+                    size="lg"
+                    color="primary"
+                    variant="shadow"
+                >
                     Make a Wheel
                 </Button>
             </div>
