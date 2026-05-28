@@ -27,6 +27,7 @@ export function useDecodedConfig(encodedConfig?: string): UseQueryResult<Config 
 
             return newConfig;
         },
+        enabled: typeof encodedConfig === 'string',
         retry: 1,
         staleTime: 1000 * 60 * 15,
     });
