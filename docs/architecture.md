@@ -14,7 +14,6 @@ apps/
 packages/
 ├── shared/                 # Core business logic (WheelManager, Config, Segment)
 ├── api-handlers/           # Hono route handlers
-├── e2e/                    # Playwright end-to-end tests
 ├── oxlint/                 # Shared Oxlint configuration
 ├── prettier/               # Shared Prettier configuration
 └── lint-staged/            # Shared lint-staged configuration
@@ -50,12 +49,6 @@ packages/
 - Separates API logic from Cloudflare Worker runtime
 - Handlers are independently testable
 - Exports for both server and client consumption
-
-**`packages/e2e`** - End-to-End Tests
-
-- Playwright test suite
-- Tests complete workflows across app and API
-- Isolated from web/api build dependencies
 
 **Configuration Packages** - Oxlint, Prettier, lint-staged
 
@@ -185,7 +178,7 @@ Backend runs on Cloudflare Workers edge compute. Web app bundled to `apps/api/pu
 **Backend Runtime**: Hono on Cloudflare Workers
 **Monorepo**: Turborepo
 **Validation**: Zod
-**Testing**: Vitest, Playwright, React Testing Library
+**Testing**: Vitest, React Testing Library
 **Code Quality**: Oxlint, Prettier
 **Error Tracking**: Sentry
 
