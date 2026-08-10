@@ -178,11 +178,6 @@ function ConfigForm() {
 - Use `getByRole`, `getByLabelText` for queries
 - Avoid testing internal state directly
 
-**E2E Tests**: Use Playwright for complete workflows
-
-- Test user journeys across app and API
-- Located in `packages/e2e/`
-
 **Test Coverage**: Aim for meaningful coverage, not 100% number chasing. Test:
 
 - Critical business logic

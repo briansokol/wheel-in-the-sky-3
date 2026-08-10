@@ -62,7 +62,6 @@ This is copyleft software under AGPL-3.0. When modifying:
 - Write tests for new code (Vitest for logic, React Testing Library for components)
 - Verify tests pass locally
 - Don't commit code with failing tests
-- Include E2E tests for complete workflows
 
 ### 7. Write Clear, Maintainable Code
 

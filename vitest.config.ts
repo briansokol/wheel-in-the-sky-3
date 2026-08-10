@@ -3,7 +3,7 @@ import { configDefaults, coverageConfigDefaults, defineConfig } from 'vitest/con
 export default defineConfig({
     test: {
         projects: ['apps/*', 'packages/shared', 'packages/api-handlers'],
-        exclude: [...configDefaults.exclude, './packages/e2e/**'],
+        exclude: [...configDefaults.exclude],
         coverage: {
             provider: 'v8',
             exclude: [
@@ -17,7 +17,6 @@ export default defineConfig({
                 './packages/oxlint/**',
                 './packages/prettier/**',
                 './packages/lint-staged/**',
-                './packages/e2e/**',
                 './apps/web/src/components/**',
                 './apps/web/src/pages/**',
             ],

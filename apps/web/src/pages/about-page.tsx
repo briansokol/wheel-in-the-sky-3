@@ -1,6 +1,5 @@
 import { Link } from '@heroui/react';
 import { defaultPageColorConfig } from '@repo/shared/constants/colors';
-import { FaTheaterMasks } from 'react-icons/fa';
 import {
     SiCloudflare,
     SiEslint,
@@ -92,12 +91,6 @@ export default function AboutPage() {
                             <SiTestinglibrary className="inline-block align-[-3px]" />{' '}
                             <Link href="https://testing-library.com/" showAnchorIcon>
                                 Testing Library
-                            </Link>
-                        </li>
-                        <li>
-                            <FaTheaterMasks className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://playwright.dev/" showAnchorIcon>
-                                Playwright
                             </Link>
                         </li>
                         <li>

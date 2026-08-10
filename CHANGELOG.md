@@ -32,6 +32,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 - Greensock, which ~~is~~ _was_ closed source (and expensive), is no longer used to handle the spinning.
 - App sounds have been removed. They were difficult to support across browser implementations, and were often buggy. They may return in the future, no promises.
 - Older version 3 share links (`/wheel/v3/:id` and `/config/v3/:id`) are no longer supported. Re-create and re-share affected wheels using the new `?c=` links.
+- Playwright and the end-to-end test suite have been removed in favor of Vitest unit tests.
 
 ### Security
 

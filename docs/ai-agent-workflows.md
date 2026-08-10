@@ -56,69 +56,6 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 3. Use the documentation to provide accurate implementation guidance
 4. Reference specific documentation sections when explaining patterns
 
-### playwright-visual-tester
-
-**Purpose**: Performs browser-based visual testing, UI validation, and end-to-end testing using the Playwright MCP server.
-
-**Model**: Haiku (fast, efficient for browser automation)
-
-**Tools Available**:
-
-- Browser navigation and control
-- Screenshot capture and comparison
-- Element interaction (click, type, hover)
-- Form handling and validation
-- Network request monitoring
-- Console message inspection
-
-**When to Use**:
-
-- User adds or modifies UI components and wants visual verification
-- Need to validate that styling changes don't introduce regressions
-- Testing complete user workflows in a browser environment
-- Verifying responsive design across viewport sizes
-- Checking that interactions work as expected
-
-**Examples**:
-
-```
-✅ Use playwright-visual-tester when:
-- "Test this new button component visually"
-- "Make sure the wheel spinner animates correctly"
-- "Verify the config page layout looks good"
-- "Test the full workflow of creating and spinning a wheel"
-- "Check if the mobile view renders correctly"
-
-❌ Don't use playwright-visual-tester when:
-- Writing unit tests (use Vitest directly)
-- Testing business logic without UI (use Vitest)
-- User hasn't requested visual validation
-```
-
-**Application Context**:
-
-- Development server typically runs on `localhost:5173` (Vite default)
-- Production deployment on Cloudflare Workers
-- React SPA with client-side routing
-- Tests should verify wheel spinner, configuration, and segment management UI
-
-**Testing Methodology**:
-
-1. Open application in browser
-2. Navigate to relevant page/feature
-3. Capture baseline screenshots
-4. Perform user interactions
-5. Capture post-interaction screenshots
-6. Compare states and report findings
-
-**Workflow Integration**:
-
-1. User implements UI feature
-2. Optionally invoke playwright-visual-tester for validation
-3. Agent navigates application and captures screenshots
-4. Agent reports on visual state and any issues
-5. Developer can verify visually or request fixes
-
 ## Best Practices for Working with Subagents
 
 ### When to Invoke Subagents
@@ -126,13 +63,10 @@ Claude Code supports specialized subagents that can be invoked to handle specifi
 **Proactive Invocation**:
 
 - Docs-fetcher: When user mentions adopting a new library or asks about library-specific patterns
-- Playwright-visual-tester: When user explicitly requests visual testing or validation
 
 **User-Requested Invocation**:
 
 - User explicitly asks for documentation lookup
-- User requests visual testing or UI validation
-- User wants to verify a complete workflow
 
 ### Subagent Communication
 
@@ -166,8 +100,7 @@ Avoid: "Look up React Query docs"
 
 1. Implement feature following development-guidelines.md
 2. Write unit tests (Vitest) for business logic
-3. Optionally use playwright-visual-tester for UI validation
-4. Run test suite before committing
+3. Run test suite before committing
 
 ## Subagent Limitations
 
@@ -177,13 +110,6 @@ Avoid: "Look up React Query docs"
 - Cannot access documentation not indexed by context7
 - May not have the most recent documentation updates
 - Cannot interpret or modify documentation content
-
-### playwright-visual-tester Limitations
-
-- Requires application to be running (dev server or deployed)
-- Cannot test features that require backend functionality not yet implemented
-- Screenshots capture visual state but don't verify business logic
-- Performance varies based on application complexity
 
 ## Future Subagents
 

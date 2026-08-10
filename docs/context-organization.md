@@ -65,7 +65,6 @@ docs/
 
 - Overview of available subagents
 - docs-fetcher: Library/framework documentation retrieval
-- playwright-visual-tester: Browser-based visual testing
 - When to use each subagent (with examples)
 - Best practices for working with subagents
 - Subagent limitations
@@ -148,8 +147,7 @@ When starting a new session, AI agents receive:
 
 1. Implement UI changes following `docs/development-guidelines.md`
 2. Write unit tests for component logic
-3. Optionally invoke playwright-visual-tester subagent for visual validation
-4. Review screenshots and test results
+3. Review test results
 
 ## Cross-References Between Documents
 
