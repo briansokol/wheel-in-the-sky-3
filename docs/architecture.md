@@ -1,226 +1,113 @@
 # Architecture
 
-## Monorepo Structure
+How the monorepo is organized and where new code belongs. Workspace-specific
+detail lives in each workspace's own `CLAUDE.md`.
 
-**Wheel in the Sky 3** uses a monorepo architecture managed by Turborepo. The project is organized into applications and reusable packages with clear separation of concerns.
+## Monorepo structure
 
-### Directory Organization
+Managed by Turborepo over npm workspaces (`apps/*`, `packages/*`).
 
 ```
 apps/
-├── web/                    # React SPA frontend application
-└── api/                    # Hono backend on Cloudflare Workers
+├── web/                    # React SPA frontend
+└── api/                    # Cloudflare Worker shell
 
 packages/
-├── shared/                 # Core business logic (WheelManager, Config, Segment)
+├── shared/                 # Core wheel domain logic
 ├── api-handlers/           # Hono route handlers
-├── oxlint/                 # Shared Oxlint configuration
-├── prettier/               # Shared Prettier configuration
-└── lint-staged/            # Shared lint-staged configuration
+├── oxlint/                 # Shared oxlint presets
+├── prettier/               # Shared Prettier config
+└── lint-staged/            # Shared lint-staged config
 ```
 
-### Workspace Purposes
+### Workspace purposes
 
-**`apps/web`** - React Single Page Application
+**`apps/web`** builds the React SPA with Vite, outputting to `apps/api/public/`
+so the Worker can serve it from the edge.
 
-- User-facing frontend built with React 19 and TypeScript
-- Vite bundled, outputs to `apps/api/public/`
-- React Router for client-side navigation
-- Communicates with API handlers for wheel configuration encoding
+**`apps/api`** is a thin Cloudflare Worker shell. It re-exports the Hono app
+from `@repo/api-handlers` and owns the wrangler configuration and deploy. Logic
+does not belong here.
 
-**`apps/api`** - Hono API on Cloudflare Workers
+**`packages/shared`** holds framework-agnostic wheel domain logic, shared types,
+and Zod validators. Imported by both the web app and the API handlers.
 
-- Deploys to Cloudflare Workers edge compute
-- Imports handlers from `@repo/api-handlers`
-- Serves web app from `public/` directory
-- Handles wheel configuration encoding/decoding
+**`packages/api-handlers`** holds the actual Hono routes plus the typed client
+contract, kept separate from the Worker runtime so handlers stay testable.
 
-**`packages/shared`** - Core Business Logic
+**`packages/oxlint`, `packages/prettier`, `packages/lint-staged`** centralize
+tooling configuration so every workspace shares one source of truth.
 
-- Framework-agnostic wheel domain logic
-- Contains: WheelManager (wheel state), Config (serialization), Segment (segment representation)
-- Zod validators for type-safe configuration
-- Utility functions for colors, encoding, math
-- Imported by both web app and API handlers
+## Where code belongs
 
-**`packages/api-handlers`** - API Handlers
+Ask, in order:
 
-- Hono route handlers for API endpoints
-- Separates API logic from Cloudflare Worker runtime
-- Handlers are independently testable
-- Exports for both server and client consumption
+1. Is it wheel or spinner domain logic, a shared type, or a validation schema?
+   Put it in `packages/shared`.
+2. Is it an API route or request handler? Put it in `packages/api-handlers`.
+3. Is it a React component, page, hook, or context? Put it in `apps/web/src/`.
+4. Is it wrangler, deploy, or static-asset configuration? Put it in `apps/api`.
 
-**Configuration Packages** - Oxlint, Prettier, lint-staged
+| What               | Where                                    |
+| ------------------ | ---------------------------------------- |
+| Wheel domain logic | `packages/shared/src/classes/`           |
+| Zod validators     | `packages/shared/src/validators/`        |
+| Shared types       | `packages/shared/src/types/`             |
+| API route handlers | `packages/api-handlers/src/server/`      |
+| React components   | `apps/web/src/components/`               |
+| Pages              | `apps/web/src/pages/`                    |
+| Context providers  | `apps/web/src/contexts/`                 |
+| Custom hooks       | `apps/web/src/hooks/`                    |
+| Tests              | a `__tests__/` directory beside the code |
 
-- Centralized tooling configuration
-- Used by all workspaces
-- DRY principle: single source of truth for quality standards
+A utility used in more than one workspace belongs in `packages/shared`. One used
+only by the web app belongs in `apps/web/src/utils/`.
 
-## Where Code Belongs
+## Architectural patterns
 
-### Adding a New Feature
+**Shared core.** Domain logic lives in one place and is consumed by both the web
+app and the API handlers, so behavior cannot drift between them.
 
-**Ask these questions to determine placement**:
+**Framework separation.** `packages/shared` is framework-agnostic.
+`apps/web` owns React concerns. `packages/api-handlers` owns HTTP concerns.
+`apps/api` owns only the runtime wrapper.
 
-1. **Is this core wheel/spinner business logic?**
-   - YES → Add to `packages/shared`
-   - Example: New WheelManager method, segment calculation, color logic
+**React Context for app state.** Providers in `apps/web/src/contexts/` cover
+configuration, rotation, segment selection, and removed winners.
 
-2. **Is this an API endpoint or handler?**
-   - YES → Add to `packages/api-handlers`
-   - Example: New route for configuration, new validation endpoint
+**URL-based configuration sharing.** Wheel configurations are encoded into URL
+parameters, so the app needs no database and stays stateless. The `/api/config`
+endpoint handles encoding and decoding.
 
-3. **Is this a React component or page?**
-   - YES → Add to `apps/web/src/`
-   - Example: New UI component, new page, new page layout
+**Edge deployment.** The Worker serves both the API and the bundled SPA.
 
-4. **Is this shared between web and API?**
-   - YES → Add to `packages/shared`
-   - Example: Shared types, validation schemas, utility functions
+## Technology stack
 
-5. **Is this a type definition?**
-   - YES → Add to `packages/shared/src/types/` (if shared) or local to component (if app-specific)
+Major versions are listed only where they change how code is written. Exact
+versions live in each workspace's `package.json`.
 
-### Common Placements
+**Frontend**: React 19 with the React Compiler, React Router 7, TanStack React
+Query, React Hook Form, HeroUI v2, Tailwind CSS v4, Framer Motion.
 
-| What                 | Where                                              | Why                                            |
-| -------------------- | -------------------------------------------------- | ---------------------------------------------- |
-| WheelManager methods | `packages/shared/src/classes/`                     | Domain logic, used by both web and handlers    |
-| Zod validators       | `packages/shared/src/validators/`                  | Reusable validation, shared by web/API         |
-| React components     | `apps/web/src/components/`                         | UI-specific, only web needs it                 |
-| API route handlers   | `packages/api-handlers/src/server/`                | API logic, independent from Cloudflare runtime |
-| Utility functions    | `packages/shared/src/utils/` or local              | If used multiple places, add to shared         |
-| Tests                | Co-located with source (`.test.ts` or `.test.tsx`) | Easy to maintain alongside code                |
-| Page components      | `apps/web/src/pages/`                              | React Router pages                             |
-| Context providers    | `apps/web/src/contexts/`                           | React-specific state management                |
+**Frontend build**: Vite with `@vitejs/plugin-react` and
+`babel-plugin-react-compiler`. Because the React Compiler runs, manual `useMemo`
+and `useCallback` wrapping is usually unnecessary.
 
-## Core Domain Classes
+**Backend**: Hono on Cloudflare Workers, with `@hono/zod-validator` for request
+validation.
 
-### WheelManager
+**Shared**: TypeScript in strict mode, Zod v4 for validation.
 
-**Purpose**: Manages wheel state, segments, colors, winner tracking, and animations.
+**Tooling**: Turborepo, Vitest with React Testing Library, oxlint, Prettier,
+sherif for cross-workspace dependency consistency, husky and lint-staged.
 
-**Location**: `packages/shared/src/classes/WheelManager.ts`
+**Error tracking**: Sentry, in both the browser and the Worker.
 
-**Responsibilities**:
+## Deployment model
 
-- Segment management (add, remove, update)
-- Color assignment and randomization
-- Winner tracking and removal
-- Animation state
-- Wheel configuration
+1. `npm run build` bundles the web app with Vite into `apps/api/public/`.
+2. `wrangler deploy` publishes `apps/api` to Cloudflare Workers.
+3. One edge deployment serves the SPA and the API together, with SPA fallback
+   routing configured in `apps/api/wrangler.jsonc`.
 
-**Used By**: Web app, API handlers for wheel operations
-
-### Config
-
-**Purpose**: Serializes and deserializes wheel configurations using a fluent API.
-
-**Location**: `packages/shared/src/classes/Config.ts`
-
-**Responsibilities**:
-
-- Create configuration from WheelManager state
-- Parse configuration from serialized format
-- Fluent builder pattern for construction
-- Format conversion for sharing via URL
-
-**Used By**: Web app for loading/saving wheels, API for configuration encoding
-
-### Segment
-
-**Purpose**: Represents a single wheel segment.
-
-**Location**: `packages/shared/src/classes/Segment.ts`
-
-**Responsibilities**:
-
-- Segment data (name, color, index)
-- Segment properties and relationships
-- Segment validation
-
-**Used By**: WheelManager, Web components for rendering
-
-## Architectural Patterns in Use
-
-### 1. Monorepo with Shared Libraries
-
-All business logic centralized in `packages/shared`, avoiding duplication. Both web app and API handlers import from shared package.
-
-### 2. Separation of Framework Concerns
-
-- **Core Domain** (`packages/shared`): Framework-agnostic business logic
-- **Frontend** (`apps/web`): React-specific UI and state management
-- **Backend** (`packages/api-handlers`): API logic, imported by Cloudflare Worker
-- **Infrastructure** (`apps/api`): Cloudflare Worker runtime wrapper
-
-### 3. React Context for State Management
-
-Multiple context providers manage app state:
-
-- `ConfigProvider`: Wheel configuration
-- `RotationProvider`: Wheel spinning state
-- `SegmentProvider`: Segment selection
-- `RemovedWinnersProvider`: Removed participants
-
-### 4. URL-Based Configuration Sharing
-
-Wheel configurations are encoded in URL parameters (no database required). The `/api/config` endpoint handles encoding/decoding.
-
-### 5. Cloudflare Workers Deployment
-
-Backend runs on Cloudflare Workers edge compute. Web app bundled to `apps/api/public/` for serving from edge.
-
-## Technology Stack Overview
-
-**Frontend Runtime**: React, TypeScript
-**Frontend Build**: Vite with @vitejs/plugin-react-swc
-**Backend Runtime**: Hono on Cloudflare Workers
-**Monorepo**: Turborepo
-**Validation**: Zod
-**Testing**: Vitest, React Testing Library
-**Code Quality**: Oxlint, Prettier
-**Error Tracking**: Sentry
-
-## Deployment Model
-
-**Environment**: Cloudflare Workers (edge computing)
-
-**Build Process**:
-
-1. `npm run build` bundles web app with Vite
-2. Output goes to `apps/api/public/`
-3. `wrangler deploy` deploys `apps/api` to Cloudflare Workers
-4. Edge location serves both web app and API
-
-**Characteristics**:
-
-- No traditional server infrastructure
-- Global CDN edge deployment
-- Stateless design (config shared via URL)
-- SPA 404 handling configured in wrangler.jsonc
-
-## Decision Flow Diagram
-
-```
-New Feature Decision:
-
-Is it wheel/spinner domain logic?
-├─ YES → packages/shared
-│
-Is it API endpoint/handler?
-├─ YES → packages/api-handlers
-│
-Is it React component/page?
-├─ YES → apps/web/src/
-│
-Is it shared between multiple places?
-├─ YES → packages/shared (if not above)
-│
-Is it tests/configuration?
-└─ Place with related code
-```
-
----
-
-**Related Documentation**: See `docs/development-guidelines.md` for coding patterns and `docs/context-organization.md` for documentation overview.
+There is no server infrastructure and no database. State is carried in the URL.
