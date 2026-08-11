@@ -2,9 +2,6 @@
   "name": "api",
   "private": true,
   "type": "module",
-  "exports": {
-    "client": "./src/client.ts"
-  },
   "scripts": {
     "deploy": "wrangler deploy --minify",
     "dev": "wrangler dev --local --ip=0.0.0.0",
