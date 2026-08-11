@@ -9,7 +9,7 @@
     "types": "wrangler types && cp worker-configuration.d.ts ../../packages/api-handlers/worker-configuration.d.ts"
   },
   "dependencies": {
-    "@repo/shared": "*",
+    "@repo/api-handlers": "*",
     "hono": "4.12.2"
   },
   "devDependencies": {
