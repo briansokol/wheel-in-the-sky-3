@@ -1,5 +1,0 @@
-- `apps/web` is the React SPA.
-- Uses React Router, React Query, React Hook Form, Tailwind CSS v4, and HeroUI v3-era component styling.
-- App state lives in React Context under `apps/web/src/contexts/`.
-- Route pages are under `apps/web/src/pages/`; reusable UI lives under `apps/web/src/components/`.
-- Build path emits to `apps/api/public`.
