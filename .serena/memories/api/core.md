@@ -1,4 +1,0 @@
-- `apps/api` is the Cloudflare Worker/Hono app.
-- `packages/api-handlers` contains reusable API handler logic.
-- Web build output is copied into `apps/api/public` during build.
-- API-related changes should stay in the API package or shared packages, not the web app.

@@ -2,9 +2,6 @@
   "name": "api",
   "private": true,
   "type": "module",
-  "exports": {
-    "client": "./src/client.ts"
-  },
   "scripts": {
     "deploy": "wrangler deploy --minify",
     "dev": "wrangler dev --local --ip=0.0.0.0",
@@ -12,7 +9,7 @@
     "types": "wrangler types && cp worker-configuration.d.ts ../../packages/api-handlers/worker-configuration.d.ts"
   },
   "dependencies": {
-    "@repo/shared": "*",
+    "@repo/api-handlers": "*",
     "hono": "4.12.2"
   },
   "devDependencies": {

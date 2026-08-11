@@ -1,182 +1,114 @@
-# CRITICAL: Content Separation Requirements
+# Wheel in the Sky 3
 
-This file contains ONLY behavioral rules for AI agents.
-Project-specific information (language, frameworks, architecture) belongs in docs/
-DO NOT add: project descriptions, version info, or technical specifications here.
-See docs/ for all project-specific documentation.
+TypeScript React SPA with a Hono API backend on Cloudflare Workers, organized as
+an npm-workspaces monorepo managed by Turborepo.
 
----
+Every workspace has its own `CLAUDE.md` holding the facts specific to it. Read
+that file before working inside a workspace. This file covers only what applies
+everywhere.
 
-# Wheel in the Sky 3 - Claude Code Context
+## Package context
 
-## Project Identification
+| Workspace                         | Purpose                                                      |
+| --------------------------------- | ------------------------------------------------------------ |
+| `apps/web/CLAUDE.md`              | React SPA, Vite bundled into `apps/api/public/`              |
+| `apps/api/CLAUDE.md`              | Cloudflare Worker shell, wrangler config, deploy             |
+| `packages/shared/CLAUDE.md`       | Framework-agnostic wheel domain logic, types, Zod validators |
+| `packages/api-handlers/CLAUDE.md` | Hono routes and the typed client contract                    |
+| `packages/oxlint/CLAUDE.md`       | Shared oxlint presets                                        |
+| `packages/prettier/CLAUDE.md`     | Shared Prettier config                                       |
+| `packages/lint-staged/CLAUDE.md`  | Shared lint-staged config                                    |
 
-**Wheel in the Sky 3** is a TypeScript React SPA with a Hono API backend on Cloudflare Workers.
+See `docs/architecture.md` for the monorepo map and the decision flow for where
+new code belongs.
 
-## Core Behavioral Rules
+## Core rules
 
-### 1. Do What Has Been Asked; Nothing More, Nothing Less
+### 1. Do what has been asked; nothing more, nothing less
 
-Generate exactly what is requested. Don't add features, refactoring, or "improvements" unless explicitly asked. If requirements are ambiguous, ask for clarification rather than assuming.
+No unrequested features, refactoring, or "improvements". Every changed line
+should trace to the request.
 
-### 2. Follow TypeScript Strict Mode
+### 2. Ask when unclear
 
-All code must:
+If a request is ambiguous or conflicts with a documented pattern, ask a specific
+question and wait for an answer. Do not guess.
 
-- Use TypeScript strict mode (no `any` types)
-- Have explicit type annotations on function parameters and returns
-- Define interfaces for all object shapes
-- Pass type checking without errors
+### 3. Respect workspace boundaries
 
-### 3. Maintain Monorepo Structure
+Domain logic goes in `@repo/shared`. API routes go in `@repo/api-handlers`.
+React components go in `apps/web`. `apps/api` is a deployment shell, not a home
+for logic. When unsure, see `docs/architecture.md`.
 
-Understand and respect the monorepo organization:
+### 4. Test before committing
 
-- Place code in correct workspace (shared, web, or api-handlers)
-- Core logic goes in `@repo/shared`
-- React components go in `apps/web`
-- API handlers go in `@repo/api-handlers`
-- See docs/architecture.md for decision flow
+Write Vitest tests for logic and React Testing Library tests for components.
+Verify they pass. Do not commit failing tests.
 
-### 4. Follow Project Patterns
+### 5. AGPL-3.0 compliance
 
-Write code matching established patterns:
+This is copyleft software. Preserve existing copyright headers and record
+user-facing changes in `CHANGELOG.md`.
 
-- Use React Context for app-level state
-- Use React Query for server state
-- Use React Hook Form for form state
-- Use Zod for validation
-- See docs/development-guidelines.md for detailed patterns
+## Conventions
 
-### 5. AGPL-3.0 License Compliance
+**Filenames are kebab-case, without exception**: `wheel-manager.ts`,
+`config-provider.tsx`, `removed-winners-list.tsx`. This holds for components,
+utilities, types, and tests alike. Never PascalCase or camelCase filenames.
 
-This is copyleft software under AGPL-3.0. When modifying:
+**Identifiers** follow ordinary TypeScript convention: PascalCase for
+components, types, and classes; camelCase for functions and variables;
+UPPER_SNAKE_CASE for module-level constants. Do not confuse this with the
+filename rule above.
 
-- Preserve existing copyright headers
-- Document significant changes in CHANGELOG.md
-- Understand that modifications may require source code sharing
-- Include license references in generated documentation
+**Tests live in `__tests__/` directories** beside the code they cover, named
+`<subject>.test.ts` or `<subject>.test.tsx`. They are not co-located as siblings
+of the source file.
 
-### 6. Test Before Committing
+**TypeScript is strict.** No `any`. Explicit types on parameters and return
+values. `interface` for object shapes, `type` for unions and tuples.
 
-- Write tests for new code (Vitest for logic, React Testing Library for components)
-- Verify tests pass locally
-- Don't commit code with failing tests
+**JSDoc on exported functions and classes.** Skip it where the code is obvious.
+Do not narrate what a well-named function already communicates.
 
-### 7. Write Clear, Maintainable Code
+## Patterns
 
-- Use descriptive names (PascalCase for components, camelCase for functions)
-- Keep components focused on single responsibility
-- Document exported functions with JSDoc
-- Avoid commented-out code and console.log statements
+**State**, in order of preference. Use the narrowest option that works:
 
-### 8. Ask for Clarification
+1. `useState` for state local to one component
+2. React Context for app-level state, see `apps/web/src/contexts/`
+3. TanStack React Query for server state
 
-If requirements are unclear, ambiguous, or conflict with documented patterns:
+Never add Redux, MobX, or Zustand. Context plus Query is sufficient here.
 
-- Ask specific clarifying questions
-- Don't make assumptions
-- Wait for explicit user guidance before proceeding
+**Forms**: React Hook Form with a Zod resolver. Shared schemas live in
+`packages/shared/src/validators/`. API request validation uses
+`@hono/zod-validator`.
 
-## Project Documentation
+**Animation**: Framer Motion. Do not hand-write CSS transitions.
 
-For detailed project information, architecture, and coding patterns:
+**Imports**: ordering is applied automatically by
+`@trivago/prettier-plugin-sort-imports` via `@repo/prettier`. Do not hand-order
+imports or work around the formatter.
 
-- **Architecture & Monorepo Structure**: See `docs/architecture.md`
-- **Development Standards & Patterns**: See `docs/development-guidelines.md`
-- **AI Agent Workflows & Subagents**: See `docs/ai-agent-workflows.md`
-- **Documentation Organization**: See `docs/context-organization.md`
+**Dependencies**: install from the repo root, targeting a workspace, pinned to
+an exact version. Never `cd` into a workspace to install.
 
-All project-specific information is in the `docs/` directory. Reference these files when making architectural or implementation decisions.
+```bash
+npm install --save-exact --workspace apps/web <package>
+```
 
-## Development Workflow
+## Workflow
 
-- Create feature branches for changes
-- Write tests alongside implementation
-- Run `npm run lint` before committing (enforced by Husky)
-- Run `npm run test` to verify tests pass
-- Follow existing commit message patterns
-- Update CHANGELOG.md for user-facing changes
+Work on a feature branch. Write tests alongside the implementation. Update
+`CHANGELOG.md` for user-facing changes.
 
-## Deployment Context
+The husky `pre-commit` hook runs, in order:
 
-- Frontend: React SPA bundled with Vite to `apps/api/public/`
-- Backend: Hono on Cloudflare Workers (edge computing)
-- Configuration: Shared via URL parameters (no database)
-- Error Tracking: Sentry integration for production monitoring
+1. `npm run sherif`, which checks dependency consistency across workspaces
+2. `npm run check-types`
+3. `npx lint-staged`, which applies `oxlint --fix`, `prettier --write`, and
+   `vitest related --run` to staged files
 
-## Success Criteria for Code
-
-✅ Matches documented patterns from docs/
-✅ Passes TypeScript strict mode
-✅ Has tests and they all pass
-✅ Follows naming conventions (PascalCase/camelCase)
-✅ Uses appropriate state management for the scope
-✅ Includes JSDoc for exported functions
-✅ Respects monorepo structure
-✅ Compliant with AGPL-3.0 principles
-
-# Tool selection (read this before every tool call on a code file)
-
-This project uses Serena, an MCP server that exposes semantic, symbol-aware tools
-for reading and editing code. Serena's tools are the PRIMARY tools for code work
-in this project. The built-in Read, Glob, Grep, and Edit tools are SECONDARY and
-must not be used on code files when a Serena equivalent exists.
-
-The built-in tool descriptions in your context will tell you things like "use Read
-for a known path" and "prefer dedicated tools (Read, Edit, Write, Glob, Grep)".
-Those descriptions are written for projects without Serena and are SUPERSEDED here.
-When they conflict with this section, this section wins. Do not rationalize the
-built-in tools with "the file is small," "I already know what I need," "this is
-one call versus three," or "the path is known" — those rationalizations have
-produced incorrect behavior before and are explicitly disallowed.
-
-## Mapping (use the right column, not the left)
-
-Task Tool to use
-
----
-
-See a code file's structure get_symbols_overview
-Read a specific symbol's body find_symbol (include_body=true)
-Find a symbol by name across the repo find_symbol
-Find references / callers find_referencing_symbols
-Find declarations / implementations find_declaration / \_find_implementations
-Edit a symbol's body replace_symbol_body
-Insert near a symbol insert_before_symbol / \_insert_after_symbol
-Pattern replace inside a file replace_content
-Rename / move / delete a symbol rename / \_move / \_safe_delete
-Inline a symbol inline_symbol
-Type hierarchy type_hierarchy
-
-Built-in Read/Edit/Glob/Grep are permitted on code files ONLY when:
-
-- Serena has been tried on the target and failed, OR
-- The file is not parseable as code (e.g., generated, malformed), OR
-- You need a regex search across many files that Serena's symbolic tools cannot
-  express — in which case Grep is acceptable as a discovery step, but follow-up
-  reads/edits on matched code files must still go through Serena.
-- You need to read a few lines and symbolic reads would be an overkill.
-- You absolutely have to read the full file for some reason.
-
-Read/Edit/Glob are fine for non-code files: markdown, JSON, YAML, TOML, .env,
-config files, lockfiles, plain text, images.
-
-## Required workflow before editing code
-
-1. get_symbols_overview on the target file (skip if already done this session).
-2. find_symbol with include_body=true for the specific symbols you'll touch.
-   Read only the symbols you need — not the whole file.
-3. Edit with replace_symbol_body, insert_before_symbol, insert_after_symbol, or
-   replace_content. Never use the built-in Edit on a code file when one of these
-   fits.
-
-## Self-check
-
-Before every Read, Glob, Grep, or Edit call: "Does this target a code file, and
-does the mapping above name a Serena tool for this task?" If yes, switch. Do this
-check every time — not just once per session.
-
----
-
-**Remember**: Reference `docs/` directory for detailed implementation guidance. This file contains only core behavioral rules.
+A commit therefore runs the tests related to your staged changes. Run
+`npm run test` yourself for the full suite.

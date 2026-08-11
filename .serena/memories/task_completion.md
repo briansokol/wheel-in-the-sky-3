@@ -1,4 +1,0 @@
-- For web app changes, run `npm -w apps/web run build`.
-- For broader verification, run `npm run build`, `npm run check-types`, and `npm run test` as needed.
-- If touching tests, run the relevant Vitest target before finishing.
-- If you need to verify the onboarding cache, run `serena memories check` from the project root.

@@ -1,5 +1,0 @@
-- Monorepo with `apps/web` SPA, `apps/api` Cloudflare Worker, and shared packages under `packages/*`.
-- Web app is route-driven React; API handlers are separate from shared logic.
-- Module map lives in `mem:web/core`, `mem:api/core`, and `mem:shared/core`.
-- Repo-wide conventions and verification live in `mem:tech_stack`, `mem:conventions`, `mem:suggested_commands`, and `mem:task_completion`.
-- Keep changes surgical; respect existing module boundaries.

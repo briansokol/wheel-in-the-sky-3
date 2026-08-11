@@ -1,3 +1,0 @@
-- `packages/shared` holds cross-cutting business logic: classes, constants, enums, types, validators, and utilities.
-- Shared code is consumed by both the web app and API packages.
-- Prefer placing reusable domain logic here instead of duplicating it in app packages.

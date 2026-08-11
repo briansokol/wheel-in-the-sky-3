@@ -37,3 +37,7 @@ yarn-error.log*
 .DS_Store
 *.pem
 scratch
+
+# deadrop config & vaults
+.deadroprc
+.deadrop/
