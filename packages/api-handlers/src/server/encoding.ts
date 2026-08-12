@@ -11,6 +11,7 @@ import { DEFAULT_FOREGROUND_COLOR, INVERSE_FOREGROUND_COLOR } from '@repo/shared
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
 import { getPageGradientTheme, isPageColorTypeGradient } from '@repo/shared/utils/colors';
 import { configFormInputsSchema } from '@repo/shared/validators/config';
+import { logger } from '@sentry/cloudflare';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { AppEnv } from '@/types.js';
@@ -80,6 +81,9 @@ export const encodingApi = new Hono<AppEnv>()
                 encodedConfig: await encodeConfig(newConfig.serialize()),
             });
         } catch (error) {
+            logger.error('Failed to encode config', {
+                error: (error as Error)?.message,
+            });
             return c.json({ error: (error as Error)?.message ?? 'Error encoding config' }, 400);
         }
     })

@@ -3,6 +3,7 @@ import { PageColorType } from '@repo/shared/enums/page-colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
 import { ConfigFormInputs } from '@repo/shared/types/config';
 import { configFormInputsSchema } from '@repo/shared/validators/config';
+import { logger } from '@sentry/cloudflare';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { encodingApi } from '@/server/encoding.js';
 import { decodeConfig, encodeConfig } from '@/utils/encoding.js';
@@ -16,6 +17,11 @@ vi.mock('@repo/shared/utils/colors', async (importOriginal) => ({
     ...(await importOriginal()),
     isPageColorTypeGradient: vi.fn(),
     getPageGradientTheme: vi.fn(),
+}));
+vi.mock('@sentry/cloudflare', () => ({
+    logger: {
+        error: vi.fn(),
+    },
 }));
 
 describe('encodingApi', () => {
@@ -94,6 +100,9 @@ describe('encodingApi', () => {
 
             expect(response.status).toBe(400);
             expect(responseData).toEqual({ error: mockError.message });
+            expect(vi.mocked(logger.error)).toHaveBeenCalledWith('Failed to encode config', {
+                error: 'Encoding failed',
+            });
         });
     });
 
