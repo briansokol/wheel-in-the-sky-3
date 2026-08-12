@@ -65,6 +65,7 @@ describe('encodingApi', () => {
             expect(response.status).toBe(200);
             expect(responseData).toEqual({ encodedConfig: 'v4.encoded-config-string' });
             expect(encodeConfig).toHaveBeenCalled();
+            expect(logger.error).not.toHaveBeenCalled();
         });
 
         it('should handle single color background', async () => {
@@ -127,6 +128,7 @@ describe('encodingApi', () => {
             expect(response.status).toBe(200);
             expect(responseData).toEqual(mockDecodedConfig);
             expect(decodeConfig).toHaveBeenCalledWith('v4.encoded-config-string');
+            expect(logger.error).not.toHaveBeenCalled();
         });
 
         it('should handle errors during decoding', async () => {

@@ -135,7 +135,7 @@ honoApp.use(
         dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
         tracesSampleRate: 1.0,
         enableLogs: true,
-        environment: sentryEnv.APP_ENV,
+        environment: sentryEnv.APP_ENV ?? 'production',
         enabled: sentryEnv.APP_ENV !== 'local',
     }))
 );
@@ -147,10 +147,17 @@ indistinguishable in the Sentry UI from a log emitted by real traffic. With it,
 the live test in the verification section below is filterable and disposable.
 
 `APP_ENV` is not set anywhere in `.github/`, so its production value comes from
-the Cloudflare dashboard or is unset. If unset, `environment: undefined` makes
-the SDK fall back to its own `production` default, which is the current
-behavior. The change is safe either way. Confirm the dashboard value so the
-production filter is known.
+the Cloudflare dashboard or is unset. Events and logs do not treat an undefined
+`environment` the same way, which is why the fallback is written explicitly.
+Events receive the SDK's `DEFAULT_ENVIRONMENT` in `prepareEvent`. Logs never go
+through `prepareEvent`; the log path sets `sentry.environment` directly from the
+option through a helper guarded by `if (value && ...)`, so an undefined value
+means the attribute is absent from every log. Production logs would then carry
+no environment while spans from the same client report `production`, and any
+alert filtered on `environment:production` would miss them. Writing
+`sentryEnv.APP_ENV ?? 'production'` is a no-op when the dashboard supplies a
+value and removes the dependency on dashboard state that is invisible from the
+repository.
 
 ### Change 2: emit from the swallowed catch blocks
 

@@ -82,7 +82,7 @@ export const encodingApi = new Hono<AppEnv>()
             });
         } catch (error) {
             logger.error('Failed to encode config', {
-                error: (error as Error)?.message,
+                error: (error as Error)?.message ?? 'Error encoding config',
             });
             return c.json({ error: (error as Error)?.message ?? 'Error encoding config' }, 400);
         }
@@ -103,7 +103,7 @@ export const encodingApi = new Hono<AppEnv>()
         } catch (error) {
             const cause = (error as Error)?.cause;
             logger.error('Failed to decode config', {
-                error: (error as Error)?.message,
+                error: (error as Error)?.message ?? 'Error decoding config',
                 ...(cause instanceof Error ? { cause: cause.message } : {}),
             });
             return c.json({ error: (error as Error)?.message ?? 'Error decoding config' }, 400);

@@ -12,7 +12,7 @@ honoApp.use(
         dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
         tracesSampleRate: 1.0,
         enableLogs: true,
-        environment: sentryEnv.APP_ENV,
+        environment: sentryEnv.APP_ENV ?? 'production',
         enabled: sentryEnv.APP_ENV !== 'local',
     }))
 );

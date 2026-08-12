@@ -84,7 +84,7 @@ honoApp.use(
         dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
         tracesSampleRate: 1.0,
         enableLogs: true,
-        environment: sentryEnv.APP_ENV,
+        environment: sentryEnv.APP_ENV ?? 'production',
         enabled: sentryEnv.APP_ENV !== 'local',
     }))
 );
@@ -93,13 +93,13 @@ honoApp.use(
 Do not change the `dsn`, `tracesSampleRate`, or `enabled` lines. `enableLogs`
 defaults to `false`, which is the entire reason the Sentry Logs tab is empty.
 
-Non-blocking follow-up, not a code change: `APP_ENV` is not set anywhere in
-`.github/`, so its production value comes from the Cloudflare dashboard or is
-unset. Confirm the dashboard value so the production log filter is known. If it
-is unset, `environment: undefined` makes the SDK fall back to its own
-`production` default, which is exactly the current behavior, so this task is
-safe to land either way. Every span in the project today reports
-`environment: production`, which is consistent with both possibilities.
+Note on the fallback: events and logs do not treat an undefined `environment`
+the same way. Events receive the SDK's `DEFAULT_ENVIRONMENT` in `prepareEvent`,
+but the log path sets `sentry.environment` directly from the option through a
+helper guarded by `if (value && ...)`, so an undefined value means the attribute
+is absent from every log. `APP_ENV` is not set anywhere in `.github/`, so
+writing `?? 'production'` removes the dependency on a Cloudflare dashboard value
+that is invisible from the repository. It is a no-op when a value is supplied.
 
 - [ ] **Step 2: Typecheck**
 
