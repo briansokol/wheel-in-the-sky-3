@@ -101,6 +101,11 @@ export const encodingApi = new Hono<AppEnv>()
         try {
             return c.json(await decodeConfig(encodedConfig));
         } catch (error) {
+            const cause = (error as Error)?.cause;
+            logger.error('Failed to decode config', {
+                error: (error as Error)?.message,
+                ...(cause instanceof Error ? { cause: cause.message } : {}),
+            });
             return c.json({ error: (error as Error)?.message ?? 'Error decoding config' }, 400);
         }
     });

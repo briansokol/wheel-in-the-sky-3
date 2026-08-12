@@ -133,7 +133,9 @@ describe('encodingApi', () => {
             const mockRequestData = {
                 encodedConfig: 'invalid-encoded-config',
             };
-            const mockError = new Error('Invalid config');
+            const mockError = new Error('Invalid config', {
+                cause: new Error('Unsupported config encoding version'),
+            });
             vi.mocked(decodeConfig).mockRejectedValue(mockError);
 
             const response = await encodingApi.request('/decode', {
@@ -147,6 +149,10 @@ describe('encodingApi', () => {
 
             expect(response.status).toBe(400);
             expect(responseData).toEqual({ error: mockError.message });
+            expect(vi.mocked(logger.error)).toHaveBeenCalledWith('Failed to decode config', {
+                error: 'Invalid config',
+                cause: 'Unsupported config encoding version',
+            });
         });
     });
 });
