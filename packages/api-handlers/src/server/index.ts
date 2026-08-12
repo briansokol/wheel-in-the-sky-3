@@ -1,4 +1,4 @@
-import { withSentry } from '@sentry/cloudflare';
+import { sentry } from '@sentry/hono/cloudflare';
 import { Hono } from 'hono';
 import { env } from 'hono/adapter';
 import { cors } from 'hono/cors';
@@ -6,6 +6,14 @@ import { encodingApi } from '@/server/encoding.js';
 import { AppEnv } from '@/types.js';
 
 const honoApp = new Hono<AppEnv>().basePath('/api');
+
+honoApp.use(
+    sentry(honoApp, (sentryEnv) => ({
+        dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
+        tracesSampleRate: 1.0,
+        enabled: sentryEnv.APP_ENV !== 'local',
+    }))
+);
 
 honoApp.use(
     '*',
@@ -28,11 +36,4 @@ honoApp.notFound((c) => {
 
 export const routes = honoApp.route('/config', encodingApi);
 
-export const app = withSentry<Env>(
-    (sentryEnv) => ({
-        dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
-        tracesSampleRate: 1.0,
-        enabled: sentryEnv.APP_ENV !== 'local',
-    }),
-    honoApp
-);
+export const app = honoApp;
