@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.2.0",
-    "@sentry/cli": "3.2.2",
+    "@sentry/cli": "3.6.2",
     "nanoid": "5.1.6",
     "react": "19.2.4",
     "zod": "4.3.6"
