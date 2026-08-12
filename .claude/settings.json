@@ -2,6 +2,7 @@
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "sentry@claude-plugins-official": true
   }
 }
