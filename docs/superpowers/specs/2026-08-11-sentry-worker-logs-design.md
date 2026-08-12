@@ -40,6 +40,30 @@ source tree (`packages/api-handlers/src`, excluding `__tests__`) contains zero
 `console.*` calls, so flipping the flag alone would leave the Logs tab exactly
 as empty as it is now.
 
+### Empirical confirmation
+
+Queried against the `brian-sokol` Sentry organization on 2026-08-11:
+
+| Dataset  | Project    | Window | Result                                    |
+| -------- | ---------- | ------ | ----------------------------------------- |
+| `logs`   | `wits-api` | 90d    | no results                                |
+| `logs`   | `wits-web` | 90d    | no results                                |
+| `spans`  | `wits-api` | 90d    | populated and current, latest 2026-08-12T03:28Z |
+| `errors` | `wits-api` | 90d    | no results                                |
+
+The span traffic rules out the transport, the DSN, and the `enabled` gate as
+possible causes. Logs is the only empty dataset while the very same SDK instance
+reports spans normally, which is precisely the signature of `enableLogs` being
+unset. The empty `errors` dataset is not a second symptom; nothing in the Worker
+has thrown, for the reason given under "Why the two catch blocks matter".
+
+Two incidental confirmations from the same data. The recent spans include
+`middleware.hono` entries, so the `@sentry/hono` adoption from #33 is live and
+working in production. And every span carries `environment: production`, which
+confirms that the currently unset `environment` option falls through to the SDK
+default and that a local test would otherwise be indistinguishable from real
+traffic.
+
 ## Goals
 
 1. Enable Sentry structured logs on the Cloudflare Worker.
@@ -80,6 +104,20 @@ Both routes convert a thrown error into a normal `400` JSON response:
 Because the handler returns normally, the Sentry Hono middleware never observes
 an exception. These failures produce no issue, no log, and no trace error today.
 They are entirely invisible.
+
+They are also, at present, rare. A 90 day span query scoped to
+`POST /api/config/decode` and `POST /api/config/encode` returns 12 completed
+`http.server` spans, every one of them HTTP 200. Neither catch block has fired
+in production within that window.
+
+This is worth stating plainly because it sets expectations for the outcome.
+Instrumenting these blocks is justified by the fact that a failure today would
+be silent, not by any current volume of failures. The practical consequence is
+that this change will not, by itself, put anything in the production Logs tab.
+The local live test described below is the only pre-merge proof that the pipe
+works end to end, and after merge the Logs tab will stay empty until something
+genuinely breaks. That is the correct behavior for error level logging, not a
+sign the change failed.
 
 ## Design
 
