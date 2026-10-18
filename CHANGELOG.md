@@ -27,6 +27,10 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 - Project is a monorepo.
 - Project is open source.
 
+### Fixed
+
+- Wheel stays vertically centered on narrow screens after saving changes from the config page.
+
 ### Removed
 
 - Greensock, which ~~is~~ _was_ closed source (and expensive), is no longer used to handle the spinning.
