@@ -21,6 +21,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 - Wheel is now individual DOM elements instead of a gradient. This helps ensure consistency across browsers.
 - Spinning is handled by custom-written code.
 - UI is completely rewritten using [HeroUI](https://heroui.com).
+- Upgraded the UI library to HeroUI v3; components use its new default styling.
 - Options and navigation have been moved to a new mobile-friendly navbar.
 - Winners removed from the wheel can be managed from the Actions drawer.
 - Downloadable banner now uses the wheel and winner's colors.
