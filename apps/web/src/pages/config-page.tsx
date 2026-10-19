@@ -159,8 +159,8 @@ export default function ConfigPage() {
             <>
                 <div className="fixed z-30 container mx-auto max-w-3xl">
                     <div className="relative space-y-6">
-                        <Card className="bg-surface/70 shadow-lg backdrop-blur-md">
-                            <Card.Content className="relative min-h-16">
+                        <Card className="bg-surface/70 p-0 shadow-lg backdrop-blur-md">
+                            <Card.Content className="relative min-h-16 p-3">
                                 {previewIsCollapsed ? (
                                     <div className="my-auto size-full text-center">Expand to See Wheel Preview</div>
                                 ) : isLoaded ? (
@@ -218,7 +218,7 @@ export default function ConfigPage() {
                                                     onBlur={field.onBlur}
                                                 >
                                                     <Label>Wheel Segments</Label>
-                                                    <TextArea placeholder="One per line" />
+                                                    <TextArea ref={field.ref} placeholder="One per line" />
                                                     <Description>
                                                         The labels that will appear on the wheel segments
                                                     </Description>

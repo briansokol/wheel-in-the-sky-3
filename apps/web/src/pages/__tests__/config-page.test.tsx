@@ -9,7 +9,7 @@ import { RotationProvider } from '@/contexts/rotation-provider';
 import { SegmentProvider } from '@/contexts/segment-provider';
 import ConfigPage from '../config-page';
 
-const { mutateAsync } = vi.hoisted(() => ({ mutateAsync: vi.fn() }));
+const { mutateAsync, decodeState } = vi.hoisted(() => ({ mutateAsync: vi.fn(), decodeState: { isPending: false } }));
 
 vi.mock('@/hooks/config', () => {
     const config = new Config();
@@ -20,8 +20,9 @@ vi.mock('@/hooks/config', () => {
     config.setShowNames(false);
     config.setWheelColorType(WheelColorType.Triad);
     const result = { data: config, isError: false, isPending: false };
+    const pendingResult = { data: undefined, isError: false, isPending: true };
     return {
-        useDecodedConfig: () => result,
+        useDecodedConfig: () => (decodeState.isPending ? pendingResult : result),
         useEncodeConfigMutation: () => ({ mutateAsync }),
     };
 });
@@ -31,8 +32,8 @@ function LocationDisplay() {
     return <p data-testid="location">{`${location.pathname}${location.search}`}</p>;
 }
 
-function renderConfigPage() {
-    return render(
+function configPageTree() {
+    return (
         <MemoryRouter initialEntries={['/config?c=abc']}>
             <ConfigProvider>
                 <RotationProvider>
@@ -48,14 +49,34 @@ function renderConfigPage() {
     );
 }
 
+function renderConfigPage() {
+    return render(configPageTree());
+}
+
 describe('ConfigPage', () => {
     beforeEach(() => {
         mutateAsync.mockReset();
         mutateAsync.mockResolvedValue({ encodedConfig: 'enc' });
+        decodeState.isPending = false;
     });
 
     it('populates every field from the loaded config', () => {
         renderConfigPage();
+
+        expect(screen.getByRole('textbox', { name: 'Wheel Title' })).toHaveValue('Team Lunch');
+        expect(screen.getByRole('textbox', { name: /Wheel Segments/ })).toHaveValue('Alice\nBob');
+        expect(screen.getByRole('switch', { name: 'Randomize Order Every So Often' })).toBeChecked();
+        expect(screen.getByRole('switch', { name: 'Show Labels on Wheel' })).not.toBeChecked();
+        expect(within(screen.getByTestId('wheel-color-select')).getByRole('button')).toHaveTextContent('Triad');
+    });
+
+    it('populates every field once the config finishes loading', () => {
+        decodeState.isPending = true;
+        const { rerender } = renderConfigPage();
+        expect(screen.getByText('Loading configuration...')).toBeInTheDocument();
+
+        decodeState.isPending = false;
+        rerender(configPageTree());
 
         expect(screen.getByRole('textbox', { name: 'Wheel Title' })).toHaveValue('Team Lunch');
         expect(screen.getByRole('textbox', { name: /Wheel Segments/ })).toHaveValue('Alice\nBob');
@@ -105,6 +126,16 @@ describe('ConfigPage', () => {
 
         expect(await screen.findByText('You must have at least 1 segment to make a wheel!')).toBeInTheDocument();
         expect(mutateAsync).not.toHaveBeenCalled();
+    });
+
+    it('focuses the segments field when submitting without segments', async () => {
+        renderConfigPage();
+
+        const segments = screen.getByRole('textbox', { name: /Wheel Segments/ });
+        fireEvent.change(segments, { target: { value: '' } });
+        fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
+
+        await waitFor(() => expect(document.activeElement).toBe(segments));
     });
 
     it('Reset restores the loaded values', async () => {
