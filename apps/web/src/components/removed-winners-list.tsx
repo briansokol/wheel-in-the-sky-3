@@ -38,13 +38,12 @@ export function RemovedWinnersList({ closeDrawer }: RemovedWinnersListProps) {
                     </p>
                     <Button
                         isIconOnly
-                        variant="flat"
-                        color="primary"
+                        variant="tertiary"
                         onPress={() => {
                             restoreWinner(winner);
                             closeDrawer?.();
                         }}
-                        className="text-2xl"
+                        className="bg-accent-soft text-2xl text-accent-soft-foreground"
                     >
                         <MdRestore />
                     </Button>
@@ -58,14 +57,14 @@ export function RemovedWinnersList({ closeDrawer }: RemovedWinnersListProps) {
             <div>
                 <Button
                     className="w-full text-base"
-                    color="primary"
+                    variant="primary"
                     isDisabled={removedWinners.length === 0}
-                    startContent={<MdRestore className="text-2xl" />}
                     onPress={() => {
                         setRemovedWinners?.([]);
                         closeDrawer?.();
                     }}
                 >
+                    <MdRestore className="text-2xl" />
                     Restore All
                 </Button>
             </div>

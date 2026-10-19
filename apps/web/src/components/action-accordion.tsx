@@ -1,4 +1,4 @@
-import { Accordion, AccordionItem } from '@heroui/react';
+import { Accordion } from '@heroui/react';
 import { PageBaseRoute } from '@/constants/routes';
 import { isPage } from '@/utils/routes';
 import { RemovedWinnersList } from './removed-winners-list';
@@ -11,13 +11,35 @@ interface ActionAccordionProps {
 
 export function ActionAccordion({ pathname, closeDrawer }: ActionAccordionProps) {
     return (
-        <Accordion selectionMode="multiple" defaultExpandedKeys={['saved-wheels', 'removed-winners']}>
-            <AccordionItem key="saved-wheels" aria-label="Saved Wheels" title="Saved Wheels">
-                <SavedWheelsList closeDrawer={closeDrawer} />
-            </AccordionItem>
-            <AccordionItem key="removed-winners" aria-label="Removed Winners" title="Removed Winners">
-                {isPage(pathname, PageBaseRoute.Wheel) ? <RemovedWinnersList closeDrawer={closeDrawer} /> : null}
-            </AccordionItem>
+        <Accordion allowsMultipleExpanded defaultExpandedKeys={['saved-wheels', 'removed-winners']}>
+            <Accordion.Item id="saved-wheels">
+                <Accordion.Heading>
+                    <Accordion.Trigger>
+                        Saved Wheels
+                        <Accordion.Indicator />
+                    </Accordion.Trigger>
+                </Accordion.Heading>
+                <Accordion.Panel>
+                    <Accordion.Body>
+                        <SavedWheelsList closeDrawer={closeDrawer} />
+                    </Accordion.Body>
+                </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item id="removed-winners">
+                <Accordion.Heading>
+                    <Accordion.Trigger>
+                        Removed Winners
+                        <Accordion.Indicator />
+                    </Accordion.Trigger>
+                </Accordion.Heading>
+                <Accordion.Panel>
+                    <Accordion.Body>
+                        {isPage(pathname, PageBaseRoute.Wheel) ? (
+                            <RemovedWinnersList closeDrawer={closeDrawer} />
+                        ) : null}
+                    </Accordion.Body>
+                </Accordion.Panel>
+            </Accordion.Item>
         </Accordion>
     );
 }
