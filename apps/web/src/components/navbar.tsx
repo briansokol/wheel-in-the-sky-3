@@ -46,6 +46,16 @@ export function AppNavBar() {
         };
     }, [isMenuOpen]);
 
+    useEffect(() => {
+        if (!isMenuOpen || typeof window.matchMedia !== 'function') return;
+        const query = window.matchMedia('(min-width: 640px)');
+        const onChange = (event: MediaQueryListEvent) => {
+            if (event.matches) closeMenu();
+        };
+        query.addEventListener('change', onChange);
+        return () => query.removeEventListener('change', onChange);
+    }, [isMenuOpen, closeMenu]);
+
     const buildNavbarItems = useCallback(
         (itemClassName: string) => {
             return (
@@ -115,25 +125,25 @@ export function AppNavBar() {
                         </Button>
                     </div>
                 </nav>
-                <AnimatePresence>
-                    {isMenuOpen && (
-                        <motion.div
-                            key="mobile-menu"
-                            className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto bg-background/90 backdrop-blur-lg sm:hidden"
-                            initial={{ opacity: 0, y: -8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -8 }}
-                            transition={{ duration: 0.15 }}
-                        >
-                            <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 py-4">
-                                {navbarMenuItems}
-                                <Separator />
-                                <ActionAccordion pathname={pathname} closeDrawer={closeMenu} />
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </header>
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div
+                        key="mobile-menu"
+                        className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto bg-background/90 backdrop-blur-lg sm:hidden"
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.15 }}
+                    >
+                        <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 py-4">
+                            {navbarMenuItems}
+                            <Separator />
+                            <ActionAccordion pathname={pathname} closeDrawer={closeMenu} />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <Drawer state={drawer}>
                 <Drawer.Backdrop>
                     <Drawer.Content placement="right">

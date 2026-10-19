@@ -1,6 +1,6 @@
 import { RouterProvider } from '@heroui/react';
 import { Config } from '@repo/shared/classes/config';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useHref, useNavigate } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigProvider } from '@/contexts/config-provider';
@@ -110,6 +110,38 @@ describe('AppNavBar', () => {
         expect(document.body.style.overflow).toBe('hidden');
         unmount();
         expect(document.body.style.overflow).toBe('');
+    });
+
+    it('renders the mobile panel outside the backdrop-blur header', () => {
+        renderNavbar('/config');
+        fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
+        const header = screen.getByRole('banner');
+        const panel = screen.getAllByRole('link', { name: 'About' })[1].closest('.fixed');
+        expect(panel).not.toBeNull();
+        expect(header.contains(panel)).toBe(false);
+    });
+
+    it('closes the mobile menu when the viewport grows past the sm breakpoint', () => {
+        let listener: ((event: MediaQueryListEvent) => void) | undefined;
+        vi.stubGlobal('matchMedia', (query: string) => ({
+            matches: false,
+            media: query,
+            addEventListener: (_: string, cb: (event: MediaQueryListEvent) => void) => {
+                listener = cb;
+            },
+            removeEventListener: () => {
+                listener = undefined;
+            },
+        }));
+        renderNavbar('/config');
+        fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
+        expect(document.body.style.overflow).toBe('hidden');
+
+        act(() => listener?.({ matches: true } as MediaQueryListEvent));
+
+        expect(screen.getByRole('button', { name: 'Open Menu' })).toHaveAttribute('aria-expanded', 'false');
+        expect(document.body.style.overflow).toBe('');
+        vi.unstubAllGlobals();
     });
 
     it('Actions opens the drawer', () => {
