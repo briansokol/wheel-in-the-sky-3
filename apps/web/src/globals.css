@@ -39,15 +39,15 @@
 
 @layer utilities {
   :root {
-    --foreground: #eee;
-    --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
+    --page-foreground: #eee;
+    --page-background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
     --focus-ring: #3b82f6;
   }
 
   html,
   body {
-    color: var(--foreground);
-    background: var(--background);
+    color: var(--page-foreground);
+    background: var(--page-background);
     background-attachment: fixed;
     background-size: 100% 100%;
     background-repeat: no-repeat;

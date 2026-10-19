@@ -57,13 +57,15 @@ describe('useFgColor', () => {
 describe('useSetDocumentBackgroundColor', () => {
     it('should set the document background color', () => {
         renderHook(() => useSetDocumentBackgroundColor('#FFFFFF'));
-        expect(document.documentElement.style.getPropertyValue('--background')).toBe('#FFFFFF');
+        expect(document.documentElement.style.getPropertyValue('--page-background')).toBe('#FFFFFF');
+        expect(document.documentElement.style.getPropertyValue('--background')).toBe('');
     });
 });
 
 describe('useSetDocumentForegroundColor', () => {
     it('should set the document foreground color', () => {
         renderHook(() => useSetDocumentForegroundColor('#000000'));
-        expect(document.documentElement.style.getPropertyValue('--foreground')).toBe('#000000');
+        expect(document.documentElement.style.getPropertyValue('--page-foreground')).toBe('#000000');
+        expect(document.documentElement.style.getPropertyValue('--foreground')).toBe('');
     });
 });
