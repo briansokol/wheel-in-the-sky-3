@@ -37,19 +37,19 @@ The same split holds for rotation, segment, and removed-winners.
 
 ## Key entry points
 
-| Path                                            | What it is                                                                      |
-| ----------------------------------------------- | ------------------------------------------------------------------------------- |
-| `apps/web/index.html`                           | Vite HTML entry; loads `/src/main.tsx` and sets the root theme classes          |
-| `apps/web/src/main.tsx`                         | Mounts React, initializes Sentry, wraps everything in `BrowserRouter`           |
-| `apps/web/src/providers.tsx`                    | Provider stack: React Query, config, rotation, segment, removed winners, HeroUI |
-| `apps/web/src/routes.tsx`                       | Every route, nested under `RootLayout`                                          |
-| `apps/web/src/layout.tsx`                       | `RootLayout`: navbar, error boundary, and the routed `Outlet`                   |
-| `apps/web/src/utils/api.ts`                     | Hono typed client `hc<ApiAppType>` and the shared `QueryClient`                 |
-| `apps/web/src/hooks/config.ts`                  | `useDecodedConfig` and `useEncodeConfigMutation`, the config round trip         |
-| `apps/web/src/utils/wheel-animation-manager.ts` | `WheelAnimationManager`, rotation animation driven outside React state          |
-| `apps/web/src/constants/routes.ts`              | The `PageBaseRoute` enum, source of route path strings                          |
-| `apps/web/src/globals.css`                      | Tailwind entry; imports HeroUI styles and defines the `dark-purple` theme       |
-| `apps/web/vite.config.ts`                       | Vite plugins, the `@` alias, and the Vitest configuration                       |
+| Path                                            | What it is                                                                                                                                                    |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/web/index.html`                           | Vite HTML entry; loads `/src/main.tsx` and sets the root theme classes                                                                                        |
+| `apps/web/src/main.tsx`                         | Mounts React, initializes Sentry, wraps everything in `BrowserRouter`                                                                                         |
+| `apps/web/src/providers.tsx`                    | Provider stack: React Query, config, rotation, segment, removed winners, and HeroUI `RouterProvider`, which HeroUI `Link` requires for client-side navigation |
+| `apps/web/src/routes.tsx`                       | Every route, nested under `RootLayout`                                                                                                                        |
+| `apps/web/src/layout.tsx`                       | `RootLayout`: navbar, error boundary, and the routed `Outlet`                                                                                                 |
+| `apps/web/src/utils/api.ts`                     | Hono typed client `hc<ApiAppType>` and the shared `QueryClient`                                                                                               |
+| `apps/web/src/hooks/config.ts`                  | `useDecodedConfig` and `useEncodeConfigMutation`, the config round trip                                                                                       |
+| `apps/web/src/utils/wheel-animation-manager.ts` | `WheelAnimationManager`, rotation animation driven outside React state                                                                                        |
+| `apps/web/src/constants/routes.ts`              | The `PageBaseRoute` enum, source of route path strings                                                                                                        |
+| `apps/web/src/globals.css`                      | Tailwind entry; imports HeroUI styles and defines the `dark-purple` theme                                                                                     |
+| `apps/web/vite.config.ts`                       | Vite plugins, the `@` alias, and the Vitest configuration                                                                                                     |
 
 ## Commands
 
