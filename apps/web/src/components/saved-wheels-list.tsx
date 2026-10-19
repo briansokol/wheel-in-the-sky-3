@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from '@heroui/react';
+import { Button, ButtonGroup, Tooltip } from '@heroui/react';
 import { useMemo } from 'react';
 import { FaCircle } from 'react-icons/fa6';
 import { MdSave } from 'react-icons/md';
@@ -61,30 +61,36 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
                     </div>
                     <div>
                         <ButtonGroup>
-                            <Button
-                                isIconOnly
-                                variant="tertiary"
-                                onPress={() => {
-                                    setHasWinner(false);
-                                    navigate(`${PageBaseRoute.Wheel}?c=${wheel.encodedConfig}`);
-                                    closeDrawer?.();
-                                }}
-                                className="bg-accent-soft text-2xl text-accent-soft-foreground"
-                                aria-label="Load this Wheel"
-                            >
-                                <MdOutlinePlayCircleFilled />
-                            </Button>
-                            <Button
-                                isIconOnly
-                                variant="danger-soft"
-                                onPress={() => {
-                                    removeSavedWheel(wheel.id);
-                                }}
-                                className="text-2xl"
-                                aria-label="Delete Saved Wheel"
-                            >
-                                <MdDeleteForever />
-                            </Button>
+                            <Tooltip>
+                                <Button
+                                    isIconOnly
+                                    variant="tertiary"
+                                    onPress={() => {
+                                        setHasWinner(false);
+                                        navigate(`${PageBaseRoute.Wheel}?c=${wheel.encodedConfig}`);
+                                        closeDrawer?.();
+                                    }}
+                                    className="bg-accent-soft text-2xl text-accent-soft-foreground"
+                                    aria-label="Load this Wheel"
+                                >
+                                    <MdOutlinePlayCircleFilled />
+                                </Button>
+                                <Tooltip.Content>Load this Wheel</Tooltip.Content>
+                            </Tooltip>
+                            <Tooltip>
+                                <Button
+                                    isIconOnly
+                                    variant="danger-soft"
+                                    onPress={() => {
+                                        removeSavedWheel(wheel.id);
+                                    }}
+                                    className="text-2xl"
+                                    aria-label="Delete Saved Wheel"
+                                >
+                                    <MdDeleteForever />
+                                </Button>
+                                <Tooltip.Content>Delete Saved Wheel</Tooltip.Content>
+                            </Tooltip>
                         </ButtonGroup>
                     </div>
                 </div>
