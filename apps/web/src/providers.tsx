@@ -1,6 +1,6 @@
-import { HeroUIProvider } from '@heroui/react';
+import { RouterProvider } from '@heroui/react';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
+import { useHref, useNavigate } from 'react-router';
 import { RemovedWinnersProvider } from '@/contexts/removed-winners-provider';
 import { queryClient } from '@/utils/api';
 import { ConfigProvider } from './contexts/config-provider';
@@ -16,7 +16,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 <RotationProvider>
                     <SegmentProvider>
                         <RemovedWinnersProvider>
-                            <HeroUIProvider navigate={navigate}>{children}</HeroUIProvider>
+                            <RouterProvider navigate={navigate} useHref={useHref}>
+                                {children}
+                            </RouterProvider>
                         </RemovedWinnersProvider>
                     </SegmentProvider>
                 </RotationProvider>

@@ -41,7 +41,6 @@
     "node": "24.x"
   },
   "allowScripts": {
-    "@heroui/shared-utils@2.1.12": true,
     "@sentry/cli@2.58.6": true,
     "@sentry/cli@3.6.2": true,
     "esbuild@0.27.3": true,

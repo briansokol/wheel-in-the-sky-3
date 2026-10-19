@@ -48,8 +48,7 @@ The same split holds for rotation, segment, and removed-winners.
 | `apps/web/src/hooks/config.ts`                  | `useDecodedConfig` and `useEncodeConfigMutation`, the config round trip         |
 | `apps/web/src/utils/wheel-animation-manager.ts` | `WheelAnimationManager`, rotation animation driven outside React state          |
 | `apps/web/src/constants/routes.ts`              | The `PageBaseRoute` enum, source of route path strings                          |
-| `apps/web/src/globals.css`                      | Tailwind entry; also loads `src/hero.ts` as a plugin                            |
-| `apps/web/src/hero.ts`                          | HeroUI theme, including the `dark-purple` theme                                 |
+| `apps/web/src/globals.css`                      | Tailwind entry; imports HeroUI styles and defines the `dark-purple` theme       |
 | `apps/web/vite.config.ts`                       | Vite plugins, the `@` alias, and the Vitest configuration                       |
 
 ## Commands
@@ -152,12 +151,14 @@ combines the oxlint, prettier, and vitest configs from `@repo/lint-staged`.
    `apps/web/tsconfig.app.json` without changing `resolve.alias` in
    `apps/web/vite.config.ts` breaks the runtime while the typecheck still
    passes, and the reverse breaks the typecheck while the app still runs.
-4. `apps/web/src/hero.ts` is reachable only from CSS. `apps/web/src/globals.css`
-   loads it with `@plugin './hero.ts'`, and no TypeScript module imports it, so
-   it reads as dead code to anything following the import graph.
-5. The theme name is a cross-file contract. `dark-purple` is defined in
-   `apps/web/src/hero.ts` and applied as a class on the `<html>` element in
-   `apps/web/index.html`; renaming one silently unstyles the app.
+4. HeroUI owns `--background` and `--foreground`. The page's own gradient and
+   text color live in `--page-background` and `--page-foreground` in
+   `apps/web/src/globals.css`; never put the page gradient back into the
+   HeroUI variables.
+5. The theme name is a cross-file contract. `dark-purple` is the
+   `.dark-purple` block in `apps/web/src/globals.css`, applied through the
+   `dark dark-purple` classes on the `<html>` element in `apps/web/index.html`;
+   renaming one silently unstyles the app.
 6. Two different `public` directories are in play. `apps/web/public` is source,
    copied into the bundle; `apps/api/public` is the build destination. Editing
    the latter is editing generated output.
