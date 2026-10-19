@@ -44,26 +44,30 @@ export default function AboutPage() {
                     <ul data-testid="technology-links" className="list-inside list-disc">
                         <li>
                             <SiReact className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://reactjs.org" showAnchorIcon>
+                            <Link href="https://reactjs.org">
                                 React
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiNextui className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://www.heroui.com/" showAnchorIcon>
+                            <Link href="https://www.heroui.com/">
                                 HeroUI
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiTailwindcss className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://tailwindcss.com/" showAnchorIcon>
+                            <Link href="https://tailwindcss.com/">
                                 Tailwind
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiHono className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://hono.dev/" showAnchorIcon>
+                            <Link href="https://hono.dev/">
                                 Hono
+                                <Link.Icon />
                             </Link>
                         </li>
                     </ul>
@@ -71,52 +75,60 @@ export default function AboutPage() {
                     <ul data-testid="library-links" className="list-inside list-disc">
                         <li>
                             <SiVite className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://vite.dev/" showAnchorIcon>
+                            <Link href="https://vite.dev/">
                                 Vite
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiTurborepo className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://turbo.build/repo/docs" showAnchorIcon>
+                            <Link href="https://turbo.build/repo/docs">
                                 Turborepo
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiVitest className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://vitest.dev/" showAnchorIcon>
+                            <Link href="https://vitest.dev/">
                                 Vitest
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiTestinglibrary className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://testing-library.com/" showAnchorIcon>
+                            <Link href="https://testing-library.com/">
                                 Testing Library
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiEslint className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://eslint.org/" showAnchorIcon>
+                            <Link href="https://eslint.org/">
                                 ESLint
+                                <Link.Icon />
                             </Link>
                         </li>
                         <li>
                             <SiPrettier className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://prettier.io/" showAnchorIcon>
+                            <Link href="https://prettier.io/">
                                 Prettier
+                                <Link.Icon />
                             </Link>
                         </li>
                     </ul>
                     <p>
                         It&apos;s hosted on <SiCloudflare className="inline-block align-[-3px] text-xl" />{' '}
-                        <Link href="https://www.cloudflare.com/" showAnchorIcon>
+                        <Link href="https://www.cloudflare.com/">
                             Cloudflare
+                            <Link.Icon />
                         </Link>
                         .
                     </p>
                     <p>
                         Source code is available at <SiGithub className="inline-block align-[-3px]" />{' '}
-                        <Link href="https://github.com/briansokol/wheel-in-the-sky-3" showAnchorIcon>
+                        <Link href="https://github.com/briansokol/wheel-in-the-sky-3">
                             GitHub
+                            <Link.Icon />
                         </Link>
                         .
                     </p>
@@ -147,12 +159,9 @@ export default function AboutPage() {
                                             !props.href.startsWith(window.location.origin));
 
                                     return (
-                                        <Link
-                                            href={props.href}
-                                            className="text-[length:inherit]"
-                                            showAnchorIcon={isExternalLink}
-                                        >
+                                        <Link href={props.href} className="text-[length:inherit]">
                                             {props.children}
+                                            {isExternalLink && <Link.Icon />}
                                         </Link>
                                     );
                                 },

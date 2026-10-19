@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
+import { Button, Card } from '@heroui/react';
 import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
 import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
@@ -140,17 +140,17 @@ export default function WheelPage() {
         return (
             <main className="flex min-h-screen items-center justify-center">
                 <Card className="max-w-md">
-                    <CardHeader className="flex flex-col items-center">
+                    <Card.Header className="flex flex-col items-center">
                         <h2 className="text-xl font-bold">Unable to load wheel</h2>
-                    </CardHeader>
-                    <CardBody className="text-center">
+                    </Card.Header>
+                    <Card.Content className="text-center">
                         <p className="mb-4">Please check your configuration and try again.</p>
-                    </CardBody>
-                    <CardFooter className="flex justify-center">
-                        <Button color="primary" variant="flat" onPress={() => navigate(PageBaseRoute.Config)}>
+                    </Card.Content>
+                    <Card.Footer className="flex justify-center">
+                        <Button variant="tertiary" onPress={() => navigate(PageBaseRoute.Config)}>
                             Go to Configuration
                         </Button>
-                    </CardFooter>
+                    </Card.Footer>
                 </Card>
             </main>
         );
@@ -160,17 +160,17 @@ export default function WheelPage() {
         return (
             <main className="flex min-h-screen items-center justify-center">
                 <Card className="max-w-md">
-                    <CardHeader className="flex flex-col items-center">
+                    <Card.Header className="flex flex-col items-center">
                         <h2 className="text-xl font-bold">No segments found</h2>
-                    </CardHeader>
-                    <CardBody className="text-center">
+                    </Card.Header>
+                    <Card.Content className="text-center">
                         <p className="mb-4">Please add at least one segment to the wheel.</p>
-                    </CardBody>
-                    <CardFooter className="flex justify-center">
-                        <Button color="primary" variant="flat" onPress={() => navigate(PageBaseRoute.Config)}>
+                    </Card.Content>
+                    <Card.Footer className="flex justify-center">
+                        <Button variant="tertiary" onPress={() => navigate(PageBaseRoute.Config)}>
                             Add Segments
                         </Button>
-                    </CardFooter>
+                    </Card.Footer>
                 </Card>
             </main>
         );
@@ -189,42 +189,33 @@ export default function WheelPage() {
                     }
                 />
                 {hasWinner && (
-                    <Card
-                        isBlurred
-                        className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible bg-background/50 dark:bg-default-100/50"
-                        shadow="lg"
-                    >
+                    <Card className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible bg-background/50 shadow-lg backdrop-blur-md backdrop-saturate-150 dark:bg-default/50">
                         {wheelManager?.config?.title && (
-                            <CardHeader className="flex items-center justify-center">
+                            <Card.Header className="flex items-center justify-center">
                                 <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>
-                            </CardHeader>
+                            </Card.Header>
                         )}
-                        <CardBody className="overflow-visible">
+                        <Card.Content className="overflow-visible">
                             <p className="flex animate-float items-center justify-center space-x-2 overflow-visible text-center text-xl font-bold sm:text-4xl">
                                 <span data-testid="winner" aria-label="Winner">
                                     {segment?.name}
                                 </span>
                             </p>
-                        </CardBody>
-                        <CardFooter className="flex items-center justify-center">
+                        </Card.Content>
+                        <Card.Footer className="flex items-center justify-center">
                             <Button
-                                color="default"
-                                radius="lg"
                                 size="md"
-                                variant="flat"
-                                className="mx-1"
-                                startContent={<LuClipboardCopy className="text-xl" />}
+                                variant="tertiary"
+                                className="mx-1 rounded-lg"
                                 onPress={() => getBanner(bannerRef)}
                             >
+                                <LuClipboardCopy className="text-xl" />
                                 Copy Banner
                             </Button>
                             <Button
-                                color="default"
-                                radius="lg"
                                 size="md"
-                                variant="flat"
-                                className="mx-1"
-                                startContent={<IoRemoveCircleOutline className="text-xl" />}
+                                variant="tertiary"
+                                className="mx-1 rounded-lg"
                                 onPress={() => {
                                     if (segment?.name) {
                                         setRemovedWinners([...removedWinners, segment.name]);
@@ -232,9 +223,10 @@ export default function WheelPage() {
                                     }
                                 }}
                             >
+                                <IoRemoveCircleOutline className="text-xl" />
                                 Remove Winner
                             </Button>
-                        </CardFooter>
+                        </Card.Footer>
                     </Card>
                 )}
             </div>
