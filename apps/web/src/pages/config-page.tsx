@@ -1,16 +1,17 @@
 import {
     Button,
     Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
+    Description,
+    FieldError,
     Input,
-    Link,
+    Label,
+    ListBox,
     Select,
-    SelectItem,
     Skeleton,
     Switch,
-    Textarea,
+    TextArea,
+    TextField,
+    Tooltip,
 } from '@heroui/react';
 import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
@@ -21,7 +22,7 @@ import { ConfigFormInputs } from '@repo/shared/types/config';
 import { defaultWheelColorConfig } from '@repo/shared/types/wheel-colors';
 import { getPageColorSelectOptionDescription, getWheelColorSelectOptionDescription } from '@repo/shared/utils/configs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { MdClear, MdOutlineAddCircle, MdSave } from 'react-icons/md';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -137,17 +138,17 @@ export default function ConfigPage() {
         return (
             <main className="flex min-h-screen items-center justify-center">
                 <Card className="max-w-md">
-                    <CardHeader className="flex flex-col items-center">
+                    <Card.Header className="flex flex-col items-center">
                         <h2 className="text-xl font-bold">Unable to load configuration</h2>
-                    </CardHeader>
-                    <CardBody className="text-center">
+                    </Card.Header>
+                    <Card.Content className="text-center">
                         <p className="mb-4">The configuration could not be loaded. Please try creating a new wheel.</p>
-                    </CardBody>
-                    <CardFooter className="flex justify-center">
-                        <Button color="primary" variant="flat" onPress={() => navigate(PageBaseRoute.Config)}>
+                    </Card.Content>
+                    <Card.Footer className="flex justify-center">
+                        <Button variant="tertiary" onPress={() => navigate(PageBaseRoute.Config)}>
                             Create New Wheel
                         </Button>
-                    </CardFooter>
+                    </Card.Footer>
                 </Card>
             </main>
         );
@@ -158,8 +159,8 @@ export default function ConfigPage() {
             <>
                 <div className="fixed z-30 container mx-auto max-w-3xl">
                     <div className="relative space-y-6">
-                        <Card shadow="lg" isBlurred>
-                            <CardBody className="relative min-h-16">
+                        <Card className="bg-surface/70 shadow-lg backdrop-blur-md">
+                            <Card.Content className="relative min-h-16">
                                 {previewIsCollapsed ? (
                                     <div className="my-auto size-full text-center">Expand to See Wheel Preview</div>
                                 ) : isLoaded ? (
@@ -182,15 +183,14 @@ export default function ConfigPage() {
                                 )}
                                 <Button
                                     isIconOnly
-                                    variant="shadow"
-                                    color="secondary"
-                                    className="absolute top-3 right-3"
+                                    variant="secondary"
+                                    className="absolute top-3 right-3 shadow-lg"
                                     aria-label={previewIsCollapsed ? 'Show wheel preview' : 'Hide wheel preview'}
                                     onPress={() => setPreviewIsCollapsed(!previewIsCollapsed)}
                                 >
                                     {previewIsCollapsed ? <FaAngleDown /> : <FaAngleUp />}
                                 </Button>
-                            </CardBody>
+                            </Card.Content>
                         </Card>
                     </div>
                 </div>
@@ -203,14 +203,30 @@ export default function ConfigPage() {
                                 <input type="hidden" {...register('id')} />
                                 <div className="mb-12">
                                     {isLoaded ? (
-                                        <Textarea
-                                            {...register('names', { required: true })}
-                                            label="Wheel Segments"
-                                            labelPlacement="outside"
-                                            placeholder="One per line"
-                                            isRequired
-                                            description="The labels that will appear on the wheel segments"
-                                            errorMessage="You must have at least 1 segment to make a wheel!"
+                                        <Controller
+                                            control={control}
+                                            name="names"
+                                            rules={{ required: true }}
+                                            render={({ field, fieldState }) => (
+                                                <TextField
+                                                    isRequired
+                                                    isInvalid={!!fieldState.error}
+                                                    validationBehavior="aria"
+                                                    name={field.name}
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                >
+                                                    <Label>Wheel Segments</Label>
+                                                    <TextArea placeholder="One per line" />
+                                                    <Description>
+                                                        The labels that will appear on the wheel segments
+                                                    </Description>
+                                                    <FieldError>
+                                                        You must have at least 1 segment to make a wheel!
+                                                    </FieldError>
+                                                </TextField>
+                                            )}
                                         />
                                     ) : (
                                         <Skeleton data-testid="skeleton" className="h-28 w-full rounded-lg" />
@@ -218,11 +234,20 @@ export default function ConfigPage() {
                                 </div>
                                 <div className="mb-8">
                                     {isLoaded ? (
-                                        <Input
-                                            {...register('title')}
-                                            label="Wheel Title"
-                                            labelPlacement="outside"
-                                            placeholder="Enter a title for your wheel"
+                                        <Controller
+                                            control={control}
+                                            name="title"
+                                            render={({ field }) => (
+                                                <TextField
+                                                    name={field.name}
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                >
+                                                    <Label>Wheel Title</Label>
+                                                    <Input placeholder="Enter a title for your wheel" />
+                                                </TextField>
+                                            )}
                                         />
                                     ) : (
                                         <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
@@ -230,12 +255,21 @@ export default function ConfigPage() {
                                 </div>
                                 <div className="mt-12 mb-8">
                                     {isLoaded ? (
-                                        <Input
-                                            {...register('description')}
-                                            label="Wheel Description"
-                                            labelPlacement="outside"
-                                            placeholder="Describe your wheel"
-                                            description="Helpful when adding bookmarks"
+                                        <Controller
+                                            control={control}
+                                            name="description"
+                                            render={({ field }) => (
+                                                <TextField
+                                                    name={field.name}
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                >
+                                                    <Label>Wheel Description</Label>
+                                                    <Input placeholder="Describe your wheel" />
+                                                    <Description>Helpful when adding bookmarks</Description>
+                                                </TextField>
+                                            )}
                                         />
                                     ) : (
                                         <Skeleton data-testid="skeleton" className="h-14 w-full rounded-lg" />
@@ -243,14 +277,48 @@ export default function ConfigPage() {
                                 </div>
                                 <div className="mt-8 mb-6">
                                     {isLoaded ? (
-                                        <Switch {...register('randomizeOrder')}>Randomize Order Every So Often</Switch>
+                                        <Controller
+                                            control={control}
+                                            name="randomizeOrder"
+                                            render={({ field }) => (
+                                                <Switch
+                                                    isSelected={field.value}
+                                                    onChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <Switch.Content>
+                                                        <Switch.Control>
+                                                            <Switch.Thumb />
+                                                        </Switch.Control>
+                                                        Randomize Order Every So Often
+                                                    </Switch.Content>
+                                                </Switch>
+                                            )}
+                                        />
                                     ) : (
                                         <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
                                     )}
                                 </div>
                                 <div className="mt-6 mb-12">
                                     {isLoaded ? (
-                                        <Switch {...register('showNames')}>Show Labels on Wheel</Switch>
+                                        <Controller
+                                            control={control}
+                                            name="showNames"
+                                            render={({ field }) => (
+                                                <Switch
+                                                    isSelected={field.value}
+                                                    onChange={field.onChange}
+                                                    name={field.name}
+                                                >
+                                                    <Switch.Content>
+                                                        <Switch.Control>
+                                                            <Switch.Thumb />
+                                                        </Switch.Control>
+                                                        Show Labels on Wheel
+                                                    </Switch.Content>
+                                                </Switch>
+                                            )}
+                                        />
                                     ) : (
                                         <Skeleton data-testid="skeleton" className="h-12 w-32 rounded-lg" />
                                     )}
@@ -258,38 +326,51 @@ export default function ConfigPage() {
                                 <div className="my-12">
                                     {isLoaded ? (
                                         <>
-                                            <Select
-                                                {...register('colorSchemeType', { required: true })}
-                                                data-testid="wheel-color-select"
-                                                items={wheelColorSelectOptions}
-                                                label="Wheel Color Scheme"
-                                                labelPlacement="outside"
-                                                disallowEmptySelection
-                                                isRequired
-                                                description={wheelColorTypeDesc}
-                                                defaultSelectedKeys={[
-                                                    `${config?.wheelColorConfig?.wheelColorType ?? defaultWheelColorConfig.wheelColorType}`,
-                                                ]}
-                                                popoverProps={{ shouldBlockScroll: true }}
-                                                renderValue={(items) => {
-                                                    return items.map((item) => (
-                                                        <div key={item.key} className="my-2 flex flex-col">
-                                                            <span className="text-medium">{item.data?.label}</span>
-                                                        </div>
-                                                    ));
-                                                }}
-                                            >
-                                                {(option) => (
-                                                    <SelectItem key={option.id} textValue={`${option.id}`}>
-                                                        <div className="flex flex-col">
-                                                            <span className="text-medium">{option.label}</span>
-                                                            <span className="text-small text-default-500">
-                                                                {option.description}
-                                                            </span>
-                                                        </div>
-                                                    </SelectItem>
+                                            <Controller
+                                                control={control}
+                                                name="colorSchemeType"
+                                                rules={{ required: true }}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        data-testid="wheel-color-select"
+                                                        isRequired
+                                                        name={field.name}
+                                                        value={field.value}
+                                                        onChange={(key) => field.onChange(String(key))}
+                                                    >
+                                                        <Label>Wheel Color Scheme</Label>
+                                                        <Select.Trigger>
+                                                            <Select.Value>
+                                                                {
+                                                                    wheelColorSelectOptions.find(
+                                                                        (option) => String(option.id) === field.value
+                                                                    )?.label
+                                                                }
+                                                            </Select.Value>
+                                                            <Select.Indicator />
+                                                        </Select.Trigger>
+                                                        <Description>{wheelColorTypeDesc}</Description>
+                                                        <Select.Popover>
+                                                            <ListBox items={wheelColorSelectOptions}>
+                                                                {(option) => (
+                                                                    <ListBox.Item
+                                                                        id={String(option.id)}
+                                                                        textValue={option.label}
+                                                                    >
+                                                                        <div className="flex flex-col">
+                                                                            <Label>{option.label}</Label>
+                                                                            <Description>
+                                                                                {option.description}
+                                                                            </Description>
+                                                                        </div>
+                                                                        <ListBox.ItemIndicator />
+                                                                    </ListBox.Item>
+                                                                )}
+                                                            </ListBox>
+                                                        </Select.Popover>
+                                                    </Select>
                                                 )}
-                                            </Select>
+                                            />
                                             {parsedWheelColorType !== WheelColorType.Random && (
                                                 <div className="mb-3">
                                                     <div>
@@ -307,9 +388,24 @@ export default function ConfigPage() {
                                             {(parsedWheelColorType === WheelColorType.Monochromatic ||
                                                 parsedWheelColorType === WheelColorType.Analogous) && (
                                                 <div className="mb-3">
-                                                    <Switch {...register('randomizeColor')}>
-                                                        Randomize Color Order
-                                                    </Switch>
+                                                    <Controller
+                                                        control={control}
+                                                        name="randomizeColor"
+                                                        render={({ field }) => (
+                                                            <Switch
+                                                                isSelected={field.value}
+                                                                onChange={field.onChange}
+                                                                name={field.name}
+                                                            >
+                                                                <Switch.Content>
+                                                                    <Switch.Control>
+                                                                        <Switch.Thumb />
+                                                                    </Switch.Control>
+                                                                    Randomize Color Order
+                                                                </Switch.Content>
+                                                            </Switch>
+                                                        )}
+                                                    />
                                                 </div>
                                             )}
                                         </>
@@ -320,38 +416,51 @@ export default function ConfigPage() {
                                 <div className="my-12">
                                     {isLoaded ? (
                                         <>
-                                            <Select
-                                                {...register('backgroundColorType', { required: true })}
-                                                data-testid="app-background-color-select"
-                                                items={pageColorSelectOptions}
-                                                label="Page Background Color"
-                                                labelPlacement="outside"
-                                                disallowEmptySelection
-                                                isRequired
-                                                description={currentPageColorTypeDesc}
-                                                defaultSelectedKeys={[
-                                                    `${config?.pageColorConfig?.backgroundColorType ?? defaultPageColorConfig.backgroundColorType}`,
-                                                ]}
-                                                popoverProps={{ shouldBlockScroll: true }}
-                                                renderValue={(items) => {
-                                                    return items.map((item) => (
-                                                        <div key={item.key} className="my-2 flex flex-col">
-                                                            <span className="text-medium">{item.data?.label}</span>
-                                                        </div>
-                                                    ));
-                                                }}
-                                            >
-                                                {(option) => (
-                                                    <SelectItem key={option.id} textValue={`${option.id}`}>
-                                                        <div className="flex flex-col">
-                                                            <span className="text-medium">{option.label}</span>
-                                                            <span className="text-small text-default-500">
-                                                                {option.description}
-                                                            </span>
-                                                        </div>
-                                                    </SelectItem>
+                                            <Controller
+                                                control={control}
+                                                name="backgroundColorType"
+                                                rules={{ required: true }}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        data-testid="app-background-color-select"
+                                                        isRequired
+                                                        name={field.name}
+                                                        value={field.value}
+                                                        onChange={(key) => field.onChange(String(key))}
+                                                    >
+                                                        <Label>Page Background Color</Label>
+                                                        <Select.Trigger>
+                                                            <Select.Value>
+                                                                {
+                                                                    pageColorSelectOptions.find(
+                                                                        (option) => String(option.id) === field.value
+                                                                    )?.label
+                                                                }
+                                                            </Select.Value>
+                                                            <Select.Indicator />
+                                                        </Select.Trigger>
+                                                        <Description>{currentPageColorTypeDesc}</Description>
+                                                        <Select.Popover>
+                                                            <ListBox items={pageColorSelectOptions}>
+                                                                {(option) => (
+                                                                    <ListBox.Item
+                                                                        id={String(option.id)}
+                                                                        textValue={option.label}
+                                                                    >
+                                                                        <div className="flex flex-col">
+                                                                            <Label>{option.label}</Label>
+                                                                            <Description>
+                                                                                {option.description}
+                                                                            </Description>
+                                                                        </div>
+                                                                        <ListBox.ItemIndicator />
+                                                                    </ListBox.Item>
+                                                                )}
+                                                            </ListBox>
+                                                        </Select.Popover>
+                                                    </Select>
                                                 )}
-                                            </Select>
+                                            />
                                             {parsedPageColorType === PageColorType.Single && (
                                                 <div className="mb-3">
                                                     <div>Background Color</div>
@@ -371,44 +480,50 @@ export default function ConfigPage() {
                                         <div className="flex justify-between">
                                             <div className="flex gap-4">
                                                 {requestedConfig !== 'new' && (
+                                                    <Tooltip>
+                                                        <Button className="text-base" variant="primary" type="submit">
+                                                            <MdSave className="text-2xl" />
+                                                            Update Existing Wheel
+                                                        </Button>
+                                                        <Tooltip.Content>
+                                                            This button will update the existing wheel
+                                                        </Tooltip.Content>
+                                                    </Tooltip>
+                                                )}
+                                                <Tooltip>
                                                     <Button
                                                         className="text-base"
-                                                        startContent={<MdSave className="text-2xl" />}
-                                                        color="primary"
-                                                        type="submit"
-                                                        title="This button will update the existing wheel"
+                                                        variant={requestedConfig === 'new' ? 'primary' : 'secondary'}
+                                                        onPress={() => {
+                                                            methods.setValue('id', Config.generateId());
+                                                            methods.handleSubmit(onSubmit)();
+                                                        }}
                                                     >
-                                                        Update Existing Wheel
+                                                        <MdOutlineAddCircle className="text-2xl" />
+                                                        Create New Wheel
                                                     </Button>
-                                                )}
+                                                    <Tooltip.Content>
+                                                        If you have saved this wheel, this button will create a new
+                                                        wheel and not overwrite the saved wheel
+                                                    </Tooltip.Content>
+                                                </Tooltip>
+                                            </div>
+                                            <Tooltip>
                                                 <Button
                                                     className="text-base"
-                                                    startContent={<MdOutlineAddCircle className="text-2xl" />}
-                                                    color={requestedConfig === 'new' ? 'primary' : 'secondary'}
-                                                    variant={requestedConfig === 'new' ? 'solid' : 'flat'}
-                                                    title="If you have saved this wheel, this button will create a new wheel and not overwrite the saved wheel"
+                                                    variant="danger-soft"
                                                     onPress={() => {
-                                                        methods.setValue('id', Config.generateId());
-                                                        methods.handleSubmit(onSubmit)();
+                                                        methods.reset();
+                                                        navigate(PageBaseRoute.Config);
                                                     }}
                                                 >
-                                                    Create New Wheel
+                                                    <MdClear className="text-2xl" />
+                                                    Reset Form
                                                 </Button>
-                                            </div>
-                                            <Button
-                                                as={Link}
-                                                href={PageBaseRoute.Config}
-                                                className="text-base"
-                                                startContent={<MdClear className="text-2xl" />}
-                                                color="danger"
-                                                variant="flat"
-                                                onPress={() => {
-                                                    methods.reset();
-                                                }}
-                                                title="This button will reset the form to its default values"
-                                            >
-                                                Reset Form
-                                            </Button>
+                                                <Tooltip.Content>
+                                                    This button will reset the form to its default values
+                                                </Tooltip.Content>
+                                            </Tooltip>
                                         </div>
                                     ) : (
                                         <div className="flex justify-between">
