@@ -120,8 +120,9 @@ The root `vitest.config.ts` picks this workspace up through the apps glob in its
 `projects` array, so the root `npm run test` does include it.
 
 Test directories that exist: `apps/web/src/components/__tests__`,
-`apps/web/src/hooks/__tests__`, and `apps/web/src/utils/__tests__`. There are no
-tests under `src/pages`, `src/contexts`, or `src/compatibility`.
+`apps/web/src/hooks/__tests__`, `apps/web/src/pages/__tests__`, and
+`apps/web/src/utils/__tests__`. There are no tests under `src/contexts` or
+`src/compatibility`.
 
 Coverage deliberately excludes `./apps/web/src/components/**` and
 `./apps/web/src/pages/**` in the root `vitest.config.ts`. Component and page

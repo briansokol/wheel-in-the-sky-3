@@ -178,7 +178,7 @@ export default function WheelPage() {
 
     return (
         <main className="min-h-screen">
-            <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
+            <div className="fixed top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
                 <FaChevronDown className="relative top-2 z-10 mx-auto text-xl drop-shadow-lg sm:top-4 sm:text-4xl" />
                 <Wheel
                     wheelManager={wheelManager}
