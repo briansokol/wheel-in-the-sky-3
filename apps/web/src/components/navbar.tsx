@@ -40,9 +40,10 @@ export function AppNavBar() {
 
     useEffect(() => {
         if (!isMenuOpen) return;
+        const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
         return () => {
-            document.body.style.overflow = '';
+            document.body.style.overflow = previousOverflow;
         };
     }, [isMenuOpen]);
 
@@ -119,10 +120,25 @@ export function AppNavBar() {
                     </div>
                     <div className="hidden h-full flex-1 items-center justify-center gap-4 sm:flex">{navbarItems}</div>
                     <div className="hidden items-center justify-end gap-4 sm:flex">
-                        <Button variant="ghost" onPress={drawer.open}>
-                            Actions
-                            <FaList />
-                        </Button>
+                        <Drawer state={drawer}>
+                            <Button variant="ghost">
+                                Actions
+                                <FaList />
+                            </Button>
+                            <Drawer.Backdrop>
+                                <Drawer.Content placement="right">
+                                    <Drawer.Dialog className="sm:w-md">
+                                        <Drawer.CloseTrigger />
+                                        <Drawer.Header>
+                                            <Drawer.Heading>Actions</Drawer.Heading>
+                                        </Drawer.Header>
+                                        <Drawer.Body>
+                                            <ActionAccordion pathname={pathname} closeDrawer={drawer.close} />
+                                        </Drawer.Body>
+                                    </Drawer.Dialog>
+                                </Drawer.Content>
+                            </Drawer.Backdrop>
+                        </Drawer>
                     </div>
                 </nav>
             </header>
@@ -144,21 +160,6 @@ export function AppNavBar() {
                     </motion.div>
                 )}
             </AnimatePresence>
-            <Drawer state={drawer}>
-                <Drawer.Backdrop>
-                    <Drawer.Content placement="right">
-                        <Drawer.Dialog className="sm:w-md">
-                            <Drawer.CloseTrigger />
-                            <Drawer.Header>
-                                <Drawer.Heading>Actions</Drawer.Heading>
-                            </Drawer.Header>
-                            <Drawer.Body>
-                                <ActionAccordion pathname={pathname} closeDrawer={drawer.close} />
-                            </Drawer.Body>
-                        </Drawer.Dialog>
-                    </Drawer.Content>
-                </Drawer.Backdrop>
-            </Drawer>
         </>
     );
 }

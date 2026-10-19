@@ -49,17 +49,11 @@ function renderNavbar(initialEntry: string) {
 describe('AppNavBar', () => {
     beforeEach(() => {
         localStorage.clear();
-        // HeroUI's Drawer root wraps react-aria's DialogTrigger, which warns in dev when the drawer is
-        // controlled via `state` and has no Drawer.Trigger child. Known library noise; filter only that.
-        const warn = console.warn.bind(console);
-        vi.spyOn(console, 'warn').mockImplementation((...args: unknown[]) => {
-            if (typeof args[0] === 'string' && args[0].startsWith('A PressResponder was rendered')) return;
-            warn(...args);
-        });
     });
 
     afterEach(() => {
         vi.restoreAllMocks();
+        vi.unstubAllGlobals();
         document.body.style.overflow = '';
     });
 
@@ -112,6 +106,20 @@ describe('AppNavBar', () => {
         expect(document.body.style.overflow).toBe('');
     });
 
+    it('preserves a pre-existing body scroll lock when the menu closes and on unmount', () => {
+        document.body.style.overflow = 'hidden';
+        const { unmount } = renderNavbar('/wheel?c=abc');
+        fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
+        expect(document.body.style.overflow).toBe('hidden');
+
+        fireEvent.click(screen.getByRole('button', { name: 'Close Menu' }));
+        expect(document.body.style.overflow).toBe('hidden');
+
+        fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
+        unmount();
+        expect(document.body.style.overflow).toBe('hidden');
+    });
+
     it('renders the mobile panel outside the backdrop-blur header', () => {
         renderNavbar('/config');
         fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
@@ -141,7 +149,12 @@ describe('AppNavBar', () => {
 
         expect(screen.getByRole('button', { name: 'Open Menu' })).toHaveAttribute('aria-expanded', 'false');
         expect(document.body.style.overflow).toBe('');
-        vi.unstubAllGlobals();
+    });
+
+    it('renders without the PressResponder dev warning', () => {
+        const warn = vi.spyOn(console, 'warn');
+        renderNavbar('/config');
+        expect(warn).not.toHaveBeenCalledWith(expect.stringContaining('PressResponder'));
     });
 
     it('Actions opens the drawer', () => {
