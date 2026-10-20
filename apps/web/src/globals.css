@@ -29,6 +29,10 @@
   background-color: var(--glass-tint);
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
+  /* Lighter secondary text keeps WCAG AA over the brightest glows. */
+  --muted: var(--glass-muted);
+  --field-placeholder: var(--glass-muted);
+  --danger-soft-foreground: var(--glass-danger);
   --tw-inset-shadow: var(--glass-rim);
   --tw-shadow: var(--glass-shadow);
   box-shadow:
@@ -70,8 +74,11 @@
     --focus-ring: #3b82f6;
 
     /* Liquid glass: every glass surface, rim and well reads from these. */
-    --glass-tint: rgb(255 255 255 / 7%);
+    --glass-tint: rgb(14 12 24 / 62%);
     --glass-blur: blur(24px) saturate(160%);
+    --glass-blur-small: blur(12px) saturate(160%);
+    --glass-muted: oklch(85% 0.015 286);
+    --glass-danger: oklch(80% 0.12 25);
     --glass-border: rgb(255 255 255 / 14%);
     --glass-rim: inset 0 1px 0 rgb(255 255 255 / 25%);
     --glass-shadow: 0 10px 30px rgb(0 0 0 / 35%);
@@ -83,6 +90,7 @@
     :root {
       --glass-tint: rgb(30 30 42);
       --glass-blur: none;
+      --glass-blur-small: none;
     }
   }
 
@@ -154,7 +162,7 @@
   }
 
   .tooltip {
-    --glass-blur: blur(12px) saturate(160%);
+    --glass-blur: var(--glass-blur-small);
     @apply glass-surface;
   }
 
