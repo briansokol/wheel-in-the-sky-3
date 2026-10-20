@@ -37,6 +37,11 @@ export function AppNavBar() {
         setIsMenuOpen(false);
     }, [setIsMenuOpen]);
 
+    // The inert targets are chosen once on open, so a route change (e.g. browser Back) must close the menu.
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [pathname, currentEncodedConfig]);
+
     useEffect(() => {
         if (!isMenuOpen) return;
         const panel = panelRef.current;
@@ -66,6 +71,7 @@ export function AppNavBar() {
 
     useEffect(() => {
         if (!isMenuOpen || typeof window.matchMedia !== 'function') return;
+        // Must match Tailwind's `sm` breakpoint (the `sm:` classes below).
         const query = window.matchMedia('(min-width: 640px)');
         const onChange = (event: MediaQueryListEvent) => {
             if (event.matches) closeMenu();

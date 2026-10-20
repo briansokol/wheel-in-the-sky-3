@@ -25,6 +25,15 @@ function RouterBridge({ children }: { children: React.ReactNode }) {
     );
 }
 
+function TestNavigate({ to }: { to: string }) {
+    const navigate = useNavigate();
+    return (
+        <button type="button" onClick={() => void navigate(to)}>
+            Test navigate
+        </button>
+    );
+}
+
 function renderNavbar(initialEntry: string) {
     return render(
         <MemoryRouter initialEntries={[initialEntry]}>
@@ -33,6 +42,7 @@ function renderNavbar(initialEntry: string) {
                     <RemovedWinnersProvider>
                         <RouterBridge>
                             <AppNavBar />
+                            <TestNavigate to="/about" />
                             <Routes>
                                 <Route path="/about" element={<p>About placeholder</p>} />
                                 <Route path="/wheel" element={<p>Wheel placeholder</p>} />
@@ -203,6 +213,19 @@ describe('AppNavBar', () => {
 
         fireEvent.click(screen.getByRole('button', { name: 'Close Menu' }));
         expect(content).not.toHaveAttribute('inert');
+    });
+
+    it('closes the mobile menu and clears inert when the route changes', () => {
+        renderNavbar('/config');
+        fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
+        expect(screen.getByText('Other placeholder')).toHaveAttribute('inert');
+
+        fireEvent.click(screen.getByRole('button', { name: 'Test navigate' }));
+
+        expect(screen.getByRole('button', { name: 'Open Menu' })).toHaveAttribute('aria-expanded', 'false');
+        const content = screen.getByText('About placeholder');
+        expect(content).not.toHaveAttribute('inert');
+        expect(document.querySelector('[inert]')).toBeNull();
     });
 
     it('Actions opens the drawer', () => {
