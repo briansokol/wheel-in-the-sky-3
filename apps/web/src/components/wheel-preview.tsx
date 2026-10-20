@@ -115,8 +115,7 @@ export const WheelPreview: FC<WheelPreviewProps> = ({
     return (
         <Card
             data-testid="wheel-preview"
-            className="w-full"
-            shadow="lg"
+            className="w-full shadow-lg"
             style={{ height: height ?? '400px', background: bgColor }}
         >
             {names.length > 0 ? (

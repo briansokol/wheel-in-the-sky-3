@@ -55,7 +55,7 @@ export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorN
                     aria-label="Chosen Color"
                 />
                 {allowMultiColor && multiColorName && (
-                    <Button className="mr-3" onPress={addColor} color="default">
+                    <Button className="mr-3" onPress={addColor} variant="tertiary">
                         Add Color
                     </Button>
                 )}
@@ -66,9 +66,10 @@ export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorN
                     {colors.map((colorHex, i) => (
                         <Button
                             key={colorHex}
-                            className="relative mr-3 mb-3"
+                            className="relative mr-3 mb-3 min-w-10"
                             style={{ background: colorHex }}
                             onPress={removeColor(i)}
+                            aria-label={`Remove color ${colorHex}`}
                         ></Button>
                     ))}
                 </div>

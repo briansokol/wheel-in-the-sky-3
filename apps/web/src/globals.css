@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '@heroui/styles';
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -39,15 +40,15 @@
 
 @layer utilities {
   :root {
-    --foreground: #eee;
-    --background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
+    --page-foreground: #eee;
+    --page-background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
     --focus-ring: #3b82f6;
   }
 
   html,
   body {
-    color: var(--foreground);
-    background: var(--background);
+    color: var(--page-foreground);
+    background: var(--page-background);
     background-attachment: fixed;
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -61,7 +62,14 @@
   }
 }
 
-@plugin './hero.ts';
-
-@source '../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
-@custom-variant dark (&:is(.dark *));
+/* HeroUI imports its theme variables into `layer(theme)`, which precedes `base`,
+   so these overrides win at equal specificity. */
+@layer base {
+  .dark-purple {
+    --accent: #c031e2;
+    --accent-foreground: #ffffff;
+    --focus: #f182f6;
+    --background: rgb(10 10 10);
+    --foreground: #ffffff;
+  }
+}

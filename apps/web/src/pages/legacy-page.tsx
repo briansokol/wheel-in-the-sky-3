@@ -1,4 +1,4 @@
-import { Button, Link } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { defaultPageColorConfig } from '@repo/shared/constants/colors';
 import { useEffect, useState } from 'react';
 import { FaCircleChevronUp } from 'react-icons/fa6';
@@ -46,15 +46,13 @@ export default function LegacyPage() {
                     start using the latest features. Be sure to update any bookmarks you have with the new wheel URL.
                 </p>
                 <Button
-                    as={Link}
-                    href={newConfig ? `${PageBaseRoute.Wheel}?c=${newConfig}` : PageBaseRoute.Wheel}
-                    className="mt-8"
+                    className="mt-8 shadow-lg"
                     size="lg"
-                    color="primary"
-                    variant="shadow"
-                    disabled={!newConfig}
-                    startContent={<FaCircleChevronUp className="text-3xl" />}
+                    variant="primary"
+                    isDisabled={!newConfig}
+                    onPress={() => navigate(newConfig ? `${PageBaseRoute.Wheel}?c=${newConfig}` : PageBaseRoute.Wheel)}
                 >
+                    <FaCircleChevronUp className="text-3xl" />
                     Upgrade Wheel
                 </Button>
             </div>

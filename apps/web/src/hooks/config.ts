@@ -29,7 +29,7 @@ export function useDecodedConfig(encodedConfig?: string): UseQueryResult<Config 
         },
         enabled: typeof encodedConfig === 'string',
         retry: 1,
-        staleTime: 1000 * 60 * 15,
+        staleTime: Infinity,
     });
 }
 

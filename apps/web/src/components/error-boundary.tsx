@@ -67,7 +67,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             // Default fallback UI
             return (
                 <div className="flex min-h-screen items-center justify-center bg-background px-4">
-                    <div className="border-border bg-card w-full max-w-md rounded-lg border p-8 shadow-lg">
+                    <div className="bg-card w-full max-w-md rounded-lg border border-border p-8 shadow-lg">
                         <div className="mb-6 text-center">
                             <h1 className="mb-2 text-2xl font-bold text-foreground">Something went wrong</h1>
                             <p className="text-muted-foreground text-sm">
@@ -85,13 +85,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                         <div className="flex gap-3">
                             <button
                                 onClick={this.handleReset}
-                                className="flex-1 rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80"
+                                className="flex-1 rounded-md bg-default px-4 py-2 text-sm font-medium text-default-foreground transition-colors hover:bg-default-hover"
                             >
                                 Try Again
                             </button>
                             <button
                                 onClick={this.handleReload}
-                                className="flex-1 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                                className="flex-1 rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent-hover"
                             >
                                 Reload Page
                             </button>

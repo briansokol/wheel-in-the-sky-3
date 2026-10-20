@@ -43,12 +43,12 @@ export function useFgColor(config: Config | undefined, foregroundColor: string) 
 
 export function useSetDocumentBackgroundColor(bgColor: string) {
     useEffect(() => {
-        document.documentElement.style.setProperty('--background', bgColor);
+        document.documentElement.style.setProperty('--page-background', bgColor);
     }, [bgColor]);
 }
 
 export function useSetDocumentForegroundColor(fgColor: string) {
     useEffect(() => {
-        document.documentElement.style.setProperty('--foreground', fgColor);
+        document.documentElement.style.setProperty('--page-foreground', fgColor);
     }, [fgColor]);
 }

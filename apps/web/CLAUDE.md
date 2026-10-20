@@ -37,36 +37,35 @@ The same split holds for rotation, segment, and removed-winners.
 
 ## Key entry points
 
-| Path                                            | What it is                                                                      |
-| ----------------------------------------------- | ------------------------------------------------------------------------------- |
-| `apps/web/index.html`                           | Vite HTML entry; loads `/src/main.tsx` and sets the root theme classes          |
-| `apps/web/src/main.tsx`                         | Mounts React, initializes Sentry, wraps everything in `BrowserRouter`           |
-| `apps/web/src/providers.tsx`                    | Provider stack: React Query, config, rotation, segment, removed winners, HeroUI |
-| `apps/web/src/routes.tsx`                       | Every route, nested under `RootLayout`                                          |
-| `apps/web/src/layout.tsx`                       | `RootLayout`: navbar, error boundary, and the routed `Outlet`                   |
-| `apps/web/src/utils/api.ts`                     | Hono typed client `hc<ApiAppType>` and the shared `QueryClient`                 |
-| `apps/web/src/hooks/config.ts`                  | `useDecodedConfig` and `useEncodeConfigMutation`, the config round trip         |
-| `apps/web/src/utils/wheel-animation-manager.ts` | `WheelAnimationManager`, rotation animation driven outside React state          |
-| `apps/web/src/constants/routes.ts`              | The `PageBaseRoute` enum, source of route path strings                          |
-| `apps/web/src/globals.css`                      | Tailwind entry; also loads `src/hero.ts` as a plugin                            |
-| `apps/web/src/hero.ts`                          | HeroUI theme, including the `dark-purple` theme                                 |
-| `apps/web/vite.config.ts`                       | Vite plugins, the `@` alias, and the Vitest configuration                       |
+| Path                                            | What it is                                                                                                                                                    |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/web/index.html`                           | Vite HTML entry; loads `/src/main.tsx` and sets the root theme classes                                                                                        |
+| `apps/web/src/main.tsx`                         | Mounts React, initializes Sentry, wraps everything in `BrowserRouter`                                                                                         |
+| `apps/web/src/providers.tsx`                    | Provider stack: React Query, config, rotation, segment, removed winners, and HeroUI `RouterProvider`, which HeroUI `Link` requires for client-side navigation |
+| `apps/web/src/routes.tsx`                       | Every route, nested under `RootLayout`                                                                                                                        |
+| `apps/web/src/layout.tsx`                       | `RootLayout`: navbar, error boundary, and the routed `Outlet`                                                                                                 |
+| `apps/web/src/utils/api.ts`                     | Hono typed client `hc<ApiAppType>` and the shared `QueryClient`                                                                                               |
+| `apps/web/src/hooks/config.ts`                  | `useDecodedConfig` and `useEncodeConfigMutation`, the config round trip                                                                                       |
+| `apps/web/src/utils/wheel-animation-manager.ts` | `WheelAnimationManager`, rotation animation driven outside React state                                                                                        |
+| `apps/web/src/constants/routes.ts`              | The `PageBaseRoute` enum, source of route path strings                                                                                                        |
+| `apps/web/src/globals.css`                      | Tailwind entry; imports HeroUI styles and defines the `dark-purple` theme                                                                                     |
+| `apps/web/vite.config.ts`                       | Vite plugins, the `@` alias, and the Vitest configuration                                                                                                     |
 
 ## Commands
 
 Run from the repo root.
 
-| Task              | Command                                          | Notes                                                          |
-| ----------------- | ------------------------------------------------ | -------------------------------------------------------------- |
-| Dev server        | `npm run dev --workspace apps/web`               | `vite --host`. Does not start the Worker; that is `apps/api`   |
-| Dev, whole repo   | `npm run dev`                                    | Turbo; `apps/web/turbo.json` makes it build dependencies first |
-| Build             | `npm run build --workspace apps/web`             | Writes to `apps/api/public`, see below                         |
-| Build with Sentry | `npm run build:with-sentry --workspace apps/web` | Sets `WITH_SENTRY`, which adds the Sentry Vite plugin          |
-| Typecheck         | `npm run check-types --workspace apps/web`       | `tsc --noEmit`                                                 |
-| Lint              | `npm run lint --workspace apps/web`              | `oxlint .`                                                     |
-| Test, watch       | `npm run test --workspace apps/web`              | `vitest`                                                       |
-| Test, once        | `npm run test:ci --workspace apps/web`           | `vitest run --coverage`                                        |
-| Preview build     | `npm run preview --workspace apps/web`           | `vite preview`                                                 |
+| Task              | Command                                          | Notes                                                           |
+| ----------------- | ------------------------------------------------ | --------------------------------------------------------------- |
+| Dev server        | `npm run dev --workspace apps/web`               | `vite --host`. Does not start the Worker; that is `apps/api`    |
+| Dev, whole repo   | `npm run dev`                                    | Turbo; `apps/web/turbo.json` makes it build dependencies first  |
+| Build             | `npm run build --workspace apps/web`             | Writes to `apps/api/public`, see below                          |
+| Build with Sentry | `npm run build:with-sentry --workspace apps/web` | Sets `WITH_SENTRY`, which adds the Sentry Vite plugin           |
+| Typecheck         | `npm run check-types --workspace apps/web`       | `tsc --noEmit` on `tsconfig.app.json` then `tsconfig.node.json` |
+| Lint              | `npm run lint --workspace apps/web`              | `oxlint .`                                                      |
+| Test, watch       | `npm run test --workspace apps/web`              | `vitest`                                                        |
+| Test, once        | `npm run test:ci --workspace apps/web`           | `vitest run --coverage`                                         |
+| Preview build     | `npm run preview --workspace apps/web`           | `vite preview`                                                  |
 
 Scripts an agent may expect here but that do not exist: there is no `deploy`
 script (only `apps/api` has one), no `types` script even though the root
@@ -145,19 +144,22 @@ combines the oxlint, prettier, and vitest configs from `@repo/lint-staged`.
    `apps/web/package.json`, not a local `dist`.
 2. `@repo/shared` and `@repo/api-handlers` resolve through their `exports` maps
    to their `dist` directories, so a stale or missing dependency build makes a
-   typecheck here meaningless. `apps/web/turbo.json` declares `dependsOn:
-["^build"]` for `dev` and `build`, so going through Turbo handles it and a
-   direct `npm run --workspace` invocation does not.
+   typecheck here meaningless. `apps/web/turbo.json` declares
+   `dependsOn: ["^build"]` for `dev`, `build`, and `check-types`, so going
+   through Turbo handles it and a direct `npm run --workspace` invocation does
+   not.
 3. The `@` alias lives in two files that must agree. Changing `paths` in
    `apps/web/tsconfig.app.json` without changing `resolve.alias` in
    `apps/web/vite.config.ts` breaks the runtime while the typecheck still
    passes, and the reverse breaks the typecheck while the app still runs.
-4. `apps/web/src/hero.ts` is reachable only from CSS. `apps/web/src/globals.css`
-   loads it with `@plugin './hero.ts'`, and no TypeScript module imports it, so
-   it reads as dead code to anything following the import graph.
-5. The theme name is a cross-file contract. `dark-purple` is defined in
-   `apps/web/src/hero.ts` and applied as a class on the `<html>` element in
-   `apps/web/index.html`; renaming one silently unstyles the app.
+4. HeroUI owns `--background` and `--foreground`. The page's own gradient and
+   text color live in `--page-background` and `--page-foreground` in
+   `apps/web/src/globals.css`; never put the page gradient back into the
+   HeroUI variables.
+5. The theme name is a cross-file contract. `dark-purple` is the
+   `.dark-purple` block in `apps/web/src/globals.css`, applied through the
+   `dark dark-purple` classes on the `<html>` element in `apps/web/index.html`;
+   renaming one silently unstyles the app.
 6. Two different `public` directories are in play. `apps/web/public` is source,
    copied into the bundle; `apps/api/public` is the build destination. Editing
    the latter is editing generated output.
@@ -168,6 +170,12 @@ combines the oxlint, prettier, and vitest configs from `@repo/lint-staged`.
 8. Sentry upload is opt-in at build time. `sentryVitePlugin` is only added to the
    plugin list when `WITH_SENTRY` is set, so a plain `build` produces sourcemaps
    but uploads nothing.
+9. `react-aria` and `react-aria-components` are pinned as an exact pair matching
+   what the installed `@heroui/react` was tested against (currently 3.52.1 /
+   1.21.1 for 3.2.6). `react-aria-components` pins `react-aria` exactly, so bump
+   the three together or a second copy of React Aria ends up in the tree.
+   `@internationalized/date`, `@react-aria/ssr`, and `@react-aria/utils` are
+   HeroUI peer deps, hence direct dependencies.
 
 ## Boundaries
 
