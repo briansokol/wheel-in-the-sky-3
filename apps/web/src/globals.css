@@ -144,3 +144,27 @@
       inset 0 1px 0 rgb(255 255 255 / 18%);
   }
 }
+
+/* Popovers (select lists included) and tooltips are portaled to the body, so they
+   are never inside another glass surface. They reuse the shared glass definition. */
+@layer components {
+  :is(.popover, .select__popover) {
+    @apply glass-surface;
+    border-radius: min(32px, var(--radius-3xl));
+  }
+
+  .tooltip {
+    --glass-blur: blur(12px) saturate(160%);
+    @apply glass-surface;
+  }
+
+  .list-box-item:is(
+    :hover,
+    [data-hovered='true'],
+    [data-focused='true'],
+    [aria-selected='true'],
+    [data-selected='true']
+  ) {
+    background-color: rgb(192 49 226 / 18%);
+  }
+}
