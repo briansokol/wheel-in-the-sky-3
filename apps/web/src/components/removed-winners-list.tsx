@@ -51,7 +51,7 @@ export function RemovedWinnersList({ closeDrawer }: RemovedWinnersListProps) {
             ))}
             {removedWinners.length === 0 && (
                 <div>
-                    <p className="text-center text-gray-500">No removed winners</p>
+                    <p className="text-center text-muted">No removed winners</p>
                 </div>
             )}
             <div>

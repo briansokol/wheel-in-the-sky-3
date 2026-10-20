@@ -8,7 +8,7 @@ import { isPage } from '@/utils/routes';
 import { ActionAccordion } from './action-accordion';
 
 const ITEM_CLASS =
-    "relative flex h-full items-center aria-[current=page]:after:content-[''] aria-[current=page]:after:absolute aria-[current=page]:after:bottom-0 aria-[current=page]:after:left-0 aria-[current=page]:after:right-0 aria-[current=page]:after:h-[2px] aria-[current=page]:after:rounded-[2px] aria-[current=page]:after:bg-accent";
+    "relative flex h-full items-center aria-[current=page]:after:content-[''] aria-[current=page]:after:absolute aria-[current=page]:after:bottom-0 aria-[current=page]:after:left-0 aria-[current=page]:after:right-0 aria-[current=page]:after:h-[2px] aria-[current=page]:after:rounded-[2px] aria-[current=page]:after:bg-accent aria-[current=page]:after:shadow-[0_0_8px_var(--accent)]";
 
 export function AppNavBar() {
     const { pathname } = useLocation();
@@ -123,7 +123,7 @@ export function AppNavBar() {
         <>
             <header
                 ref={headerRef}
-                className="sticky top-0 z-40 w-full border-b border-separator bg-background/70 backdrop-blur-lg"
+                className="sticky top-2 z-40 mx-2 rounded-2xl glass-surface glass-tint-strong sm:mx-4"
             >
                 <nav className="mx-auto flex h-16 max-w-5xl items-center gap-4 px-6">
                     <Button
@@ -150,13 +150,13 @@ export function AppNavBar() {
                     <div className="hidden h-full flex-1 items-center justify-center gap-4 sm:flex">{navbarItems}</div>
                     <div className="hidden items-center justify-end gap-4 sm:flex">
                         <Drawer state={drawer}>
-                            <Button variant="ghost">
+                            <Button variant="ghost" className="rounded-full bg-white/10 glass-rim">
                                 Actions
                                 <FaList />
                             </Button>
-                            <Drawer.Backdrop>
+                            <Drawer.Backdrop className="bg-black/25">
                                 <Drawer.Content placement="right">
-                                    <Drawer.Dialog className="sm:w-md">
+                                    <Drawer.Dialog className="rounded-l-2xl glass-surface sm:w-md">
                                         <Drawer.CloseTrigger />
                                         <Drawer.Header>
                                             <Drawer.Heading>Actions</Drawer.Heading>
@@ -177,7 +177,7 @@ export function AppNavBar() {
                         key="mobile-menu"
                         ref={panelRef}
                         id={panelId}
-                        className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto bg-background/90 backdrop-blur-lg sm:hidden"
+                        className="fixed inset-x-2 top-[4.75rem] bottom-2 z-40 overflow-y-auto rounded-2xl glass-surface glass-tint-strong sm:hidden"
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}

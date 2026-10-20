@@ -189,7 +189,7 @@ export default function WheelPage() {
                     }
                 />
                 {hasWinner && (
-                    <Card className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible bg-background/50 shadow-lg backdrop-blur-md backdrop-saturate-150 dark:bg-default/50">
+                    <Card className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-3xl glass-surface glass-tint-strong">
                         {wheelManager?.config?.title && (
                             <Card.Header className="flex items-center justify-center">
                                 <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>
@@ -206,7 +206,7 @@ export default function WheelPage() {
                             <Button
                                 size="md"
                                 variant="tertiary"
-                                className="mx-1 rounded-lg"
+                                className="mx-1 rounded-lg glass-rim"
                                 onPress={() => getBanner(bannerRef)}
                             >
                                 <LuClipboardCopy className="text-xl" />
@@ -215,7 +215,7 @@ export default function WheelPage() {
                             <Button
                                 size="md"
                                 variant="tertiary"
-                                className="mx-1 rounded-lg"
+                                className="mx-1 rounded-lg glass-rim"
                                 onPress={() => {
                                     if (segment?.name) {
                                         setRemovedWinners([...removedWinners, segment.name]);

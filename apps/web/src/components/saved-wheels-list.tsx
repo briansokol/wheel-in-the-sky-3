@@ -107,7 +107,7 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
                 Save Current Wheel
             </Button>
             <div>
-                <p className="text-center text-sm text-gray-500">
+                <p className="text-center text-sm text-muted">
                     Wheels are saved locally to your browser. They are not synced between devices.
                 </p>
             </div>

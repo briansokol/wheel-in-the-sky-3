@@ -1,5 +1,8 @@
 import { Config } from '@repo/shared/classes/config';
+import { DEFAULT_BASE_COLOR } from '@repo/shared/constants/colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
+import { buildWheelColorConfig } from '@repo/shared/utils/configs';
+import { getGlowColors } from '@repo/shared/utils/glow-colors';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -51,6 +54,15 @@ function configPageTree() {
 
 function renderConfigPage() {
     return render(configPageTree());
+}
+
+function glowColors(): (string | null)[] {
+    return screen.getAllByTestId('wheel-glow').map((glow) => glow.getAttribute('data-color'));
+}
+
+// The mocked config sets Triad without a base color, so the form falls back to DEFAULT_BASE_COLOR.
+function expectedGlowColors(wheelColorType: WheelColorType): string[] {
+    return getGlowColors(buildWheelColorConfig(wheelColorType, DEFAULT_BASE_COLOR, [], false));
 }
 
 describe('ConfigPage', () => {
@@ -163,5 +175,36 @@ describe('ConfigPage', () => {
             expect(screen.getByRole('textbox', { name: 'Wheel Title' })).toHaveValue('Team Lunch');
         });
         expect(screen.getByTestId('location')).toHaveTextContent(/^\/config$/);
+    });
+
+    it("shows glows from the wheel's color settings", () => {
+        renderConfigPage();
+
+        expect(glowColors()).toEqual(expectedGlowColors(WheelColorType.Triad));
+    });
+
+    it('changing the color scheme updates the glows', async () => {
+        renderConfigPage();
+        const before = glowColors();
+
+        const trigger = within(screen.getByTestId('wheel-color-select')).getByRole('button');
+        act(() => trigger.focus());
+        fireEvent.keyDown(trigger, { key: 'ArrowDown' });
+        fireEvent.keyUp(trigger, { key: 'ArrowDown' });
+        fireEvent.click(await screen.findByRole('option', { name: /Tetrad/ }));
+
+        await waitFor(() => expect(glowColors()).toEqual(expectedGlowColors(WheelColorType.Tetrad)));
+        expect(glowColors()).not.toEqual(before);
+    });
+
+    it('typing names does not change the glows', () => {
+        renderConfigPage();
+        const before = glowColors();
+
+        const segments = screen.getByRole('textbox', { name: /Wheel Segments/ });
+        fireEvent.change(segments, { target: { value: 'Carol\nDave\nEve' } });
+
+        expect(segments).toHaveValue('Carol\nDave\nEve');
+        expect(glowColors()).toEqual(before);
     });
 });
