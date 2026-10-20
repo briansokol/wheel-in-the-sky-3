@@ -62,6 +62,8 @@
   }
 }
 
+/* HeroUI imports its theme variables into `layer(theme)`, which precedes `base`,
+   so these overrides win at equal specificity. */
 @layer base {
   .dark-purple {
     --accent: #c031e2;

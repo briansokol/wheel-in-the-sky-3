@@ -169,6 +169,12 @@ combines the oxlint, prettier, and vitest configs from `@repo/lint-staged`.
 8. Sentry upload is opt-in at build time. `sentryVitePlugin` is only added to the
    plugin list when `WITH_SENTRY` is set, so a plain `build` produces sourcemaps
    but uploads nothing.
+9. `react-aria` and `react-aria-components` are pinned as an exact pair matching
+   what the installed `@heroui/react` was tested against (currently 3.52.1 /
+   1.21.1 for 3.2.6). `react-aria-components` pins `react-aria` exactly, so bump
+   the three together or a second copy of React Aria ends up in the tree.
+   `@internationalized/date`, `@react-aria/ssr`, and `@react-aria/utils` are
+   HeroUI peer deps, hence direct dependencies.
 
 ## Boundaries
 
