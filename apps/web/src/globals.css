@@ -23,6 +23,31 @@
   text-wrap: balance;
 }
 
+/* Glass shadows go through Tailwind's shadow variables so `shadow-*` utilities
+   and HeroUI's ring-based focus indicators still compose with the rim. */
+@utility glass-surface {
+  background-color: var(--glass-tint);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  --tw-inset-shadow: var(--glass-rim);
+  --tw-shadow: var(--glass-shadow);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+    var(--tw-shadow);
+}
+
+@utility glass-rim {
+  --tw-inset-shadow: var(--glass-rim);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+    var(--tw-shadow);
+}
+
+@utility glass-well {
+  background-color: var(--glass-well-bg);
+  border: 1px solid var(--glass-well-border);
+}
+
 @keyframes float {
   0% {
     transform: scale(1);
@@ -43,6 +68,22 @@
     --page-foreground: #eee;
     --page-background: linear-gradient(to top left, rgb(10 10 10), rgb(25 25 60));
     --focus-ring: #3b82f6;
+
+    /* Liquid glass: every glass surface, rim and well reads from these. */
+    --glass-tint: rgb(255 255 255 / 7%);
+    --glass-blur: blur(24px) saturate(160%);
+    --glass-border: rgb(255 255 255 / 14%);
+    --glass-rim: inset 0 1px 0 rgb(255 255 255 / 25%);
+    --glass-shadow: 0 10px 30px rgb(0 0 0 / 35%);
+    --glass-well-bg: rgb(0 0 0 / 25%);
+    --glass-well-border: rgb(255 255 255 / 8%);
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    :root {
+      --glass-tint: rgb(30 30 42);
+      --glass-blur: none;
+    }
   }
 
   html,
@@ -71,5 +112,35 @@
     --focus: #f182f6;
     --background: rgb(10 10 10);
     --foreground: #ffffff;
+  }
+}
+
+/* Form fields on a glass sheet: dark wells at rest, purple glow when active.
+   Labels are deliberately left alone. Same layer as HeroUI's field styles, later in source. */
+@layer components {
+  /* HeroUI's hover rules outrank the selectors below but read these variables. */
+  .glass-form {
+    --field-hover: var(--glass-well-bg);
+    --field-border-hover: var(--glass-well-border);
+  }
+
+  .glass-form :is(.input, .textarea, .select__trigger) {
+    border: 1px solid var(--glass-well-border);
+    background-color: var(--glass-well-bg);
+  }
+
+  .glass-form
+    :is(.input, .textarea, .select__trigger):is(
+      :focus,
+      :focus-within,
+      [data-focused='true'],
+      [data-focus-visible='true']
+    ) {
+    border-color: #f182f6;
+    background-color: rgb(192 49 226 / 14%);
+    box-shadow:
+      0 0 0 1px rgb(241 130 246 / 50%),
+      0 0 26px rgb(192 49 226 / 55%),
+      inset 0 1px 0 rgb(255 255 255 / 18%);
   }
 }

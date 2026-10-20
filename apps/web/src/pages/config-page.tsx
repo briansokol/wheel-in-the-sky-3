@@ -20,13 +20,19 @@ import { PageColorType } from '@repo/shared/enums/page-colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
 import { ConfigFormInputs } from '@repo/shared/types/config';
 import { defaultWheelColorConfig } from '@repo/shared/types/wheel-colors';
-import { getPageColorSelectOptionDescription, getWheelColorSelectOptionDescription } from '@repo/shared/utils/configs';
+import {
+    buildWheelColorConfig,
+    getPageColorSelectOptionDescription,
+    getWheelColorSelectOptionDescription,
+} from '@repo/shared/utils/configs';
+import { getGlowColors } from '@repo/shared/utils/glow-colors';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { MdClear, MdOutlineAddCircle, MdSave } from 'react-icons/md';
 import { useNavigate, useSearchParams } from 'react-router';
 import { ColorPicker } from '@/components/color-picker';
+import { WheelGlows } from '@/components/wheel-glows';
 import { WheelPreview } from '@/components/wheel-preview';
 import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
@@ -106,6 +112,18 @@ export default function ConfigPage() {
         return [parsedType, getWheelColorSelectOptionDescription(parsedType)];
     }, [colorSchemeType, defaultFormValues]);
 
+    // Only color settings feed the glows; randomizeColor is ignored on purpose so they never flicker.
+    const glowColors = useMemo(() => {
+        return getGlowColors(
+            buildWheelColorConfig(
+                parsedWheelColorType,
+                baseColor ?? DEFAULT_BASE_COLOR,
+                deserializedCustomColors,
+                false
+            )
+        );
+    }, [parsedWheelColorType, baseColor, deserializedCustomColors]);
+
     const [parsedPageColorType, currentPageColorTypeDesc] = useMemo(() => {
         const parsedType = Number.parseInt(backgroundColorType ?? defaultFormValues.backgroundColorType);
         return [parsedType, getPageColorSelectOptionDescription(parsedType)];
@@ -157,9 +175,10 @@ export default function ConfigPage() {
     return (
         <main className="flex flex-col items-center px-4 py-8">
             <>
+                <WheelGlows colors={glowColors} />
                 <div className="fixed z-30 container mx-auto max-w-3xl">
                     <div className="relative space-y-6">
-                        <Card className="bg-surface/70 p-0 shadow-lg backdrop-blur-md">
+                        <Card className="rounded-3xl glass-surface p-0 shadow-lg">
                             <Card.Content className="relative min-h-16 p-3">
                                 {previewIsCollapsed ? (
                                     <div className="my-auto size-full text-center">Expand to See Wheel Preview</div>
@@ -194,9 +213,9 @@ export default function ConfigPage() {
                         </Card>
                     </div>
                 </div>
-                <div className="container mx-auto max-w-3xl">
+                <div className="relative z-10 container mx-auto max-w-3xl">
                     <div className={`mb-8 ${previewIsCollapsed ? 'h-12' : 'h-96'}`}></div>
-                    <div className="relative space-y-6">
+                    <div className="glass-form relative space-y-6 rounded-3xl glass-surface p-4 sm:p-6">
                         <h1 className="text-4xl font-bold">Configuration</h1>
                         <FormProvider {...methods}>
                             <form onSubmit={handleSubmit(onSubmit)} className="relative">
@@ -287,7 +306,7 @@ export default function ConfigPage() {
                                                     name={field.name}
                                                 >
                                                     <Switch.Content>
-                                                        <Switch.Control>
+                                                        <Switch.Control className="glass-rim">
                                                             <Switch.Thumb />
                                                         </Switch.Control>
                                                         Randomize Order Every So Often
@@ -311,7 +330,7 @@ export default function ConfigPage() {
                                                     name={field.name}
                                                 >
                                                     <Switch.Content>
-                                                        <Switch.Control>
+                                                        <Switch.Control className="glass-rim">
                                                             <Switch.Thumb />
                                                         </Switch.Control>
                                                         Show Labels on Wheel
@@ -398,7 +417,7 @@ export default function ConfigPage() {
                                                                 name={field.name}
                                                             >
                                                                 <Switch.Content>
-                                                                    <Switch.Control>
+                                                                    <Switch.Control className="glass-rim">
                                                                         <Switch.Thumb />
                                                                     </Switch.Control>
                                                                     Randomize Color Order
@@ -481,7 +500,11 @@ export default function ConfigPage() {
                                             <div className="flex gap-4">
                                                 {requestedConfig !== 'new' && (
                                                     <Tooltip>
-                                                        <Button className="text-base" variant="primary" type="submit">
+                                                        <Button
+                                                            className="text-base glass-rim"
+                                                            variant="primary"
+                                                            type="submit"
+                                                        >
                                                             <MdSave className="text-2xl" />
                                                             Update Existing Wheel
                                                         </Button>
@@ -492,7 +515,7 @@ export default function ConfigPage() {
                                                 )}
                                                 <Tooltip>
                                                     <Button
-                                                        className="text-base"
+                                                        className="text-base glass-rim"
                                                         variant={requestedConfig === 'new' ? 'primary' : 'secondary'}
                                                         onPress={() => {
                                                             methods.setValue('id', Config.generateId());
@@ -510,7 +533,7 @@ export default function ConfigPage() {
                                             </div>
                                             <Tooltip>
                                                 <Button
-                                                    className="text-base"
+                                                    className="text-base glass-rim"
                                                     variant="danger-soft"
                                                     onPress={() => {
                                                         methods.reset();
