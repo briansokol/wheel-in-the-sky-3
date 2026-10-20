@@ -8,6 +8,9 @@
     "build": {
       "dependsOn": ["^build"]
     },
+    "check-types": {
+      "dependsOn": ["^build"]
+    },
     "build:with-sentry": {
       "dependsOn": ["^build"],
       "env": ["WITH_SENTRY"]

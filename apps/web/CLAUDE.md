@@ -145,7 +145,7 @@ combines the oxlint, prettier, and vitest configs from `@repo/lint-staged`.
 2. `@repo/shared` and `@repo/api-handlers` resolve through their `exports` maps
    to their `dist` directories, so a stale or missing dependency build makes a
    typecheck here meaningless. `apps/web/turbo.json` declares `dependsOn:
-["^build"]` for `dev` and `build`, so going through Turbo handles it and a
+["^build"]` for `dev`, `build`, and `check-types`, so going through Turbo handles it and a
    direct `npm run --workspace` invocation does not.
 3. The `@` alias lives in two files that must agree. Changing `paths` in
    `apps/web/tsconfig.app.json` without changing `resolve.alias` in
