@@ -69,6 +69,7 @@ export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorN
                             className="relative mr-3 mb-3 min-w-10"
                             style={{ background: colorHex }}
                             onPress={removeColor(i)}
+                            aria-label={`Remove color ${colorHex}`}
                         ></Button>
                     ))}
                 </div>
