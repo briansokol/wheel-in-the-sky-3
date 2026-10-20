@@ -12,7 +12,7 @@ interface ActionAccordionProps {
 export function ActionAccordion({ pathname, closeDrawer }: ActionAccordionProps) {
     return (
         <Accordion allowsMultipleExpanded defaultExpandedKeys={['saved-wheels', 'removed-winners']}>
-            <Accordion.Item id="saved-wheels">
+            <Accordion.Item id="saved-wheels" className="rounded-2xl glass-well">
                 <Accordion.Heading>
                     <Accordion.Trigger>
                         Saved Wheels
@@ -25,7 +25,7 @@ export function ActionAccordion({ pathname, closeDrawer }: ActionAccordionProps)
                     </Accordion.Body>
                 </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item id="removed-winners">
+            <Accordion.Item id="removed-winners" className="rounded-2xl glass-well">
                 <Accordion.Heading>
                     <Accordion.Trigger>
                         Removed Winners

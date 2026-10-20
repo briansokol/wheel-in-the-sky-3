@@ -139,6 +139,23 @@ describe('AppNavBar', () => {
         expect(header.contains(panel)).toBe(false);
     });
 
+    it('header and mobile panel are glass surfaces', () => {
+        renderNavbar('/config');
+        const header = screen.getByRole('banner');
+        expect(header).toHaveClass('glass-surface');
+        fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
+        const panel = screen.getAllByRole('link', { name: 'About' })[1].closest('.fixed');
+        expect(panel).toHaveClass('glass-surface');
+        expect(header.contains(panel)).toBe(false);
+    });
+
+    it('has no nested backdrop blur', () => {
+        renderNavbar('/config');
+        fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
+        const panel = screen.getAllByRole('link', { name: 'About' })[1].closest('.fixed');
+        expect(panel?.parentElement?.closest('.glass-surface')).toBeNull();
+    });
+
     it('closes the mobile menu when the viewport grows past the sm breakpoint', () => {
         let listener: ((event: MediaQueryListEvent) => void) | undefined;
         vi.stubGlobal('matchMedia', (query: string) => ({
