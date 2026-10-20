@@ -189,7 +189,7 @@ export default function WheelPage() {
                     }
                 />
                 {hasWinner && (
-                    <Card className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-3xl glass-surface">
+                    <Card className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-3xl glass-surface glass-tint-strong">
                         {wheelManager?.config?.title && (
                             <Card.Header className="flex items-center justify-center">
                                 <h1 className="text-base sm:text-xl">{wheelManager?.config?.title}</h1>

@@ -40,6 +40,11 @@
     var(--tw-shadow);
 }
 
+/* Darker tint for glass over solid, bright wheel colors; only the tint changes. */
+@utility glass-tint-strong {
+  --glass-tint: var(--glass-tint-strong);
+}
+
 @utility glass-rim {
   --tw-inset-shadow: var(--glass-rim);
   box-shadow:
@@ -74,7 +79,8 @@
     --focus-ring: #3b82f6;
 
     /* Liquid glass: every glass surface, rim and well reads from these. */
-    --glass-tint: rgb(14 12 24 / 62%);
+    --glass-tint: rgb(14 12 24 / 45%);
+    --glass-tint-strong: rgb(14 12 24 / 62%);
     --glass-blur: blur(24px) saturate(160%);
     --glass-blur-small: blur(12px) saturate(160%);
     --glass-muted: oklch(85% 0.015 286);
@@ -89,6 +95,7 @@
   @media (prefers-reduced-transparency: reduce) {
     :root {
       --glass-tint: rgb(30 30 42);
+      --glass-tint-strong: rgb(30 30 42);
       --glass-blur: none;
       --glass-blur-small: none;
     }

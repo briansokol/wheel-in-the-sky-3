@@ -121,7 +121,10 @@ export function AppNavBar() {
 
     return (
         <>
-            <header ref={headerRef} className="sticky top-2 z-40 mx-2 rounded-2xl glass-surface sm:mx-4">
+            <header
+                ref={headerRef}
+                className="sticky top-2 z-40 mx-2 rounded-2xl glass-surface glass-tint-strong sm:mx-4"
+            >
                 <nav className="mx-auto flex h-16 max-w-5xl items-center gap-4 px-6">
                     <Button
                         ref={toggleRef}
@@ -174,7 +177,7 @@ export function AppNavBar() {
                         key="mobile-menu"
                         ref={panelRef}
                         id={panelId}
-                        className="fixed inset-x-2 top-[4.75rem] bottom-2 z-40 overflow-y-auto rounded-2xl glass-surface sm:hidden"
+                        className="fixed inset-x-2 top-[4.75rem] bottom-2 z-40 overflow-y-auto rounded-2xl glass-surface glass-tint-strong sm:hidden"
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
