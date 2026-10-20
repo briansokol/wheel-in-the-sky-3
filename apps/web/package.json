@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc -b && vite build --outDir=../api/public",
     "build:with-sentry": "cross-env WITH_SENTRY=true npm run build",
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "dev": "vite --host",
     "lint": "oxlint .",
     "preview": "vite preview",

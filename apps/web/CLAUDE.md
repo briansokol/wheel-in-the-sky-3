@@ -55,17 +55,17 @@ The same split holds for rotation, segment, and removed-winners.
 
 Run from the repo root.
 
-| Task              | Command                                          | Notes                                                          |
-| ----------------- | ------------------------------------------------ | -------------------------------------------------------------- |
-| Dev server        | `npm run dev --workspace apps/web`               | `vite --host`. Does not start the Worker; that is `apps/api`   |
-| Dev, whole repo   | `npm run dev`                                    | Turbo; `apps/web/turbo.json` makes it build dependencies first |
-| Build             | `npm run build --workspace apps/web`             | Writes to `apps/api/public`, see below                         |
-| Build with Sentry | `npm run build:with-sentry --workspace apps/web` | Sets `WITH_SENTRY`, which adds the Sentry Vite plugin          |
-| Typecheck         | `npm run check-types --workspace apps/web`       | `tsc --noEmit`                                                 |
-| Lint              | `npm run lint --workspace apps/web`              | `oxlint .`                                                     |
-| Test, watch       | `npm run test --workspace apps/web`              | `vitest`                                                       |
-| Test, once        | `npm run test:ci --workspace apps/web`           | `vitest run --coverage`                                        |
-| Preview build     | `npm run preview --workspace apps/web`           | `vite preview`                                                 |
+| Task              | Command                                          | Notes                                                           |
+| ----------------- | ------------------------------------------------ | --------------------------------------------------------------- |
+| Dev server        | `npm run dev --workspace apps/web`               | `vite --host`. Does not start the Worker; that is `apps/api`    |
+| Dev, whole repo   | `npm run dev`                                    | Turbo; `apps/web/turbo.json` makes it build dependencies first  |
+| Build             | `npm run build --workspace apps/web`             | Writes to `apps/api/public`, see below                          |
+| Build with Sentry | `npm run build:with-sentry --workspace apps/web` | Sets `WITH_SENTRY`, which adds the Sentry Vite plugin           |
+| Typecheck         | `npm run check-types --workspace apps/web`       | `tsc --noEmit` on `tsconfig.app.json` then `tsconfig.node.json` |
+| Lint              | `npm run lint --workspace apps/web`              | `oxlint .`                                                      |
+| Test, watch       | `npm run test --workspace apps/web`              | `vitest`                                                        |
+| Test, once        | `npm run test:ci --workspace apps/web`           | `vitest run --coverage`                                         |
+| Preview build     | `npm run preview --workspace apps/web`           | `vite preview`                                                  |
 
 Scripts an agent may expect here but that do not exist: there is no `deploy`
 script (only `apps/api` has one), no `types` script even though the root
