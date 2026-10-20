@@ -138,6 +138,18 @@ describe('ConfigPage', () => {
         await waitFor(() => expect(document.activeElement).toBe(segments));
     });
 
+    it('requires at least one segment when creating a new wheel', async () => {
+        renderConfigPage();
+
+        const segments = screen.getByRole('textbox', { name: /Wheel Segments/ });
+        fireEvent.change(segments, { target: { value: '' } });
+        fireEvent.click(screen.getByRole('button', { name: /Create New Wheel/ }));
+
+        expect(await screen.findByText('You must have at least 1 segment to make a wheel!')).toBeInTheDocument();
+        await waitFor(() => expect(document.activeElement).toBe(segments));
+        expect(mutateAsync).not.toHaveBeenCalled();
+    });
+
     it('Reset restores the loaded values', async () => {
         renderConfigPage();
 
