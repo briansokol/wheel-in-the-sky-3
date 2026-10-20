@@ -178,7 +178,7 @@ export default function ConfigPage() {
                 <WheelGlows colors={glowColors} />
                 <div className="fixed z-30 container mx-auto max-w-3xl">
                     <div className="relative space-y-6">
-                        <Card className="rounded-3xl glass-surface p-0 shadow-lg">
+                        <Card className="rounded-3xl glass-surface p-0">
                             <Card.Content className="relative min-h-16 p-3">
                                 {previewIsCollapsed ? (
                                     <div className="my-auto size-full text-center">Expand to See Wheel Preview</div>

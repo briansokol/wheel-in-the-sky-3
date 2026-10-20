@@ -8,7 +8,7 @@ import { isPage } from '@/utils/routes';
 import { ActionAccordion } from './action-accordion';
 
 const ITEM_CLASS =
-    "relative flex h-full items-center aria-[current=page]:after:content-[''] aria-[current=page]:after:absolute aria-[current=page]:after:bottom-0 aria-[current=page]:after:left-0 aria-[current=page]:after:right-0 aria-[current=page]:after:h-[2px] aria-[current=page]:after:rounded-[2px] aria-[current=page]:after:bg-accent aria-[current=page]:after:shadow-[0_0_8px_#c031e2]";
+    "relative flex h-full items-center aria-[current=page]:after:content-[''] aria-[current=page]:after:absolute aria-[current=page]:after:bottom-0 aria-[current=page]:after:left-0 aria-[current=page]:after:right-0 aria-[current=page]:after:h-[2px] aria-[current=page]:after:rounded-[2px] aria-[current=page]:after:bg-accent aria-[current=page]:after:shadow-[0_0_8px_var(--accent)]";
 
 export function AppNavBar() {
     const { pathname } = useLocation();
@@ -154,7 +154,7 @@ export function AppNavBar() {
                                 Actions
                                 <FaList />
                             </Button>
-                            <Drawer.Backdrop>
+                            <Drawer.Backdrop className="bg-black/25">
                                 <Drawer.Content placement="right">
                                     <Drawer.Dialog className="rounded-l-2xl glass-surface sm:w-md">
                                         <Drawer.CloseTrigger />

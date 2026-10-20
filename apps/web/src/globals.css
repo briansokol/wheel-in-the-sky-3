@@ -45,6 +45,7 @@
   --glass-tint: var(--glass-tint-strong);
 }
 
+/* Composes with Tailwind's --tw-* shadow variables. */
 @utility glass-rim {
   --tw-inset-shadow: var(--glass-rim);
   box-shadow:
@@ -151,7 +152,7 @@
       [data-focused='true'],
       [data-focus-visible='true']
     ) {
-    border-color: #f182f6;
+    border-color: var(--focus);
     background-color: rgb(192 49 226 / 14%);
     box-shadow:
       0 0 0 1px rgb(241 130 246 / 50%),

@@ -67,6 +67,7 @@ describe('WheelPage', () => {
 
         const card = screen.getByRole('button', { name: /Copy Banner/ }).closest('.card');
         expect(card).toHaveClass('glass-surface');
+        expect(card).toHaveClass('glass-tint-strong');
         expect(screen.getByRole('button', { name: /Copy Banner/ })).toHaveClass('glass-rim');
     });
 });
