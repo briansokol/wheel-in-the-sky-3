@@ -26,6 +26,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 - Options and navigation have been moved to a new mobile-friendly navbar.
 - Winners removed from the wheel can be managed from the Actions drawer.
 - Downloadable banner now uses the wheel and winner's colors.
+- Refreshed the look with frosted glass panels and glowing highlights in the wheel's colors on the configuration page.
 - Project is a monorepo.
 - Project is open source.
 
