@@ -3,9 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -b && vite build --outDir=../api/public",
+    "build": "tsc -b && vite build",
     "build:with-sentry": "cross-env WITH_SENTRY=true npm run build",
     "check-types": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
+    "deploy": "wrangler deploy",
     "dev": "vite --host",
     "lint": "oxlint .",
     "preview": "vite preview",
@@ -20,7 +21,6 @@
     "@internationalized/date": "3.12.4",
     "@react-aria/ssr": "3.10.1",
     "@react-aria/utils": "3.34.1",
-    "@repo/api-handlers": "*",
     "@repo/shared": "*",
     "@sentry/react": "10.70.0",
     "@uidotdev/usehooks": "2.4.1",
@@ -58,6 +58,7 @@
     "postcss": "8.5.32",
     "typescript": "5.9.3",
     "vite": "7.3.8",
-    "vitest": "4.1.12"
+    "vitest": "4.1.12",
+    "wrangler": "4.160.0"
   }
 }

@@ -20,13 +20,12 @@
     "prepare": "husky",
     "sherif": "sherif",
     "test": "vitest",
-    "test:ci": "vitest run --coverage",
-    "types": "turbo run types"
+    "test:ci": "vitest run --coverage"
   },
   "devDependencies": {
+    "@sentry/cli": "3.6.2",
     "@types/node": "24.10.13",
     "@vitest/coverage-v8": "4.1.12",
-    "cp": "0.2.0",
     "husky": "9.1.7",
     "oxlint": "1.50.0",
     "prettier": "3.8.1",

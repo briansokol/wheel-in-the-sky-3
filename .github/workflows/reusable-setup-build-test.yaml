@@ -96,13 +96,13 @@ jobs:
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-            # Cache the API public directory for downstream jobs
-            - name: Cache API public directory
-              id: cache-api-public
+            # Cache the web dist directory for downstream jobs
+            - name: Cache web dist directory
+              id: cache-web-dist
               uses: actions/cache@v4
               with:
-                  path: apps/api/public
-                  key: ${{ runner.os }}-api-public-${{ github.sha }}
+                  path: apps/web/dist
+                  key: ${{ runner.os }}-web-dist-${{ github.sha }}
 
             - name: Cache shared build directory
               id: cache-shared-dist
@@ -110,13 +110,6 @@ jobs:
               with:
                   path: packages/shared/dist
                   key: ${{ runner.os }}-shared-dist-${{ github.sha }}
-
-            - name: Cache API handlers build directory
-              id: cache-api-handlers-dist
-              uses: actions/cache@v4
-              with:
-                  path: packages/api-handlers/dist
-                  key: ${{ runner.os }}-api-handlers-dist-${{ github.sha }}
 
     unit-tests:
         needs: [validate, build]
@@ -142,13 +135,13 @@ jobs:
               if: steps.node-modules-cache.outputs.cache-hit != 'true'
               run: npm ci
 
-            # Restore the API public directory cache from the build job
-            - name: Restore API public directory
-              id: restore-api-public
+            # Restore the web dist directory cache from the build job
+            - name: Restore web dist directory
+              id: restore-web-dist
               uses: actions/cache@v4
               with:
-                  path: apps/api/public
-                  key: ${{ runner.os }}-api-public-${{ github.sha }}
+                  path: apps/web/dist
+                  key: ${{ runner.os }}-web-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
             # Restore the shared dist directory cache from the build job
@@ -158,15 +151,6 @@ jobs:
               with:
                   path: packages/shared/dist
                   key: ${{ runner.os }}-shared-dist-${{ github.sha }}
-                  fail-on-cache-miss: true
-
-            # Restore the API handlers dist directory cache from the build job
-            - name: Restore API handlers build directory
-              id: restore-api-handlers-dist
-              uses: actions/cache@v4
-              with:
-                  path: packages/api-handlers/dist
-                  key: ${{ runner.os }}-api-handlers-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
             - name: Run Tests

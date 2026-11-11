@@ -43,7 +43,6 @@ jobs:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
             SENTRY_WEB_PROJECT: ${{ secrets.SENTRY_WEB_PROJECT }}
-            SENTRY_API_PROJECT: ${{ secrets.SENTRY_API_PROJECT }}
 
     build-and-test:
         needs: prepare-sentry
@@ -71,4 +70,3 @@ jobs:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
             SENTRY_WEB_PROJECT: ${{ secrets.SENTRY_WEB_PROJECT }}
-            SENTRY_API_PROJECT: ${{ secrets.SENTRY_API_PROJECT }}

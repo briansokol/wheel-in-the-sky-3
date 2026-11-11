@@ -2,7 +2,7 @@ import { configDefaults, coverageConfigDefaults, defineConfig } from 'vitest/con
 
 export default defineConfig({
     test: {
-        projects: ['apps/*', 'packages/shared', 'packages/api-handlers'],
+        projects: ['apps/*', 'packages/shared'],
         exclude: [...configDefaults.exclude],
         coverage: {
             provider: 'v8',

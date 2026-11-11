@@ -17,8 +17,6 @@ on:
                 required: true
             SENTRY_WEB_PROJECT:
                 required: true
-            SENTRY_API_PROJECT:
-                required: true
 
 jobs:
     sentry-operations:
@@ -53,7 +51,6 @@ jobs:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
               run: |
                   npx sentry-cli releases new -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
-                  npx sentry-cli releases new -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
 
             - name: Finalize Sentry Release
               if: inputs.operation == 'finalize'
@@ -61,4 +58,3 @@ jobs:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
               run: |
                   npx sentry-cli releases finalize -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
-                  npx sentry-cli releases finalize -p ${{ secrets.SENTRY_API_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
