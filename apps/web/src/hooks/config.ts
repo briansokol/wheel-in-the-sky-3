@@ -1,36 +1,57 @@
 import { Config } from '@repo/shared/classes/config';
 import { ConfigFormInputs } from '@repo/shared/types/config';
-import { type UseQueryResult, useMutation, useQuery } from '@tanstack/react-query';
+import { decodeConfig } from '@repo/shared/utils/encoding';
+import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { api } from '@/utils/api';
 
-export function useDecodedConfig(encodedConfig?: string): UseQueryResult<Config | undefined> {
-    return useQuery({
-        queryKey: ['decodeConfig', encodedConfig],
-        queryFn: async (): Promise<Config | undefined> => {
-            let newConfig: Config | undefined;
+interface DecodedConfigResult {
+    data: Config | undefined;
+    isError: boolean;
+    isPending: boolean;
+}
 
-            if (typeof encodedConfig === 'string' && encodedConfig.toLowerCase() !== 'new') {
-                const response = await api.config.decode.$post({
-                    json: {
-                        encodedConfig,
-                    },
-                });
-                if (response.ok) {
-                    const configJson = await response.json();
-                    newConfig = new Config().deserialize(configJson);
-                } else {
-                    throw new Error('Failed to decode config');
-                }
-            } else if (typeof encodedConfig === 'string' && encodedConfig.toLowerCase() === 'new') {
-                newConfig = new Config();
+interface DecodeState {
+    input: string | undefined;
+    data: Config | undefined;
+    isError: boolean;
+}
+
+/**
+ * Decodes a share-link config in the browser. `'new'` (any case) yields a blank
+ * config, and `undefined` stays pending without decoding.
+ */
+export function useDecodedConfig(encodedConfig?: string): DecodedConfigResult {
+    const [state, setState] = useState<DecodeState>({ input: undefined, data: undefined, isError: false });
+
+    useEffect(() => {
+        if (encodedConfig === undefined) {
+            return;
+        }
+
+        let cancelled = false;
+        const decoded =
+            encodedConfig.toLowerCase() === 'new' ? Promise.resolve(new Config()) : decodeConfig(encodedConfig);
+        decoded.then(
+            (data) => {
+                if (!cancelled) setState({ input: encodedConfig, data, isError: false });
+            },
+            () => {
+                if (!cancelled) setState({ input: encodedConfig, data: undefined, isError: true });
             }
+        );
 
-            return newConfig;
-        },
-        enabled: typeof encodedConfig === 'string',
-        retry: 1,
-        staleTime: Infinity,
-    });
+        return () => {
+            cancelled = true;
+        };
+    }, [encodedConfig]);
+
+    const isPending = encodedConfig === undefined || state.input !== encodedConfig;
+    return {
+        data: isPending ? undefined : state.data,
+        isError: !isPending && state.isError,
+        isPending,
+    };
 }
 
 export function useEncodeConfigMutation() {
