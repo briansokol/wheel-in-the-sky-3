@@ -1,5 +1,7 @@
 import { Button } from '@heroui/react';
 import { defaultPageColorConfig } from '@repo/shared/constants/colors';
+import { encodeConfig } from '@repo/shared/utils/encoding';
+import { configFromFormInputs } from '@repo/shared/utils/form-config';
 import { useEffect, useState } from 'react';
 import { FaCircleChevronUp } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router';
@@ -8,34 +10,40 @@ import { ConfigV2QueryParams } from '@/compatibility/v2/types';
 import { convertConfigV2ToConfigV3 } from '@/compatibility/v2/utils';
 import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
-import { useEncodeConfigMutation } from '@/hooks/config';
+import { buildConfigHash } from '@/utils/routes';
 
 export default function LegacyPage() {
     useSetDocumentBackgroundColor(defaultPageColorConfig.backgroundColor);
     useSetDocumentForegroundColor(defaultPageColorConfig.foregroundColor);
     const navigate = useNavigate();
-    const { mutateAsync: encodeConfig } = useEncodeConfigMutation();
     const [newConfig, setNewConfig] = useState<string | null>(null);
 
     const { oldId } = useParams();
 
     useEffect(() => {
-        if (oldId) {
-            let decodedConfig: ConfigV2QueryParams | null = null;
+        if (!oldId) {
+            return;
+        }
+
+        let cancelled = false;
+        const upgrade = async (legacyId: string): Promise<void> => {
             try {
-                decodedConfig = Encoder.urlDecode<ConfigV2QueryParams>(oldId);
+                const decodedConfig = Encoder.urlDecode<ConfigV2QueryParams>(legacyId);
+                const encodedConfig = await encodeConfig(
+                    configFromFormInputs(convertConfigV2ToConfigV3(decodedConfig))
+                );
+                if (!cancelled) setNewConfig(encodedConfig);
             } catch (e) {
                 console.error(e);
-                navigate('/404');
+                if (!cancelled) navigate('/404');
             }
-            if (decodedConfig) {
-                const config = convertConfigV2ToConfigV3(decodedConfig);
-                encodeConfig(config).then((result) => {
-                    setNewConfig(result.encodedConfig);
-                });
-            }
-        }
-    }, [oldId, navigate, encodeConfig]);
+        };
+        void upgrade(oldId);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [oldId, navigate]);
 
     return (
         <main>
@@ -50,7 +58,11 @@ export default function LegacyPage() {
                     size="lg"
                     variant="primary"
                     isDisabled={!newConfig}
-                    onPress={() => navigate(newConfig ? `${PageBaseRoute.Wheel}?c=${newConfig}` : PageBaseRoute.Wheel)}
+                    onPress={() =>
+                        navigate(
+                            newConfig ? `${PageBaseRoute.Wheel}${buildConfigHash(newConfig)}` : PageBaseRoute.Wheel
+                        )
+                    }
                 >
                     <FaCircleChevronUp className="text-3xl" />
                     Upgrade Wheel

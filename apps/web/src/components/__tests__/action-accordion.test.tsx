@@ -17,7 +17,7 @@ vi.mock('@/hooks/config', () => {
 
 function renderAccordion() {
     return render(
-        <MemoryRouter initialEntries={['/wheel?c=encoded']}>
+        <MemoryRouter initialEntries={['/wheel#c=encoded']}>
             <ConfigProvider>
                 <SegmentProvider>
                     <RemovedWinnersProvider>

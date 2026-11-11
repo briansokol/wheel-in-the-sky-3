@@ -2,6 +2,7 @@ import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BASE_COLOR } from '@repo/shared/constants/colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
 import { buildWheelColorConfig } from '@repo/shared/utils/configs';
+import { encodeConfig } from '@repo/shared/utils/encoding';
 import { getGlowColors } from '@repo/shared/utils/glow-colors';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router';
@@ -12,32 +13,47 @@ import { RotationProvider } from '@/contexts/rotation-provider';
 import { SegmentProvider } from '@/contexts/segment-provider';
 import ConfigPage from '../config-page';
 
-const { mutateAsync, decodeState } = vi.hoisted(() => ({ mutateAsync: vi.fn(), decodeState: { isPending: false } }));
+const { decodeState } = vi.hoisted(() => ({
+    decodeState: { isPending: false, monochromatic: false, tooManyCustomColors: false },
+}));
+
+vi.mock('@repo/shared/utils/encoding', () => ({ encodeConfig: vi.fn() }));
 
 vi.mock('@/hooks/config', () => {
-    const config = new Config();
-    config.setTitle('Team Lunch');
-    config.setDescription('Fridays');
-    config.setNamesArray(['Alice', 'Bob']);
-    config.setRandomizeOrder(true);
-    config.setShowNames(false);
-    config.setWheelColorType(WheelColorType.Triad);
-    const result = { data: config, isError: false, isPending: false };
+    function makeConfig(wheelColorType: WheelColorType): Config {
+        const config = new Config();
+        config.setTitle('Team Lunch');
+        config.setDescription('Fridays');
+        config.setNamesArray(['Alice', 'Bob']);
+        config.setRandomizeOrder(true);
+        config.setShowNames(false);
+        config.setWheelColorType(wheelColorType);
+        return config;
+    }
+    const result = { data: makeConfig(WheelColorType.Triad), isError: false, isPending: false };
+    const monochromaticResult = { data: makeConfig(WheelColorType.Monochromatic), isError: false, isPending: false };
+    const customConfig = makeConfig(WheelColorType.Custom);
+    customConfig.setWheelColorColors(Array.from({ length: 51 }, (_, i) => `#0000${i.toString(16).padStart(2, '0')}`));
+    const tooManyCustomColorsResult = { data: customConfig, isError: false, isPending: false };
     const pendingResult = { data: undefined, isError: false, isPending: true };
     return {
-        useDecodedConfig: () => (decodeState.isPending ? pendingResult : result),
-        useEncodeConfigMutation: () => ({ mutateAsync }),
+        useDecodedConfig: () => {
+            if (decodeState.isPending) return pendingResult;
+            if (decodeState.monochromatic) return monochromaticResult;
+            if (decodeState.tooManyCustomColors) return tooManyCustomColorsResult;
+            return result;
+        },
     };
 });
 
 function LocationDisplay() {
     const location = useLocation();
-    return <p data-testid="location">{`${location.pathname}${location.search}`}</p>;
+    return <p data-testid="location">{`${location.pathname}${location.search}${location.hash}`}</p>;
 }
 
 function configPageTree() {
     return (
-        <MemoryRouter initialEntries={['/config?c=abc']}>
+        <MemoryRouter initialEntries={['/config#c=abc']}>
             <ConfigProvider>
                 <RotationProvider>
                     <SegmentProvider>
@@ -67,9 +83,11 @@ function expectedGlowColors(wheelColorType: WheelColorType): string[] {
 
 describe('ConfigPage', () => {
     beforeEach(() => {
-        mutateAsync.mockReset();
-        mutateAsync.mockResolvedValue({ encodedConfig: 'enc' });
+        vi.mocked(encodeConfig).mockReset();
+        vi.mocked(encodeConfig).mockResolvedValue('v5.encoded');
         decodeState.isPending = false;
+        decodeState.monochromatic = false;
+        decodeState.tooManyCustomColors = false;
     });
 
     it('populates every field from the loaded config', () => {
@@ -105,10 +123,29 @@ describe('ConfigPage', () => {
         fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
 
         await waitFor(() => {
-            expect(mutateAsync).toHaveBeenCalledWith(
-                expect.objectContaining({ title: 'Dinner', showNames: true, names: 'Alice\nBob' })
+            expect(encodeConfig).toHaveBeenCalledWith(
+                expect.objectContaining({ title: 'Dinner', showNames: true, names: ['Alice', 'Bob'] })
             );
         });
+    });
+
+    it('navigates to the wheel fragment on submit', async () => {
+        renderConfigPage();
+
+        fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
+
+        await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(/^\/wheel#c=v5\.encoded$/));
+    });
+
+    it('blocks submit and explains an invalid color', async () => {
+        decodeState.monochromatic = true;
+        renderConfigPage();
+
+        fireEvent.change(screen.getByRole('textbox', { name: 'Chosen Color' }), { target: { value: 'nope' } });
+        fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
+
+        expect(await screen.findByText('Enter a hex color like #4062bf')).toBeInTheDocument();
+        expect(encodeConfig).not.toHaveBeenCalled();
     });
 
     it('changing the color scheme updates its description', async () => {
@@ -130,6 +167,35 @@ describe('ConfigPage', () => {
         expect(trigger).toHaveTextContent('Tetrad');
     });
 
+    it.each([
+        ['an over-long title', 'Wheel Title', 'T'.repeat(101), 'Use at most 100 characters'],
+        ['an over-long description', 'Wheel Description', 'D'.repeat(301), 'Use at most 300 characters'],
+        [
+            'too many segments',
+            /Wheel Segments/,
+            Array.from({ length: 501 }, (_, i) => `Name ${i}`).join('\n'),
+            'Use at most 500 segments of up to 200 characters each',
+        ],
+    ])('blocks submit and explains %s', async (_label, field, value, message) => {
+        renderConfigPage();
+
+        fireEvent.change(screen.getByRole('textbox', { name: field }), { target: { value } });
+        fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
+
+        expect(await screen.findByText(message)).toBeInTheDocument();
+        expect(encodeConfig).not.toHaveBeenCalled();
+    });
+
+    it('blocks submit and explains too many custom colors', async () => {
+        decodeState.tooManyCustomColors = true;
+        renderConfigPage();
+
+        fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
+
+        expect(await screen.findByText('Choose up to 50 valid colors')).toBeInTheDocument();
+        expect(encodeConfig).not.toHaveBeenCalled();
+    });
+
     it('requires at least one segment', async () => {
         renderConfigPage();
 
@@ -137,7 +203,7 @@ describe('ConfigPage', () => {
         fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
 
         expect(await screen.findByText('You must have at least 1 segment to make a wheel!')).toBeInTheDocument();
-        expect(mutateAsync).not.toHaveBeenCalled();
+        expect(encodeConfig).not.toHaveBeenCalled();
     });
 
     it('focuses the segments field when submitting without segments', async () => {
@@ -159,7 +225,7 @@ describe('ConfigPage', () => {
 
         expect(await screen.findByText('You must have at least 1 segment to make a wheel!')).toBeInTheDocument();
         await waitFor(() => expect(document.activeElement).toBe(segments));
-        expect(mutateAsync).not.toHaveBeenCalled();
+        expect(encodeConfig).not.toHaveBeenCalled();
     });
 
     it('Reset restores the loaded values', async () => {

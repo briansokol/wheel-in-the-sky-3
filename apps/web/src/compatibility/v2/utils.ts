@@ -1,5 +1,7 @@
+import { TinyColor } from '@ctrl/tinycolor';
 import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
+import { MAX_CONFIG_ID_LENGTH } from '@repo/shared/constants/limits';
 import { PageColorType } from '@repo/shared/enums/page-colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
 import { ConfigFormInputs } from '@repo/shared/types/config';
@@ -43,22 +45,34 @@ function convertV2BackgroundColorTypeToV3PageColorType(backgroundColorType: Back
     }
 }
 
+/** Normalizes any CSS color v2 stored (hex, `rgb()`, names) to hex, or `undefined` if invalid. */
+function toHexColor(value: unknown): string | undefined {
+    if (typeof value !== 'string') {
+        return undefined;
+    }
+    const color = new TinyColor(value);
+    return color.isValid ? color.toHexString() : undefined;
+}
+
 export function convertConfigV2ToConfigV3(configV2: ConfigV2QueryParams): ConfigFormInputs {
     const colorSchemeConfig: ColorSchemeConfig = JSON.parse(configV2?.colorSchemeConfig ?? '{}');
     const backgroundColorConfig: BackgroundColorConfig = JSON.parse(configV2?.backgroundColorConfig ?? '{}');
 
     return configFormInputsSchema.parse({
-        id: configV2?.id ?? Config.generateId(),
+        // A v2 id only keyed a per-browser saved list, so replacing one that is too long loses nothing.
+        id: configV2?.id && configV2.id.length <= MAX_CONFIG_ID_LENGTH ? configV2.id : Config.generateId(),
         title: configV2?.title ?? '',
         description: configV2?.description ?? '',
         names: configV2?.names ?? '',
         randomizeOrder: configV2?.randomizeOrder ?? false,
         showNames: configV2?.showNames ?? true,
         colorSchemeType: convertV2ColorSchemeTypeToV3WheelColorType(colorSchemeConfig?.colorSchemeType),
-        baseColor: colorSchemeConfig?.baseColor ?? DEFAULT_BASE_COLOR,
-        customColors: JSON.stringify(colorSchemeConfig?.colors ?? []),
+        baseColor: toHexColor(colorSchemeConfig?.baseColor) ?? DEFAULT_BASE_COLOR,
+        customColors: JSON.stringify(
+            (colorSchemeConfig?.colors ?? []).map(toHexColor).filter((color) => color !== undefined)
+        ),
         randomizeColor: colorSchemeConfig?.randomizeColor ?? false,
         backgroundColorType: convertV2BackgroundColorTypeToV3PageColorType(backgroundColorConfig?.backgroundColorType),
-        backgroundColor: backgroundColorConfig?.color ?? DEFAULT_BACKGROUND_COLOR,
+        backgroundColor: toHexColor(backgroundColorConfig?.color) ?? DEFAULT_BACKGROUND_COLOR,
     });
 }

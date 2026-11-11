@@ -112,9 +112,8 @@ formats itself with the config it publishes.
 
 Depends on: `@repo/lint-staged`, for its own staged-file config only.
 
-Depended on by: every other workspace, `apps/api`, `apps/web`,
-`packages/api-handlers`, `packages/lint-staged`, `packages/oxlint`,
-`packages/shared`, plus the repo-root `prettier.config.js`.
+Depended on by: every other workspace, `apps/web`, `packages/lint-staged`,
+`packages/oxlint`, `packages/shared`, plus the repo-root `prettier.config.js`.
 
 This workspace sits at the bottom of the dependency graph and must never import
 application or domain code. See `docs/architecture.md` for the full monorepo map.

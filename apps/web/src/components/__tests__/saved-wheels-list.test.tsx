@@ -1,6 +1,6 @@
 import { Config } from '@repo/shared/classes/config';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, useLocation } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigProvider } from '@/contexts/config-provider';
 import { SegmentProvider } from '@/contexts/segment-provider';
@@ -13,6 +13,24 @@ vi.mock('@/hooks/config', () => {
         useDecodedConfig: () => ({ data: config, isError: false, isPending: false }),
     };
 });
+
+function LocationDisplay() {
+    const location = useLocation();
+    return <p data-testid="location">{`${location.pathname}${location.hash}`}</p>;
+}
+
+function renderSavedWheelsList() {
+    return render(
+        <MemoryRouter initialEntries={['/wheel#c=encoded']}>
+            <ConfigProvider>
+                <SegmentProvider>
+                    <SavedWheelsList />
+                    <LocationDisplay />
+                </SegmentProvider>
+            </ConfigProvider>
+        </MemoryRouter>
+    );
+}
 
 describe('SavedWheelsList', () => {
     beforeEach(() => {
@@ -31,15 +49,7 @@ describe('SavedWheelsList', () => {
     });
 
     it('exposes the icon buttons by accessible name and shows a tooltip on focus', async () => {
-        render(
-            <MemoryRouter initialEntries={['/wheel?c=encoded']}>
-                <ConfigProvider>
-                    <SegmentProvider>
-                        <SavedWheelsList />
-                    </SegmentProvider>
-                </ConfigProvider>
-            </MemoryRouter>
-        );
+        renderSavedWheelsList();
 
         expect(screen.getByRole('button', { name: 'Delete Saved Wheel' })).toBeInTheDocument();
         const load = screen.getByRole('button', { name: 'Load this Wheel' });
@@ -49,5 +59,13 @@ describe('SavedWheelsList', () => {
         load.focus();
 
         expect(await screen.findByRole('tooltip')).toHaveTextContent('Load this Wheel');
+    });
+
+    it('loads a saved wheel through the fragment', () => {
+        renderSavedWheelsList();
+
+        fireEvent.click(screen.getByRole('button', { name: 'Load this Wheel' }));
+
+        expect(screen.getByTestId('location')).toHaveTextContent(/^\/wheel#c=abc$/);
     });
 });

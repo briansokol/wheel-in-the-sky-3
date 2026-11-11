@@ -31,13 +31,13 @@ jobs:
               if: steps.node-modules-cache.outputs.cache-hit != 'true'
               run: npm ci
 
-            # Restore the API public directory cache from the build job
-            - name: Restore API public directory
-              id: restore-api-public
+            # Restore the web dist directory cache from the build job
+            - name: Restore web dist directory
+              id: restore-web-dist
               uses: actions/cache@v4
               with:
-                  path: apps/api/public
-                  key: ${{ runner.os }}-api-public-${{ github.sha }}
+                  path: apps/web/dist
+                  key: ${{ runner.os }}-web-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
             # Restore the shared dist directory cache from the build job
@@ -49,18 +49,9 @@ jobs:
                   key: ${{ runner.os }}-shared-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
-            # Restore the API handlers dist directory cache from the build job
-            - name: Restore API handlers build directory
-              id: restore-api-handlers-dist
-              uses: actions/cache@v4
-              with:
-                  path: packages/api-handlers/dist
-                  key: ${{ runner.os }}-api-handlers-dist-${{ github.sha }}
-                  fail-on-cache-miss: true
-
             - name: Build & Deploy Worker
               uses: cloudflare/wrangler-action@v3
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  workingDirectory: 'apps/api'
+                  workingDirectory: 'apps/web'

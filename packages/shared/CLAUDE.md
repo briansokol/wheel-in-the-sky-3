@@ -1,16 +1,16 @@
 # @repo/shared (`packages/shared`)
 
-Framework-agnostic wheel domain logic consumed by both the web app and the API
-handlers.
+Framework-agnostic wheel domain logic consumed by the web app.
 
 ## Purpose
 
-Holds the wheel model and everything that must agree across the client and the
-server: the `Config` and `WheelManager` classes, color math, Zod schemas, enums,
-and shared types. Because both a browser bundle and a Cloudflare Worker import
-this package, code here must not touch the DOM, `window`, or Node built-ins.
-React components do not go here; they go in `apps/web/src/components/`. Hono
-routes do not go here; they go in `packages/api-handlers/src/`.
+Holds the wheel model and everything a future backend would need to agree on:
+the `Config` and `WheelManager` classes, color math, Zod schemas, enums, shared
+types, and the share-link codec. The browser bundle imports this package today,
+and it must stay importable by a server later, so code here must not touch the
+DOM, `window`, or Node built-ins (its tsconfig has no Node types, which applies
+to tests too). React components do not go here; they go in
+`apps/web/src/components/`.
 
 ## Layout
 
@@ -18,11 +18,11 @@ routes do not go here; they go in `packages/api-handlers/src/`.
 packages/shared/
 ├── src/
 │   ├── classes/      # Config, Segment, WheelManager; tests in __tests__/
-│   ├── constants/    # default colors and page/wheel select options
+│   ├── constants/    # default colors, select options, and size limits (limits.ts)
 │   ├── enums/        # PageColorType, WheelColorType
 │   ├── types/        # type declarations, plus some runtime defaults
-│   ├── utils/        # color and config helpers; tests in __tests__/
-│   └── validators/   # Zod schemas
+│   ├── utils/        # color and config helpers, plus the share-link pipeline; tests in __tests__/
+│   └── validators/   # Zod schemas, including hex-color.ts and wire-config.ts
 └── (root)            # package.json, tsconfig.json, and the tool configs
 ```
 
@@ -39,11 +39,25 @@ a matching `exports` entry, or consumers cannot import from it.
 | Lint        | `npm run lint --workspace packages/shared`  | `oxlint .`                                                         |
 | Test        | `npm run test` from the repo root           | No `test` script exists here; see Testing                          |
 
-`packages/shared/package.json` defines only `build`, `build:with-sentry`, `dev`,
-`lint`, and `sentry:sourcemaps`. Notably absent: `check-types`, `test`,
+`packages/shared/package.json` defines only `build`, `build:with-sentry` (an
+alias for `build`), `dev`, and `lint`. Notably absent: `check-types`, `test`,
 `test:ci`, and `types`. The root `npm run check-types` runs
 `turbo run check-types`, which therefore skips this workspace; its types are
 checked only as a side effect of `build`.
+
+## Share-link pipeline
+
+| File                        | Role                                                                                 |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| `utils/encoding.ts`         | `encodeConfig` and `decodeConfig`: `v5.` prefix, `deflate-raw`, base64url, size caps |
+| `utils/wire-config.ts`      | `toWireConfig` and `fromWireConfig`: `Config` to and from the compact payload        |
+| `utils/form-config.ts`      | `configFromFormInputs`: validates config-form values and builds a `Config`           |
+| `validators/wire-config.ts` | `wireConfigSchema`, applied to every decoded link                                    |
+| `validators/hex-color.ts`   | `hexColorSchema`, the one hex color rule                                             |
+| `constants/limits.ts`       | Size limits shared by the form schema, the payload schema, and the codec             |
+
+Every decode goes through `wireConfigSchema`; never `JSON.parse` a link payload
+and trust it. Changing the payload shape means a new version prefix.
 
 ## Module resolution and imports
 
@@ -70,13 +84,14 @@ relative paths. Because `include` is `./src/**/*` and `outDir` is `dist`, the
 output lands under `packages/shared/dist/src/`, mirroring the source tree, which
 is exactly what each `exports` subpath points at.
 
-`apps/web` and `packages/api-handlers` resolve built output, not source. A stale
-or missing `dist` makes their typecheck meaningless, so build this workspace
-before typechecking or building them. `npm run dev --workspace packages/shared`
+`apps/web` resolves built output, not source. A stale or missing `dist` makes
+its typecheck meaningless, so build this workspace before typechecking or
+building it. `npm run dev --workspace packages/shared`
 keeps `dist` current while working across workspaces.
 
-`build:with-sentry` chains `build` and `sentry:sourcemaps`, which injects and
-uploads the emitted source maps.
+`build:with-sentry` only runs `build`; it exists so the root
+`turbo run build:with-sentry` reaches this workspace. Nothing here uploads
+source maps.
 
 ## Testing
 
@@ -124,9 +139,9 @@ re-exports the shared `base` config unchanged.
 
 Depends on: no other `@repo/*` workspace. This is a leaf, and it must stay one.
 
-Depended on by: `apps/web` and `packages/api-handlers`, each declaring
-`@repo/shared` in its `package.json`. `apps/api` does not depend on it directly.
+Depended on by: `apps/web`, which declares `@repo/shared` in its
+`package.json`.
 
 Dependency direction is one-way. Nothing here may import from `apps/` or from
-another package, which is what keeps the same domain logic loadable in both a
-browser bundle and a Cloudflare Worker.
+another package, which is what keeps the same domain logic loadable in a
+browser bundle today and in a backend later.
