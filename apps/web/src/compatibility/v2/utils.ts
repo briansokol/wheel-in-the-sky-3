@@ -1,6 +1,7 @@
 import { TinyColor } from '@ctrl/tinycolor';
 import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
+import { MAX_CONFIG_ID_LENGTH } from '@repo/shared/constants/limits';
 import { PageColorType } from '@repo/shared/enums/page-colors';
 import { WheelColorType } from '@repo/shared/enums/wheel-colors';
 import { ConfigFormInputs } from '@repo/shared/types/config';
@@ -58,7 +59,8 @@ export function convertConfigV2ToConfigV3(configV2: ConfigV2QueryParams): Config
     const backgroundColorConfig: BackgroundColorConfig = JSON.parse(configV2?.backgroundColorConfig ?? '{}');
 
     return configFormInputsSchema.parse({
-        id: configV2?.id ?? Config.generateId(),
+        // A v2 id only keyed a per-browser saved list, so replacing one that is too long loses nothing.
+        id: configV2?.id && configV2.id.length <= MAX_CONFIG_ID_LENGTH ? configV2.id : Config.generateId(),
         title: configV2?.title ?? '',
         description: configV2?.description ?? '',
         names: configV2?.names ?? '',

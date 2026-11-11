@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+    MAX_CONFIG_ID_LENGTH,
     MAX_CUSTOM_COLORS,
     MAX_DESCRIPTION_LENGTH,
     MAX_NAMES,
@@ -55,12 +56,12 @@ function isHexColorList(value: string): boolean {
 }
 
 export const configFormInputsSchema = z.object({
-    id: z.string().max(21),
+    id: z.string().max(MAX_CONFIG_ID_LENGTH),
     title: z.string().max(MAX_TITLE_LENGTH, `Use at most ${MAX_TITLE_LENGTH} characters`),
     description: z.string().max(MAX_DESCRIPTION_LENGTH, `Use at most ${MAX_DESCRIPTION_LENGTH} characters`),
     names: z
         .string()
-        .refine((names) => nameLines(names).length > 0, 'Names are required')
+        .refine((names) => nameLines(names).length > 0, 'You must have at least 1 segment to make a wheel!')
         .refine((names) => {
             const lines = nameLines(names);
             return lines.length <= MAX_NAMES && lines.every((line) => line.length <= MAX_NAME_LENGTH);

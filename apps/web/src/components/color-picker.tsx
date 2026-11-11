@@ -13,8 +13,9 @@ interface ColorPickerProps {
 
 export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorName = '', allowMultiColor }) => {
     const { setValue, watch } = useFormContext();
-    const { errors } = useFormState({ name: singleColorName });
+    const { errors } = useFormState();
     const colorError = errors[singleColorName]?.message;
+    const colorsError = allowMultiColor && multiColorName ? errors[multiColorName]?.message : undefined;
 
     const debouncedSetColor = useMemo(() => {
         return debounce((value: string) => setValue(singleColorName, value), 100);
@@ -62,10 +63,13 @@ export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorN
                     </Button>
                 )}
                 {colors && colors.length > 0 && 'Click a color to remove it'}
-                {typeof colorError === 'string' && (
-                    <p role="alert" className="mt-2 text-sm text-danger">
-                        {colorError}
-                    </p>
+                {[colorError, colorsError].map(
+                    (message) =>
+                        typeof message === 'string' && (
+                            <p key={message} role="alert" className="mt-2 text-sm text-danger">
+                                {message}
+                            </p>
+                        )
                 )}
             </div>
             {allowMultiColor && multiColorName && (

@@ -247,9 +247,7 @@ export default function ConfigPage() {
                                                     <Description>
                                                         The labels that will appear on the wheel segments
                                                     </Description>
-                                                    <FieldError>
-                                                        You must have at least 1 segment to make a wheel!
-                                                    </FieldError>
+                                                    <FieldError>{fieldState.error?.message}</FieldError>
                                                 </TextField>
                                             )}
                                         />
@@ -262,15 +260,18 @@ export default function ConfigPage() {
                                         <Controller
                                             control={control}
                                             name="title"
-                                            render={({ field }) => (
+                                            render={({ field, fieldState }) => (
                                                 <TextField
+                                                    isInvalid={!!fieldState.error}
+                                                    validationBehavior="aria"
                                                     name={field.name}
                                                     value={field.value}
                                                     onChange={field.onChange}
                                                     onBlur={field.onBlur}
                                                 >
                                                     <Label>Wheel Title</Label>
-                                                    <Input placeholder="Enter a title for your wheel" />
+                                                    <Input ref={field.ref} placeholder="Enter a title for your wheel" />
+                                                    <FieldError>{fieldState.error?.message}</FieldError>
                                                 </TextField>
                                             )}
                                         />
@@ -283,16 +284,19 @@ export default function ConfigPage() {
                                         <Controller
                                             control={control}
                                             name="description"
-                                            render={({ field }) => (
+                                            render={({ field, fieldState }) => (
                                                 <TextField
+                                                    isInvalid={!!fieldState.error}
+                                                    validationBehavior="aria"
                                                     name={field.name}
                                                     value={field.value}
                                                     onChange={field.onChange}
                                                     onBlur={field.onBlur}
                                                 >
                                                     <Label>Wheel Description</Label>
-                                                    <Input placeholder="Describe your wheel" />
+                                                    <Input ref={field.ref} placeholder="Describe your wheel" />
                                                     <Description>Helpful when adding bookmarks</Description>
+                                                    <FieldError>{fieldState.error?.message}</FieldError>
                                                 </TextField>
                                             )}
                                         />

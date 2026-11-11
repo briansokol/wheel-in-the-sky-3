@@ -11,3 +11,6 @@ export const MAX_ENCODED_LENGTH = 200_000;
 export const MAX_DECODED_BYTES = 262_144;
 
 export const CONFIG_ID_LENGTH = 10;
+
+/** Longest accepted config id; older wheels used 21-character ids. */
+export const MAX_CONFIG_ID_LENGTH = 21;

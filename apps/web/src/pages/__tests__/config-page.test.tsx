@@ -13,7 +13,9 @@ import { RotationProvider } from '@/contexts/rotation-provider';
 import { SegmentProvider } from '@/contexts/segment-provider';
 import ConfigPage from '../config-page';
 
-const { decodeState } = vi.hoisted(() => ({ decodeState: { isPending: false, monochromatic: false } }));
+const { decodeState } = vi.hoisted(() => ({
+    decodeState: { isPending: false, monochromatic: false, tooManyCustomColors: false },
+}));
 
 vi.mock('@repo/shared/utils/encoding', () => ({ encodeConfig: vi.fn() }));
 
@@ -30,10 +32,17 @@ vi.mock('@/hooks/config', () => {
     }
     const result = { data: makeConfig(WheelColorType.Triad), isError: false, isPending: false };
     const monochromaticResult = { data: makeConfig(WheelColorType.Monochromatic), isError: false, isPending: false };
+    const customConfig = makeConfig(WheelColorType.Custom);
+    customConfig.setWheelColorColors(Array.from({ length: 51 }, (_, i) => `#0000${i.toString(16).padStart(2, '0')}`));
+    const tooManyCustomColorsResult = { data: customConfig, isError: false, isPending: false };
     const pendingResult = { data: undefined, isError: false, isPending: true };
     return {
-        useDecodedConfig: () =>
-            decodeState.isPending ? pendingResult : decodeState.monochromatic ? monochromaticResult : result,
+        useDecodedConfig: () => {
+            if (decodeState.isPending) return pendingResult;
+            if (decodeState.monochromatic) return monochromaticResult;
+            if (decodeState.tooManyCustomColors) return tooManyCustomColorsResult;
+            return result;
+        },
     };
 });
 
@@ -78,6 +87,7 @@ describe('ConfigPage', () => {
         vi.mocked(encodeConfig).mockResolvedValue('v5.encoded');
         decodeState.isPending = false;
         decodeState.monochromatic = false;
+        decodeState.tooManyCustomColors = false;
     });
 
     it('populates every field from the loaded config', () => {
@@ -155,6 +165,35 @@ describe('ConfigPage', () => {
             )
         ).toBeInTheDocument();
         expect(trigger).toHaveTextContent('Tetrad');
+    });
+
+    it.each([
+        ['an over-long title', 'Wheel Title', 'T'.repeat(101), 'Use at most 100 characters'],
+        ['an over-long description', 'Wheel Description', 'D'.repeat(301), 'Use at most 300 characters'],
+        [
+            'too many segments',
+            /Wheel Segments/,
+            Array.from({ length: 501 }, (_, i) => `Name ${i}`).join('\n'),
+            'Use at most 500 segments of up to 200 characters each',
+        ],
+    ])('blocks submit and explains %s', async (_label, field, value, message) => {
+        renderConfigPage();
+
+        fireEvent.change(screen.getByRole('textbox', { name: field }), { target: { value } });
+        fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
+
+        expect(await screen.findByText(message)).toBeInTheDocument();
+        expect(encodeConfig).not.toHaveBeenCalled();
+    });
+
+    it('blocks submit and explains too many custom colors', async () => {
+        decodeState.tooManyCustomColors = true;
+        renderConfigPage();
+
+        fireEvent.click(screen.getByRole('button', { name: /Update Existing Wheel/ }));
+
+        expect(await screen.findByText('Choose up to 50 valid colors')).toBeInTheDocument();
+        expect(encodeConfig).not.toHaveBeenCalled();
     });
 
     it('requires at least one segment', async () => {

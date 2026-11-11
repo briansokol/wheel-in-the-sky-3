@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+    MAX_CONFIG_ID_LENGTH,
     MAX_CUSTOM_COLORS,
     MAX_DESCRIPTION_LENGTH,
     MAX_NAMES,
@@ -15,7 +16,7 @@ import { hexColorSchema } from '@/validators/hex-color.js';
  * default are omitted, and values derivable from others are not stored.
  */
 export const wireConfigSchema = z.object({
-    i: z.string().min(1).max(21),
+    i: z.string().min(1).max(MAX_CONFIG_ID_LENGTH),
     t: z.string().max(MAX_TITLE_LENGTH).optional(),
     d: z.string().max(MAX_DESCRIPTION_LENGTH).optional(),
     n: z.array(z.string().min(1).max(MAX_NAME_LENGTH)).min(1).max(MAX_NAMES),

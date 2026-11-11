@@ -1,4 +1,5 @@
 import { DEFAULT_BASE_COLOR } from '@repo/shared/constants/colors';
+import { CONFIG_ID_LENGTH } from '@repo/shared/constants/limits';
 import { describe, expect, it } from 'vitest';
 import { convertConfigV2ToConfigV3 } from '@/compatibility/v2/utils';
 
@@ -17,6 +18,15 @@ describe('convertConfigV2ToConfigV3', () => {
         const converted = convertConfigV2ToConfigV3(v2);
         expect(JSON.parse(converted.customColors)).toEqual(['#ff0000', '#0000ff']);
         expect(converted.backgroundColor).toBe('#ffffff');
+    });
+
+    it('keeps a v2 id that fits the current id limit', () => {
+        expect(convertConfigV2ToConfigV3({ ...v2, id: 'abc123' }).id).toBe('abc123');
+    });
+
+    it('replaces a v2 id longer than the current id limit instead of failing', () => {
+        const converted = convertConfigV2ToConfigV3({ ...v2, id: 'a'.repeat(40) });
+        expect(converted.id).toHaveLength(CONFIG_ID_LENGTH);
     });
 
     it('falls back to the default base color when the v2 base color is invalid', () => {
