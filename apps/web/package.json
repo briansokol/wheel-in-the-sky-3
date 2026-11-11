@@ -23,7 +23,6 @@
     "@repo/api-handlers": "*",
     "@repo/shared": "*",
     "@sentry/react": "10.70.0",
-    "@tanstack/react-query": "5.90.21",
     "@uidotdev/usehooks": "2.4.1",
     "canvas-confetti": "1.9.4",
     "es-toolkit": "1.44.0",

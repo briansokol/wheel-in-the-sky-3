@@ -4,7 +4,6 @@ import {
     SiCloudflare,
     SiEslint,
     SiGithub,
-    SiHono,
     SiNextui,
     SiPrettier,
     SiReact,
@@ -15,16 +14,14 @@ import {
     SiVitest,
 } from 'react-icons/si';
 import Markdown from 'react-markdown';
-import { useChangeLog } from '@/hooks/changelog';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
+import changelog from '../../../../CHANGELOG.md?raw';
 
 const currentYear = new Date().getFullYear();
 
 export default function AboutPage() {
     useSetDocumentBackgroundColor(defaultPageColorConfig.backgroundColor);
     useSetDocumentForegroundColor(defaultPageColorConfig.foregroundColor);
-
-    const { data: changelog, isError } = useChangeLog();
 
     return (
         <main className="flex min-h-screen flex-col items-center px-4 py-8">
@@ -60,13 +57,6 @@ export default function AboutPage() {
                             <SiTailwindcss className="inline-block align-[-3px]" />{' '}
                             <Link href="https://tailwindcss.com/">
                                 Tailwind
-                                <Link.Icon />
-                            </Link>
-                        </li>
-                        <li>
-                            <SiHono className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://hono.dev/">
-                                Hono
                                 <Link.Icon />
                             </Link>
                         </li>
@@ -135,44 +125,37 @@ export default function AboutPage() {
                     <p className="my-4">©{currentYear} Brian Sokol. All rights reserved.</p>
                 </article>
                 <article data-testid="changelog-text" className="mt-12">
-                    {isError ? (
-                        <p className="my-4">Sorry, I couldn&apos;t load the changelog.</p>
-                    ) : !changelog?.startsWith('<!doctype html>') ? (
-                        <Markdown
-                            components={{
-                                h1(props) {
-                                    return <h1 className="my-4 text-4xl font-bold">{props.children}</h1>;
-                                },
-                                h2(props) {
-                                    return (
-                                        <h2 className="mt-12 mb-4 border-b-1 text-2xl font-bold">{props.children}</h2>
-                                    );
-                                },
-                                h3(props) {
-                                    return <h3 className="my-4 text-lg font-bold">{props.children}</h3>;
-                                },
-                                a(props) {
-                                    const isExternalLink: boolean =
-                                        !!props.href &&
-                                        !!props.href.startsWith('http') &&
-                                        (typeof window === 'undefined' ||
-                                            !props.href.startsWith(window.location.origin));
+                    <Markdown
+                        components={{
+                            h1(props) {
+                                return <h1 className="my-4 text-4xl font-bold">{props.children}</h1>;
+                            },
+                            h2(props) {
+                                return <h2 className="mt-12 mb-4 border-b-1 text-2xl font-bold">{props.children}</h2>;
+                            },
+                            h3(props) {
+                                return <h3 className="my-4 text-lg font-bold">{props.children}</h3>;
+                            },
+                            a(props) {
+                                const isExternalLink: boolean =
+                                    !!props.href &&
+                                    !!props.href.startsWith('http') &&
+                                    (typeof window === 'undefined' || !props.href.startsWith(window.location.origin));
 
-                                    return (
-                                        <Link href={props.href} className="text-[length:inherit]">
-                                            {props.children}
-                                            {isExternalLink && <Link.Icon />}
-                                        </Link>
-                                    );
-                                },
-                                ul(props) {
-                                    return <ul className="my-4 list-disc pl-8">{props.children}</ul>;
-                                },
-                            }}
-                        >
-                            {changelog}
-                        </Markdown>
-                    ) : null}
+                                return (
+                                    <Link href={props.href} className="text-[length:inherit]">
+                                        {props.children}
+                                        {isExternalLink && <Link.Icon />}
+                                    </Link>
+                                );
+                            },
+                            ul(props) {
+                                return <ul className="my-4 list-disc pl-8">{props.children}</ul>;
+                            },
+                        }}
+                    >
+                        {changelog}
+                    </Markdown>
                 </article>
             </div>
         </main>
