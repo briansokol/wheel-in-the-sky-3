@@ -1,7 +1,8 @@
 # Wheel in the Sky 3
 
-TypeScript React SPA with a Hono API backend on Cloudflare Workers, organized as
-an npm-workspaces monorepo managed by Turborepo.
+TypeScript React SPA deployed as static assets on Cloudflare Workers, organized
+as an npm-workspaces monorepo managed by Turborepo. There is no backend: wheel
+configs are encoded and decoded in the browser.
 
 Every workspace has its own `CLAUDE.md` holding the facts specific to it. Read
 that file before working inside a workspace. This file covers only what applies
@@ -9,15 +10,13 @@ everywhere.
 
 ## Package context
 
-| Workspace                         | Purpose                                                      |
-| --------------------------------- | ------------------------------------------------------------ |
-| `apps/web/CLAUDE.md`              | React SPA, Vite bundled into `apps/api/public/`              |
-| `apps/api/CLAUDE.md`              | Cloudflare Worker shell, wrangler config, deploy             |
-| `packages/shared/CLAUDE.md`       | Framework-agnostic wheel domain logic, types, Zod validators |
-| `packages/api-handlers/CLAUDE.md` | Hono routes and the typed client contract                    |
-| `packages/oxlint/CLAUDE.md`       | Shared oxlint presets                                        |
-| `packages/prettier/CLAUDE.md`     | Shared Prettier config                                       |
-| `packages/lint-staged/CLAUDE.md`  | Shared lint-staged config                                    |
+| Workspace                        | Purpose                                                      |
+| -------------------------------- | ------------------------------------------------------------ |
+| `apps/web/CLAUDE.md`             | React SPA built with Vite; wrangler config and deploy        |
+| `packages/shared/CLAUDE.md`      | Framework-agnostic wheel domain logic, types, Zod validators |
+| `packages/oxlint/CLAUDE.md`      | Shared oxlint presets                                        |
+| `packages/prettier/CLAUDE.md`    | Shared Prettier config                                       |
+| `packages/lint-staged/CLAUDE.md` | Shared lint-staged config                                    |
 
 See `docs/architecture.md` for the monorepo map and the decision flow for where
 new code belongs.
@@ -36,9 +35,8 @@ question and wait for an answer. Do not guess.
 
 ### 3. Respect workspace boundaries
 
-Domain logic goes in `@repo/shared`. API routes go in `@repo/api-handlers`.
-React components go in `apps/web`. `apps/api` is a deployment shell, not a home
-for logic. When unsure, see `docs/architecture.md`.
+Domain logic goes in `@repo/shared`. React components, pages, and the
+deployment config go in `apps/web`. When unsure, see `docs/architecture.md`.
 
 ### 4. Test before committing
 
@@ -77,13 +75,11 @@ Do not narrate what a well-named function already communicates.
 
 1. `useState` for state local to one component
 2. React Context for app-level state, see `apps/web/src/contexts/`
-3. TanStack React Query for server state
 
-Never add Redux, MobX, or Zustand. Context plus Query is sufficient here.
+Never add Redux, MobX, or Zustand. Context is sufficient here.
 
 **Forms**: React Hook Form with a Zod resolver. Shared schemas live in
-`packages/shared/src/validators/`. API request validation uses
-`@hono/zod-validator`.
+`packages/shared/src/validators/`.
 
 **Animation**: Framer Motion. Do not hand-write CSS transitions.
 

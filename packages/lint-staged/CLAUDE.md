@@ -69,7 +69,7 @@ Import ordering is owned by the Prettier sort-imports plugin.
 
 Not applicable: there is no test script and no `__tests__` directory here. The
 `projects` array in the root `vitest.config.ts` lists only the `apps`
-workspaces, `packages/shared`, and `packages/api-handlers`, so `npm run test` never
+workspaces and `packages/shared`, so `npm run test` never
 reaches this workspace, and `./packages/lint-staged/**` sits in that same file's
 coverage `exclude` array deliberately.
 
@@ -92,7 +92,7 @@ here.
    `prettier` group's glob differs, so it stays a separate entry and its
    position among the arguments changes nothing.
 2. The `prettier` group's glob omits `jsx`, `mjs`, `cjs`, and `jsonc` while the
-   `oxlint` and `vitest` globs include `jsx`, so a staged `apps/api/wrangler.jsonc`
+   `oxlint` and `vitest` globs include `jsx`, so a staged `apps/web/wrangler.jsonc`
    gets no formatting on commit, and a `.jsx` file would be linted and tested but
    never formatted. See `packages/lint-staged/configs.js`.
 3. `packages/lint-staged/utils.d.ts` declares `combineConfigs` as taking a single
@@ -120,8 +120,8 @@ here.
 Depends on: `lint-staged`, the only declared dependency, plus `@repo/oxlint` and
 `@repo/prettier` imported at config load time without being declared.
 
-Depended on by: `apps/web`, `apps/api`, `packages/shared`,
-`packages/api-handlers`, `packages/oxlint`, and `packages/prettier`, each through
+Depended on by: `apps/web`, `packages/shared`, `packages/oxlint`, and
+`packages/prettier`, each through
 its own `lint-staged.config.js`.
 
 This workspace must never import application or domain code, because every

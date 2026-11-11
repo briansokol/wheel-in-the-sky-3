@@ -12,8 +12,8 @@ A rule changed here reaches every consuming workspace.
 Only oxlint presets belong here. Prettier config lives in `packages/prettier`
 and lint-staged config in `packages/lint-staged`; this workspace re-exports both
 for its own use and adds nothing to them. A pattern that only one workspace
-needs to ignore goes in that workspace's own `oxlint.config.ts`, the way
-`apps/api/oxlint.config.ts` does, not into `base`.
+needs to ignore goes in that workspace's own `oxlint.config.ts`, not into
+`base`.
 
 ## Layout
 
@@ -63,8 +63,8 @@ Import ordering is owned by the Prettier sort-imports plugin.
 
 Not applicable: `packages/oxlint/package.json` declares no `test` script, the
 workspace holds no `__tests__` directory, and the `projects` array in the root
-`vitest.config.ts` lists only the `apps` workspaces plus `packages/shared` and
-`packages/api-handlers`, so the root `npm run test` never reaches it. That same
+`vitest.config.ts` lists only the `apps` workspaces plus `packages/shared`, so
+the root `npm run test` never reaches it. That same
 file names this workspace in its coverage `exclude` array deliberately.
 
 ## Lint and format
@@ -110,8 +110,8 @@ neither is a local override.
 Depends on: `oxlint` only, as declared. It also imports `@repo/prettier` and
 `@repo/lint-staged` at config load time without declaring them, per gotcha 1.
 
-Depended on by: `apps/web`, `apps/api`, `packages/shared`,
-`packages/api-handlers`, and `packages/lint-staged`, each through its own
+Depended on by: `apps/web`, `packages/shared`, and `packages/lint-staged`, each
+through its own
 `oxlint.config.ts`.
 
 `packages/oxlint/index.js` imports from `oxlint` and nothing else. It must not

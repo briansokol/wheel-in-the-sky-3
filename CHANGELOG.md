@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [3.0.0](#3.0.0) - Unreleased
 
-Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA using the Vite build framework, with a Hono backend API. All closed source code has been removed and the project is now completely open source.
+Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA using the Vite build framework that runs entirely in the browser. All closed source code has been removed and the project is now completely open source.
 
 ### Added
 
@@ -16,7 +16,8 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 
 ### Changed
 
-- Wheel configuration share links now use a versioned `?c=` query parameter with URL-safe encoding.
+- Wheel configuration share links carry the wheel in the URL fragment (`#c=`), so its contents are never sent to the server. Links are about half as long as before.
+- Wheels are encoded and decoded in your browser. The app no longer has a backend API.
 - Wheel no longer "floats" to the center of the segment. It will stop where it stops.
 - Wheel is now individual DOM elements instead of a gradient. This helps ensure consistency across browsers.
 - Spinning is handled by custom-written code.
