@@ -1,3 +1,4 @@
+import { TinyColor } from '@ctrl/tinycolor';
 import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
 import { PageColorType } from '@repo/shared/enums/page-colors';
@@ -43,6 +44,15 @@ function convertV2BackgroundColorTypeToV3PageColorType(backgroundColorType: Back
     }
 }
 
+/** Normalizes any CSS color v2 stored (hex, `rgb()`, names) to hex, or `undefined` if invalid. */
+function toHexColor(value: unknown): string | undefined {
+    if (typeof value !== 'string') {
+        return undefined;
+    }
+    const color = new TinyColor(value);
+    return color.isValid ? color.toHexString() : undefined;
+}
+
 export function convertConfigV2ToConfigV3(configV2: ConfigV2QueryParams): ConfigFormInputs {
     const colorSchemeConfig: ColorSchemeConfig = JSON.parse(configV2?.colorSchemeConfig ?? '{}');
     const backgroundColorConfig: BackgroundColorConfig = JSON.parse(configV2?.backgroundColorConfig ?? '{}');
@@ -55,10 +65,12 @@ export function convertConfigV2ToConfigV3(configV2: ConfigV2QueryParams): Config
         randomizeOrder: configV2?.randomizeOrder ?? false,
         showNames: configV2?.showNames ?? true,
         colorSchemeType: convertV2ColorSchemeTypeToV3WheelColorType(colorSchemeConfig?.colorSchemeType),
-        baseColor: colorSchemeConfig?.baseColor ?? DEFAULT_BASE_COLOR,
-        customColors: JSON.stringify(colorSchemeConfig?.colors ?? []),
+        baseColor: toHexColor(colorSchemeConfig?.baseColor) ?? DEFAULT_BASE_COLOR,
+        customColors: JSON.stringify(
+            (colorSchemeConfig?.colors ?? []).map(toHexColor).filter((color) => color !== undefined)
+        ),
         randomizeColor: colorSchemeConfig?.randomizeColor ?? false,
         backgroundColorType: convertV2BackgroundColorTypeToV3PageColorType(backgroundColorConfig?.backgroundColorType),
-        backgroundColor: backgroundColorConfig?.color ?? DEFAULT_BACKGROUND_COLOR,
+        backgroundColor: toHexColor(backgroundColorConfig?.color) ?? DEFAULT_BACKGROUND_COLOR,
     });
 }

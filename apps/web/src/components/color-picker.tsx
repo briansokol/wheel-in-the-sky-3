@@ -3,7 +3,7 @@ import type { FormColorNameValue } from '@repo/shared/types/config';
 import { debounce } from 'es-toolkit';
 import { type FC, useCallback, useMemo } from 'react';
 import { HexColorPicker } from 'react-colorful';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFormState } from 'react-hook-form';
 
 interface ColorPickerProps {
     singleColorName: FormColorNameValue;
@@ -13,6 +13,8 @@ interface ColorPickerProps {
 
 export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorName = '', allowMultiColor }) => {
     const { setValue, watch } = useFormContext();
+    const { errors } = useFormState({ name: singleColorName });
+    const colorError = errors[singleColorName]?.message;
 
     const debouncedSetColor = useMemo(() => {
         return debounce((value: string) => setValue(singleColorName, value), 100);
@@ -60,6 +62,11 @@ export const ColorPicker: FC<ColorPickerProps> = ({ singleColorName, multiColorN
                     </Button>
                 )}
                 {colors && colors.length > 0 && 'Click a color to remove it'}
+                {typeof colorError === 'string' && (
+                    <p role="alert" className="mt-2 text-sm text-danger">
+                        {colorError}
+                    </p>
+                )}
             </div>
             {allowMultiColor && multiColorName && (
                 <div data-testid="picker-color-list" className="flex flex-wrap">

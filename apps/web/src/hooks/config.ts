@@ -1,9 +1,6 @@
 import { Config } from '@repo/shared/classes/config';
-import { ConfigFormInputs } from '@repo/shared/types/config';
 import { decodeConfig } from '@repo/shared/utils/encoding';
-import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { api } from '@/utils/api';
 
 interface DecodedConfigResult {
     data: Config | undefined;
@@ -52,20 +49,4 @@ export function useDecodedConfig(encodedConfig?: string): DecodedConfigResult {
         isError: !isPending && state.isError,
         isPending,
     };
-}
-
-export function useEncodeConfigMutation() {
-    return useMutation({
-        mutationFn: async (config: ConfigFormInputs) => {
-            const response = await api.config.encode.$post({
-                json: config,
-            });
-            if (response.ok) {
-                return await response.json();
-            } else {
-                throw new Error('Failed to encode config');
-            }
-        },
-        retry: 1,
-    });
 }

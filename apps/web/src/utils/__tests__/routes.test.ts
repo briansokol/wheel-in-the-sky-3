@@ -16,9 +16,7 @@ describe('isPage', () => {
 
     it('should match other pages by prefix', () => {
         expect(isPage('/config', PageBaseRoute.Config)).toBe(true);
-        expect(isPage('/config?c=v4.abc', PageBaseRoute.Config)).toBe(true);
         expect(isPage('/wheel', PageBaseRoute.Wheel)).toBe(true);
-        expect(isPage('/wheel?c=v4.abc', PageBaseRoute.Wheel)).toBe(true);
     });
 
     it('should return false for non-matching routes', () => {

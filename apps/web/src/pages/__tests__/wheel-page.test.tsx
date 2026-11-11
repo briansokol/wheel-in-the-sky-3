@@ -31,7 +31,7 @@ function WinnerSetter() {
 describe('WheelPage', () => {
     it('anchors the wheel to the viewport so page scroll cannot shift it off center', () => {
         render(
-            <MemoryRouter initialEntries={['/wheel?c=encoded']}>
+            <MemoryRouter initialEntries={['/wheel#c=encoded']}>
                 <ConfigProvider>
                     <RotationProvider>
                         <SegmentProvider>
@@ -51,7 +51,7 @@ describe('WheelPage', () => {
 
     it('renders the winner card as a glass surface', () => {
         render(
-            <MemoryRouter initialEntries={['/wheel?c=encoded']}>
+            <MemoryRouter initialEntries={['/wheel#c=encoded']}>
                 <ConfigProvider>
                     <RotationProvider>
                         <SegmentProvider>

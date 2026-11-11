@@ -10,6 +10,7 @@ import { useConfig } from '@/contexts/config';
 import { useSegment } from '@/contexts/segment';
 import { dateIsWithinLast5Minutes } from '@/utils/dates';
 import { useSavedWheels } from '@/utils/local-storage';
+import { buildConfigHash } from '@/utils/routes';
 
 interface SavedWheelsListProps {
     closeDrawer?: () => void;
@@ -67,7 +68,7 @@ export function SavedWheelsList({ closeDrawer }: SavedWheelsListProps) {
                                     variant="tertiary"
                                     onPress={() => {
                                         setHasWinner(false);
-                                        navigate(`${PageBaseRoute.Wheel}?c=${wheel.encodedConfig}`);
+                                        navigate(`${PageBaseRoute.Wheel}${buildConfigHash(wheel.encodedConfig)}`);
                                         closeDrawer?.();
                                     }}
                                     className="bg-accent-soft text-2xl text-accent-soft-foreground"

@@ -45,7 +45,7 @@ describe('useDecodedConfig', () => {
     it('ignores a stale result when the input changes', async () => {
         const configA = new Config();
         const configB = new Config();
-        let resolveA: (config: Config) => void = () => {};
+        let resolveA: ((config: Config) => void) | undefined;
         vi.mocked(decodeConfig).mockImplementation((encoded: string) =>
             encoded === 'a'
                 ? new Promise<Config>((resolve) => {
@@ -60,7 +60,7 @@ describe('useDecodedConfig', () => {
         rerender({ encoded: 'b' });
         await waitFor(() => expect(result.current.data).toBe(configB));
 
-        await act(async () => resolveA(configA));
+        await act(async () => resolveA?.(configA));
         expect(result.current.data).toBe(configB);
     });
 });

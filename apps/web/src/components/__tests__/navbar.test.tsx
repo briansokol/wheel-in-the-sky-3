@@ -72,8 +72,14 @@ describe('AppNavBar', () => {
         expect(screen.queryByRole('link', { name: 'Wheel' })).not.toBeInTheDocument();
         unmount();
 
-        renderNavbar('/config?c=abc');
+        renderNavbar('/config#c=abc');
         expect(screen.getByRole('link', { name: 'Wheel' })).toBeInTheDocument();
+    });
+
+    it('carries the config fragment on the Wheel and Change Wheel links', () => {
+        renderNavbar('/config#c=abc');
+        expect(screen.getByRole('link', { name: 'Wheel' }).getAttribute('href')).toMatch(/#c=abc$/);
+        expect(screen.getByRole('link', { name: 'Change Wheel' }).getAttribute('href')).toMatch(/#c=abc$/);
     });
 
     it('marks the current page with aria-current', () => {
@@ -118,7 +124,7 @@ describe('AppNavBar', () => {
 
     it('preserves a pre-existing body scroll lock when the menu closes and on unmount', () => {
         document.body.style.overflow = 'hidden';
-        const { unmount } = renderNavbar('/wheel?c=abc');
+        const { unmount } = renderNavbar('/wheel#c=abc');
         fireEvent.click(screen.getByRole('button', { name: 'Open Menu' }));
         expect(document.body.style.overflow).toBe('hidden');
 

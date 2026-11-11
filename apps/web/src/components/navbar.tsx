@@ -2,9 +2,10 @@ import { Button, Drawer, Link, Separator, useOverlayState } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { FaList } from 'react-icons/fa6';
-import { useLocation, useSearchParams } from 'react-router';
+import { useLocation } from 'react-router';
 import { PageBaseRoute } from '@/constants/routes';
-import { isPage } from '@/utils/routes';
+import { useEncodedConfig } from '@/hooks/encoded-config';
+import { buildConfigHash, isPage } from '@/utils/routes';
 import { ActionAccordion } from './action-accordion';
 
 const ITEM_CLASS =
@@ -12,10 +13,9 @@ const ITEM_CLASS =
 
 export function AppNavBar() {
     const { pathname } = useLocation();
-    const [searchParams] = useSearchParams();
-    const currentEncodedConfig = searchParams.get('c');
+    const currentEncodedConfig = useEncodedConfig();
     const configQuery = useMemo(
-        () => (currentEncodedConfig ? `?c=${currentEncodedConfig}` : ''),
+        () => (currentEncodedConfig ? buildConfigHash(currentEncodedConfig) : ''),
         [currentEncodedConfig]
     );
 

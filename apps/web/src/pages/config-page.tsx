@@ -13,6 +13,7 @@ import {
     TextField,
     Tooltip,
 } from '@heroui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Config } from '@repo/shared/classes/config';
 import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
 import { pageColorSelectOptions, wheelColorSelectOptions } from '@repo/shared/constants/config';
@@ -25,18 +26,23 @@ import {
     getPageColorSelectOptionDescription,
     getWheelColorSelectOptionDescription,
 } from '@repo/shared/utils/configs';
+import { encodeConfig } from '@repo/shared/utils/encoding';
+import { configFromFormInputs } from '@repo/shared/utils/form-config';
 import { getGlowColors } from '@repo/shared/utils/glow-colors';
+import { configFormInputsSchema } from '@repo/shared/validators/config';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { MdClear, MdOutlineAddCircle, MdSave } from 'react-icons/md';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { ColorPicker } from '@/components/color-picker';
 import { WheelGlows } from '@/components/wheel-glows';
 import { WheelPreview } from '@/components/wheel-preview';
 import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
-import { useDecodedConfig, useEncodeConfigMutation } from '@/hooks/config';
+import { useDecodedConfig } from '@/hooks/config';
+import { useEncodedConfig } from '@/hooks/encoded-config';
+import { buildConfigHash } from '@/utils/routes';
 
 function getDefaultFormValues(config: Config | undefined): ConfigFormInputs {
     return {
@@ -51,13 +57,16 @@ function getDefaultFormValues(config: Config | undefined): ConfigFormInputs {
         customColors: JSON.stringify(config?.wheelColorConfig?.colors ?? []),
         randomizeColor: config?.wheelColorConfig?.randomizeColor ?? false,
         backgroundColorType: `${config?.pageColorConfig?.backgroundColorType ?? defaultPageColorConfig.backgroundColorType}`,
-        backgroundColor: config?.pageColorConfig?.backgroundColor ?? DEFAULT_BACKGROUND_COLOR,
+        // Gradient themes store a CSS gradient here, which is not a color the picker can edit.
+        backgroundColor:
+            config?.pageColorConfig?.backgroundColorType === PageColorType.Single
+                ? config.pageColorConfig.backgroundColor
+                : DEFAULT_BACKGROUND_COLOR,
     };
 }
 
 export default function ConfigPage() {
-    const [searchParams] = useSearchParams();
-    const requestedConfig = searchParams.get('c') ?? 'new';
+    const requestedConfig = useEncodedConfig() ?? 'new';
     const navigate = useNavigate();
 
     const { data: config, isError, isPending } = useDecodedConfig(requestedConfig);
@@ -77,6 +86,7 @@ export default function ConfigPage() {
 
     const methods = useForm<ConfigFormInputs>({
         defaultValues: defaultFormValues,
+        resolver: zodResolver(configFormInputsSchema),
     });
 
     const { register, handleSubmit, control, setValue } = methods;
@@ -129,16 +139,12 @@ export default function ConfigPage() {
         return [parsedType, getPageColorSelectOptionDescription(parsedType)];
     }, [backgroundColorType, defaultFormValues]);
 
-    const { mutateAsync: encodeConfig } = useEncodeConfigMutation();
-
     const onSubmit: SubmitHandler<ConfigFormInputs> = useCallback(
         async (data) => {
-            const { encodedConfig } = await encodeConfig(data);
-            if (encodedConfig) {
-                navigate(`${PageBaseRoute.Wheel}?c=${encodedConfig}`);
-            }
+            const encodedConfig = await encodeConfig(configFromFormInputs(data));
+            navigate(`${PageBaseRoute.Wheel}${buildConfigHash(encodedConfig)}`);
         },
-        [encodeConfig, navigate]
+        [navigate]
     );
 
     if (isPending) {

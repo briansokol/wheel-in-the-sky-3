@@ -7,7 +7,7 @@ import { RefObject, useEffect, useMemo, useRef } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
 import { IoRemoveCircleOutline } from 'react-icons/io5';
 import { LuClipboardCopy } from 'react-icons/lu';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Banner } from '@/components/banner';
 import { Wheel } from '@/components/wheel';
 import { PageBaseRoute } from '@/constants/routes';
@@ -17,6 +17,7 @@ import { useRotation } from '@/contexts/rotation';
 import { useSegment } from '@/contexts/segment';
 import { useBgColor, useFgColor, useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig } from '@/hooks/config';
+import { useEncodedConfig } from '@/hooks/encoded-config';
 import { useSmallestViewportDimension } from '@/hooks/viewport';
 import { useSavedWheels } from '@/utils/local-storage';
 import { calculateStartingRotation } from '@/utils/math';
@@ -33,8 +34,7 @@ function getBanner(bannerRef: RefObject<HTMLCanvasElement | null>) {
 
 export default function WheelPage() {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const encodedConfig = searchParams.get('c') ?? undefined;
+    const encodedConfig = useEncodedConfig();
     const { setDecodedConfig, setEncodedConfig } = useConfig();
     const { updateWheelIfSaved } = useSavedWheels();
 
