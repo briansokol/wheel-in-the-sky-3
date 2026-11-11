@@ -26,7 +26,7 @@ jobs:
         steps:
             - name: Checkout Repo
               if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Setup Node.js
               if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
