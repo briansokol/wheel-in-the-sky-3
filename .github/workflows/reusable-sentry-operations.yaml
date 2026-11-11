@@ -35,7 +35,7 @@ jobs:
 
             - name: Cache node_modules
               if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               id: node-modules-cache
               with:
                   path: '**/node_modules'
