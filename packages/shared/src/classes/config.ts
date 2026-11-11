@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import { defaultPageColorConfig } from '@/constants/colors.js';
+import { CONFIG_ID_LENGTH } from '@/constants/limits.js';
 import { PageColorType } from '@/enums/page-colors.js';
 import { WheelColorType } from '@/enums/wheel-colors.js';
 import { SerializedConfigManager } from '@/types/config.js';
@@ -105,7 +106,7 @@ export class Config {
     }
 
     public static generateId(): string {
-        return nanoid();
+        return nanoid(CONFIG_ID_LENGTH);
     }
 
     public addId(): void {
