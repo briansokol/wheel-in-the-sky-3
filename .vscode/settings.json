@@ -8,8 +8,5 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "vscode-edge-devtools.webhint": false,
-  "json.schemaDownload.trustedDomains": {
-    "https://turborepo.com/schema.json": true
-  }
+  "vscode-edge-devtools.webhint": false
 }

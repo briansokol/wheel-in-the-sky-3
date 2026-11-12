@@ -27,7 +27,7 @@ jobs:
               uses: actions/cache@v6
               id: node-modules-cache
               with:
-                  path: '**/node_modules'
+                  path: node_modules
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install Dependencies
@@ -51,15 +51,12 @@ jobs:
               uses: actions/cache@v6
               id: node-modules-cache
               with:
-                  path: '**/node_modules'
+                  path: node_modules
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install Dependencies
               if: steps.node-modules-cache.outputs.cache-hit != 'true'
               run: npm ci
-
-            - name: Check Dependency Consistency
-              run: npm run sherif
 
             - name: Check Types
               run: npm run check-types
@@ -84,7 +81,7 @@ jobs:
               uses: actions/cache@v6
               id: node-modules-cache
               with:
-                  path: '**/node_modules'
+                  path: node_modules
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install Dependencies
@@ -101,15 +98,8 @@ jobs:
               id: cache-web-dist
               uses: actions/cache@v6
               with:
-                  path: apps/web/dist
+                  path: dist
                   key: ${{ runner.os }}-web-dist-${{ github.sha }}
-
-            - name: Cache shared build directory
-              id: cache-shared-dist
-              uses: actions/cache@v6
-              with:
-                  path: packages/shared/dist
-                  key: ${{ runner.os }}-shared-dist-${{ github.sha }}
 
     unit-tests:
         needs: [validate, build]
@@ -128,7 +118,7 @@ jobs:
               uses: actions/cache@v6
               id: node-modules-cache
               with:
-                  path: '**/node_modules'
+                  path: node_modules
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install Dependencies
@@ -140,17 +130,8 @@ jobs:
               id: restore-web-dist
               uses: actions/cache@v6
               with:
-                  path: apps/web/dist
+                  path: dist
                   key: ${{ runner.os }}-web-dist-${{ github.sha }}
-                  fail-on-cache-miss: true
-
-            # Restore the shared dist directory cache from the build job
-            - name: Restore shared build directory
-              id: restore-shared-dist
-              uses: actions/cache@v6
-              with:
-                  path: packages/shared/dist
-                  key: ${{ runner.os }}-shared-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
             - name: Run Tests

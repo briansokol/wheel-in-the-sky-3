@@ -1,0 +1,58 @@
+import path from 'node:path';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import { configDefaults, coverageConfigDefaults } from 'vitest/config';
+
+const plugins = [
+    react({
+        babel: {
+            plugins: ['babel-plugin-react-compiler'],
+        },
+    }),
+    tailwindcss(),
+];
+if (process.env.WITH_SENTRY) {
+    plugins.push(
+        sentryVitePlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_WEB_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+        })
+    );
+}
+
+// https://vite.dev/config/
+export default defineConfig({
+    resolve: {
+        alias: {
+            '@': path.resolve(import.meta.dirname, './src'),
+        },
+    },
+    plugins,
+    test: {
+        ...configDefaults,
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: ['./vitest-setup.ts'],
+        exclude: [...configDefaults.exclude, '**/node_modules/**', '**/coverage/**', '**/dist/**', '**/.claude/**'],
+        coverage: {
+            provider: 'v8',
+            exclude: [
+                ...coverageConfigDefaults.exclude,
+                '**/dist/**',
+                '**/public/**',
+                '**/__tests__/**',
+                '**/*.config.{js,ts,mjs,mts}',
+                '**/*.d.ts',
+                '**/vitest*.{js,ts,mjs,mts}',
+                './src/components/**',
+                './src/pages/**',
+            ],
+        },
+    },
+    build: {
+        sourcemap: true,
+    },
+});
