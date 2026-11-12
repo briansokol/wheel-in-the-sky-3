@@ -1,5 +1,7 @@
 # Production readiness review
 
+> This review describes the repository layout before November 11, 2026, when the monorepo was flattened into a single root app. Paths under `apps/web/` and `packages/` refer to that earlier layout.
+
 Reviewed 2026-11-10 at commit `bb2d5e3` (`main`). Covers code, patterns,
 dependencies, security, delivery, and architecture.
 

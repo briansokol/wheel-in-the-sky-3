@@ -30,7 +30,7 @@ npm install
 
 #### Running a Local Dev Server
 
-To build the app in watch-mode and run dev server, run the following command:
+To run the dev server, run the following command:
 
 ```bash
 npm run dev
