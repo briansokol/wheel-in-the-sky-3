@@ -12,16 +12,16 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version-file: '.nvmrc'
                   cache: 'npm'
 
             - name: Cache node_modules
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               id: node-modules-cache
               with:
                   path: '**/node_modules'
@@ -34,7 +34,7 @@ jobs:
             # Restore the web dist directory cache from the build job
             - name: Restore web dist directory
               id: restore-web-dist
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               with:
                   path: apps/web/dist
                   key: ${{ runner.os }}-web-dist-${{ github.sha }}
@@ -43,14 +43,14 @@ jobs:
             # Restore the shared dist directory cache from the build job
             - name: Restore shared build directory
               id: restore-shared-dist
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               with:
                   path: packages/shared/dist
                   key: ${{ runner.os }}-shared-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
             - name: Build & Deploy Worker
-              uses: cloudflare/wrangler-action@v3
+              uses: cloudflare/wrangler-action@v4
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

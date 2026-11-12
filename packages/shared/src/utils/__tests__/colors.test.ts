@@ -42,10 +42,10 @@ describe('getPageGradientTheme', () => {
 
     it('should handle invalid gradient types', () => {
         // @ts-expect-error Testing an invalid type
-        expect(() => getPageGradientTheme(PageColorType.Solid)).toThrow();
+        expect(() => getPageGradientTheme(PageColorType.Solid)).toThrow('Invalid gradient theme');
         // @ts-expect-error Testing an invalid type
-        expect(() => getPageGradientTheme(PageColorType.Dark)).toThrow();
+        expect(() => getPageGradientTheme(PageColorType.Dark)).toThrow('Invalid gradient theme');
         // @ts-expect-error Testing an invalid type
-        expect(() => getPageGradientTheme(PageColorType.Light)).toThrow();
+        expect(() => getPageGradientTheme(PageColorType.Light)).toThrow('Invalid gradient theme');
     });
 });

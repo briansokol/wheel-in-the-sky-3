@@ -6,7 +6,7 @@ import { type AnimationStateCallbacks, WheelAnimationManager } from '../wheel-an
 
 // Mock the wheel-animation utilities
 vi.mock('../wheel-animation', () => ({
-    getCoordinatesFromPointerEvent: vi.fn((event) => {
+    getCoordinatesFromPointerEvent: vi.fn<(event: MouseEvent | TouchEvent) => { x: number; y: number }>((event) => {
         if (event instanceof MouseEvent) {
             return { x: event.clientX, y: event.clientY };
         }
@@ -16,7 +16,7 @@ vi.mock('../wheel-animation', () => ({
         }
         return { x: 0, y: 0 };
     }),
-    getPointerAngle: vi.fn(() => 45),
+    getPointerAngle: vi.fn<() => number>(() => 45),
 }));
 
 /**
@@ -58,7 +58,7 @@ describe('WheelAnimationManager', () => {
         vi.useFakeTimers();
 
         mockCallbacks = {
-            onWinnerStateChange: vi.fn(),
+            onWinnerStateChange: vi.fn<AnimationStateCallbacks['onWinnerStateChange']>(),
         };
 
         mockWheelManager = createMockWheelManager();

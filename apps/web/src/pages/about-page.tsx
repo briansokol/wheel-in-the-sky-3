@@ -4,7 +4,7 @@ import {
     SiCloudflare,
     SiEslint,
     SiGithub,
-    SiNextui,
+    SiHeroui,
     SiPrettier,
     SiReact,
     SiTailwindcss,
@@ -47,7 +47,7 @@ export default function AboutPage() {
                             </Link>
                         </li>
                         <li>
-                            <SiNextui className="inline-block align-[-3px]" />{' '}
+                            <SiHeroui className="inline-block align-[-3px]" />{' '}
                             <Link href="https://www.heroui.com/">
                                 HeroUI
                                 <Link.Icon />

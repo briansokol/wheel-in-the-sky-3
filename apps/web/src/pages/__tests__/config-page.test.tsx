@@ -17,7 +17,7 @@ const { decodeState } = vi.hoisted(() => ({
     decodeState: { isPending: false, monochromatic: false, tooManyCustomColors: false },
 }));
 
-vi.mock('@repo/shared/utils/encoding', () => ({ encodeConfig: vi.fn() }));
+vi.mock('@repo/shared/utils/encoding', () => ({ encodeConfig: vi.fn<typeof encodeConfig>() }));
 
 vi.mock('@/hooks/config', () => {
     function makeConfig(wheelColorType: WheelColorType): Config {
