@@ -8,7 +8,6 @@ import {
     SiReact,
     SiTailwindcss,
     SiTestinglibrary,
-    SiTurborepo,
     SiVite,
     SiVitest,
 } from 'react-icons/si';
@@ -67,13 +66,6 @@ export default function AboutPage() {
                             <SiVite className="inline-block align-[-3px]" />{' '}
                             <Link href="https://vite.dev/">
                                 Vite
-                                <Link.Icon />
-                            </Link>
-                        </li>
-                        <li>
-                            <SiTurborepo className="inline-block align-[-3px]" />{' '}
-                            <Link href="https://turbo.build/repo/docs">
-                                Turborepo
                                 <Link.Icon />
                             </Link>
                         </li>

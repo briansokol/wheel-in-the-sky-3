@@ -1,77 +1,61 @@
 # Architecture
 
-How the monorepo is organized and where new code belongs. Workspace-specific
-detail lives in each workspace's own `CLAUDE.md`.
+How the app is organized and where new code belongs. Conventions, commands, and
+gotchas live in the root `CLAUDE.md`.
 
-## Monorepo structure
+## Source structure
 
-Managed by Turborepo over npm workspaces (`apps/*`, `packages/*`).
+The app is a single Vite project at the repository root. All source code lives
+under `src/`.
 
 ```
-apps/
-└── web/                    # React SPA, deployed as static assets
-
-packages/
-├── shared/                 # Core wheel domain logic
-├── oxlint/                 # Shared oxlint presets
-├── prettier/               # Shared Prettier config
-└── lint-staged/            # Shared lint-staged config
+src/
+├── assets/             # Module-imported assets
+├── classes/            # Wheel domain classes: Config, Segment, WheelManager
+├── compatibility/v2/   # Conversion of v2-era wheel URLs to a v3 Config
+├── components/         # Reusable React components
+├── constants/          # Literal values, size limits, route paths
+├── contexts/           # React contexts and their providers
+├── enums/              # Shared enums
+├── hooks/              # Custom React hooks
+├── pages/              # Route-level screens and their layouts
+├── types/              # Type declarations and some runtime defaults
+├── utils/              # Helpers with no React dependency, including the share-link codec
+└── validators/         # Zod schemas
 ```
 
-### Workspace purposes
-
-**`apps/web`** builds the React SPA with Vite into `apps/web/dist`, and owns
-the wrangler configuration and deploy for serving it from the edge.
-
-**`packages/shared`** holds framework-agnostic wheel domain logic, shared types,
-Zod validators, and the share-link codec. It must stay free of DOM and Node
-APIs so a future backend could import it unchanged.
-
-**`packages/oxlint`, `packages/prettier`, `packages/lint-staged`** centralize
-tooling configuration so every workspace shares one source of truth.
+The Vite, wrangler, TypeScript, and tool configs sit at the repository root
+beside `src/`. Files in `public/` are copied verbatim into the build output.
 
 ## Where code belongs
 
-Ask, in order:
-
-1. Is it wheel or spinner domain logic, a shared type, or a validation schema?
-   Put it in `packages/shared`.
-2. Is it a React component, page, hook, or context? Put it in `apps/web/src/`.
-3. Is it wrangler, deploy, or static-asset configuration? Put it in `apps/web`.
-
-| What               | Where                                    |
-| ------------------ | ---------------------------------------- |
-| Wheel domain logic | `packages/shared/src/classes/`           |
-| Zod validators     | `packages/shared/src/validators/`        |
-| Shared types       | `packages/shared/src/types/`             |
-| Share-link codec   | `packages/shared/src/utils/encoding.ts`  |
-| React components   | `apps/web/src/components/`               |
-| Pages              | `apps/web/src/pages/`                    |
-| Context providers  | `apps/web/src/contexts/`                 |
-| Custom hooks       | `apps/web/src/hooks/`                    |
-| Tests              | a `__tests__/` directory beside the code |
-
-A utility used in more than one workspace belongs in `packages/shared`. One used
-only by the web app belongs in `apps/web/src/utils/`.
+| Directory                | What goes there                                                 |
+| ------------------------ | --------------------------------------------------------------- |
+| `src/classes/`           | Wheel and spinner domain classes                                |
+| `src/compatibility/v2/`  | Code that reads v2-era wheel URLs                               |
+| `src/components/`        | React components used by more than one page                     |
+| `src/constants/`         | Literal values and limits                                       |
+| `src/contexts/`          | Context providers and their hooks                               |
+| `src/enums/`             | Enums                                                           |
+| `src/hooks/`             | Custom hooks                                                    |
+| `src/pages/`             | Route-level screens                                             |
+| `src/types/`             | Type declarations                                               |
+| `src/utils/`             | Helper functions, including `encoding.ts`, the share-link codec |
+| `src/validators/`        | Zod validation schemas                                          |
+| `__tests__/` beside code | Tests for the code in the parent directory                      |
+| repository root          | Wrangler, deploy, and static-asset configuration                |
 
 ## Architectural patterns
 
-**Shared core.** Domain logic lives in one place, separate from React, so it
-can be tested on its own and reused by a backend if one is added later.
-
-**Framework separation.** `packages/shared` is framework-agnostic.
-`apps/web` owns React concerns and the deployment.
-
-**React Context for app state.** Providers in `apps/web/src/contexts/` cover
+**React Context for app state.** Providers in `src/contexts/` cover
 configuration, rotation, segment selection, and removed winners.
 
 **URL-based configuration sharing.** A wheel's configuration travels in the URL
 fragment as `#c=v5.<data>`, so the app needs no database and the wheel's
-contents are never sent to a server. The codec in
-`packages/shared/src/utils/encoding.ts` turns a config into a compact payload
-(defaults omitted, derived colors not stored), compresses it with
-`deflate-raw`, and base64url-encodes it. Decoding caps the input and
-decompressed sizes and validates the payload with Zod.
+contents are never sent to a server. The codec in `src/utils/encoding.ts` turns
+a config into a compact payload (defaults omitted, derived colors not stored),
+compresses it with `deflate-raw`, and base64url-encodes it. Decoding caps the
+input and decompressed sizes and validates the payload with Zod.
 
 **Edge deployment.** Cloudflare serves the built SPA as static assets, with
 single-page-application fallback routing. There is no Worker script.
@@ -79,7 +63,7 @@ single-page-application fallback routing. There is no Worker script.
 ## Technology stack
 
 Major versions are listed only where they change how code is written. Exact
-versions live in each workspace's `package.json`.
+versions live in `package.json`.
 
 **Frontend**: React 19 with the React Compiler, React Router 7, React Hook Form
 with a Zod resolver, HeroUI v3, Tailwind CSS v4, Framer Motion.
@@ -90,19 +74,17 @@ and `useCallback` wrapping is usually unnecessary.
 
 **Backend**: none. Encoding and decoding run in the browser.
 
-**Shared**: TypeScript in strict mode, Zod v4 for validation.
-
-**Tooling**: Turborepo, Vitest with React Testing Library, oxlint, Prettier,
-sherif for cross-workspace dependency consistency, husky and lint-staged.
+**Tooling**: Vitest with React Testing Library, oxlint, Prettier, husky and
+lint-staged.
 
 **Error tracking**: Sentry in the browser, with the `c=` value redacted from
 URLs before events are sent.
 
 ## Deployment model
 
-1. `npm run build` bundles the web app with Vite into `apps/web/dist`.
-2. `wrangler deploy`, run from `apps/web`, publishes those files as static
-   assets.
-3. SPA fallback routing is configured in `apps/web/wrangler.jsonc`.
+1. `npm run build` bundles the web app with Vite into `dist`.
+2. `wrangler deploy`, run from the repository root, publishes those files as
+   static assets.
+3. SPA fallback routing is configured in `wrangler.jsonc`.
 
 There is no server infrastructure and no database. State is carried in the URL.

@@ -30,6 +30,8 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 - Refreshed the look with frosted glass panels and glowing highlights in the wheel's colors on the configuration page.
 - Project is a monorepo.
 - Project is open source.
+- The project is a single Vite app instead of a Turborepo monorepo. Wheel logic lives in the app's `src/` directory.
+- The About page no longer lists Turborepo.
 
 ### Fixed
 

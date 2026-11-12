@@ -27,4 +27,9 @@ describe('AboutPage', () => {
         renderAboutPage();
         expect(screen.queryByText('Hono')).not.toBeInTheDocument();
     });
+
+    it('does not list Turborepo', () => {
+        renderAboutPage();
+        expect(screen.queryByText('Turborepo')).not.toBeInTheDocument();
+    });
 });
