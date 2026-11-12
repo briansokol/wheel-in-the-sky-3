@@ -19,8 +19,7 @@
     "test:ci": "vitest run --coverage"
   },
   "allowScripts": {
-    "@sentry/cli@2.58.6": true,
-    "@sentry/cli@3.6.2": true,
+    "@sentry/cli@3.8.2": true,
     "esbuild@0.28.2": true,
     "fsevents@2.3.3": true,
     "workerd@1.20261110.1": true
