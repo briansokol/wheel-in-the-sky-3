@@ -1,7 +1,7 @@
-import { DEFAULT_BASE_COLOR } from '@repo/shared/constants/colors';
-import { CONFIG_ID_LENGTH } from '@repo/shared/constants/limits';
 import { describe, expect, it } from 'vitest';
 import { convertConfigV2ToConfigV3 } from '@/compatibility/v2/utils';
+import { DEFAULT_BASE_COLOR } from '@/constants/colors';
+import { CONFIG_ID_LENGTH } from '@/constants/limits';
 
 const v2 = {
     title: 'T',

@@ -1,7 +1,7 @@
-import { Config } from '@repo/shared/classes/config';
-import { defaultPageColorConfig } from '@repo/shared/constants/colors';
-import { PageColorType } from '@repo/shared/enums/page-colors';
 import { renderHook } from '@testing-library/react';
+import { Config } from '@/classes/config';
+import { defaultPageColorConfig } from '@/constants/colors';
+import { PageColorType } from '@/enums/page-colors';
 import { useBgColor, useFgColor, useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '../colors';
 
 describe('useBgColor', () => {

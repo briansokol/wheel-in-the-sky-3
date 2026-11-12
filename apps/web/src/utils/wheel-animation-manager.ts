@@ -1,6 +1,6 @@
-import { type WheelManager } from '@repo/shared/classes/wheel-manager';
-import { type Coordinates, Easing, InteractionSource, RotationDirection } from '@repo/shared/types/wheel';
 import { type RefObject } from 'react';
+import { type WheelManager } from '@/classes/wheel-manager';
+import { type Coordinates, Easing, InteractionSource, RotationDirection } from '@/types/wheel';
 import { getCoordinatesFromPointerEvent, getPointerAngle } from './wheel-animation';
 
 // const MAX_SPEED = 30;

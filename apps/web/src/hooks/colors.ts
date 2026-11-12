@@ -1,7 +1,7 @@
-import { Config } from '@repo/shared/classes/config';
-import { defaultPageColorConfig } from '@repo/shared/constants/colors';
-import { PageColorType } from '@repo/shared/enums/page-colors';
 import { useEffect, useMemo } from 'react';
+import { Config } from '@/classes/config';
+import { defaultPageColorConfig } from '@/constants/colors';
+import { PageColorType } from '@/enums/page-colors';
 
 export function useBgColor(config: Config | undefined, backgroundColor: string) {
     return useMemo(() => {

@@ -1,5 +1,3 @@
-import { type WheelManager } from '@repo/shared/classes/wheel-manager';
-import { InteractionSource } from '@repo/shared/types/wheel';
 import {
     type FC,
     type MouseEvent as ReactMouseEvent,
@@ -9,9 +7,11 @@ import {
     useEffect,
     useRef,
 } from 'react';
+import { type WheelManager } from '@/classes/wheel-manager';
 import { MemoizedWheelSegment } from '@/components/wheel-segment';
 import { useRotation } from '@/contexts/rotation';
 import { useSegment } from '@/contexts/segment';
+import { InteractionSource } from '@/types/wheel';
 import { WheelAnimationManager } from '@/utils/wheel-animation-manager';
 
 /**

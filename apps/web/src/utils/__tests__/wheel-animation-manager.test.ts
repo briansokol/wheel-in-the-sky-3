@@ -1,7 +1,7 @@
-import { type WheelManager } from '@repo/shared/classes/wheel-manager';
-import { InteractionSource } from '@repo/shared/types/wheel';
 import { type RefObject } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { type WheelManager } from '@/classes/wheel-manager';
+import { InteractionSource } from '@/types/wheel';
 import { type AnimationStateCallbacks, WheelAnimationManager } from '../wheel-animation-manager';
 
 // Mock the wheel-animation utilities

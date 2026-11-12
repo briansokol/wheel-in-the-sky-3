@@ -1,12 +1,5 @@
 import { TinyColor } from '@ctrl/tinycolor';
-import { Config } from '@repo/shared/classes/config';
-import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
-import { MAX_CONFIG_ID_LENGTH } from '@repo/shared/constants/limits';
-import { PageColorType } from '@repo/shared/enums/page-colors';
-import { WheelColorType } from '@repo/shared/enums/wheel-colors';
-import { ConfigFormInputs } from '@repo/shared/types/config';
-import { defaultWheelColorConfig } from '@repo/shared/types/wheel-colors';
-import { configFormInputsSchema } from '@repo/shared/validators/config';
+import { Config } from '@/classes/config';
 import {
     BackgroundColorConfig,
     BackgroundColorType,
@@ -14,6 +7,13 @@ import {
     ColorSchemeType,
     ConfigV2QueryParams,
 } from '@/compatibility/v2/types';
+import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@/constants/colors';
+import { MAX_CONFIG_ID_LENGTH } from '@/constants/limits';
+import { PageColorType } from '@/enums/page-colors';
+import { WheelColorType } from '@/enums/wheel-colors';
+import { ConfigFormInputs } from '@/types/config';
+import { defaultWheelColorConfig } from '@/types/wheel-colors';
+import { configFormInputsSchema } from '@/validators/config';
 
 function convertV2ColorSchemeTypeToV3WheelColorType(colorSchemeType: ColorSchemeType): string {
     switch (colorSchemeType) {

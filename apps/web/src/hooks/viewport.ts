@@ -1,5 +1,5 @@
-import { Breakpoint, Viewport } from '@repo/shared/types/viewport';
 import { useEffect, useState } from 'react';
+import { Breakpoint, Viewport } from '@/types/viewport';
 
 /**
  * Hook that returns the current viewport breakpoint based on window width.

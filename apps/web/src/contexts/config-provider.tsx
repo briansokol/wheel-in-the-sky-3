@@ -1,5 +1,5 @@
-import { Config } from '@repo/shared/classes/config';
 import { type FC, type ReactNode, useMemo, useState } from 'react';
+import { Config } from '@/classes/config';
 import { ConfigContext } from '@/contexts/config';
 
 interface ConfigProviderProps {

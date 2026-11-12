@@ -1,8 +1,8 @@
 import { RouterProvider } from '@heroui/react';
-import { Config } from '@repo/shared/classes/config';
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useHref, useNavigate } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Config } from '@/classes/config';
 import { ConfigProvider } from '@/contexts/config-provider';
 import { RemovedWinnersProvider } from '@/contexts/removed-winners-provider';
 import { SegmentProvider } from '@/contexts/segment-provider';

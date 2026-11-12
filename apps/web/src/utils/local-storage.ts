@@ -1,5 +1,5 @@
-import { Config } from '@repo/shared/classes/config';
 import { useCallback, useEffect, useState } from 'react';
+import { Config } from '@/classes/config';
 
 const WHEEL_STORAGE_KEY = 'savedWheels';
 

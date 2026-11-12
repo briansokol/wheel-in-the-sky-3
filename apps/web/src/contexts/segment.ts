@@ -1,5 +1,5 @@
-import { Segment } from '@repo/shared/classes/segment';
 import { type Dispatch, type SetStateAction, createContext, useContext } from 'react';
+import { Segment } from '@/classes/segment';
 
 interface SegmentContextValue {
     segment: Segment | undefined;

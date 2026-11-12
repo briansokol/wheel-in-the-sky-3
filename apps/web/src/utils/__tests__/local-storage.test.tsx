@@ -1,6 +1,6 @@
-import { Config } from '@repo/shared/classes/config';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Config } from '@/classes/config';
 import { getSavedWheels, useSavedWheels } from '../local-storage';
 
 // Mock localStorage

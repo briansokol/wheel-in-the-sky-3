@@ -1,6 +1,6 @@
 import { Separator, buttonVariants } from '@heroui/react';
-import { defaultPageColorConfig } from '@repo/shared/constants/colors';
 import { Link } from 'react-router';
+import { defaultPageColorConfig } from '@/constants/colors';
 import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 

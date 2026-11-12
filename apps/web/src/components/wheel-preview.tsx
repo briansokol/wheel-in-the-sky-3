@@ -1,17 +1,17 @@
 import { TinyColor } from '@ctrl/tinycolor';
 import { Card } from '@heroui/react';
-import { Config } from '@repo/shared/classes/config';
-import { WheelManager } from '@repo/shared/classes/wheel-manager';
-import { DEFAULT_FOREGROUND_COLOR, INVERSE_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
-import { PageColorType } from '@repo/shared/enums/page-colors';
-import { WheelColorType } from '@repo/shared/enums/wheel-colors';
-import { Viewport } from '@repo/shared/types/viewport';
-import { buildPageColorConfig, buildWheelColorConfig } from '@repo/shared/utils/configs';
 import { FC, useEffect, useMemo } from 'react';
+import { Config } from '@/classes/config';
+import { WheelManager } from '@/classes/wheel-manager';
 import { Wheel } from '@/components/wheel';
+import { DEFAULT_FOREGROUND_COLOR, INVERSE_FOREGROUND_COLOR } from '@/constants/colors';
 import { useRotation } from '@/contexts/rotation';
+import { PageColorType } from '@/enums/page-colors';
+import { WheelColorType } from '@/enums/wheel-colors';
 import { useBgColor, useFgColor } from '@/hooks/colors';
 import { useCurrentViewport } from '@/hooks/viewport';
+import { Viewport } from '@/types/viewport';
+import { buildPageColorConfig, buildWheelColorConfig } from '@/utils/configs';
 import { calculateStartingRotation } from '@/utils/math';
 
 interface WheelPreviewProps {

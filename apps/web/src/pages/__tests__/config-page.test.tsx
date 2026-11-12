@@ -1,23 +1,23 @@
-import { Config } from '@repo/shared/classes/config';
-import { DEFAULT_BASE_COLOR } from '@repo/shared/constants/colors';
-import { WheelColorType } from '@repo/shared/enums/wheel-colors';
-import { buildWheelColorConfig } from '@repo/shared/utils/configs';
-import { encodeConfig } from '@repo/shared/utils/encoding';
-import { getGlowColors } from '@repo/shared/utils/glow-colors';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Config } from '@/classes/config';
+import { DEFAULT_BASE_COLOR } from '@/constants/colors';
 import { ConfigProvider } from '@/contexts/config-provider';
 import { RemovedWinnersProvider } from '@/contexts/removed-winners-provider';
 import { RotationProvider } from '@/contexts/rotation-provider';
 import { SegmentProvider } from '@/contexts/segment-provider';
+import { WheelColorType } from '@/enums/wheel-colors';
+import { buildWheelColorConfig } from '@/utils/configs';
+import { encodeConfig } from '@/utils/encoding';
+import { getGlowColors } from '@/utils/glow-colors';
 import ConfigPage from '../config-page';
 
 const { decodeState } = vi.hoisted(() => ({
     decodeState: { isPending: false, monochromatic: false, tooManyCustomColors: false },
 }));
 
-vi.mock('@repo/shared/utils/encoding', () => ({ encodeConfig: vi.fn<typeof encodeConfig>() }));
+vi.mock('@/utils/encoding', () => ({ encodeConfig: vi.fn<typeof encodeConfig>() }));
 
 vi.mock('@/hooks/config', () => {
     function makeConfig(wheelColorType: WheelColorType): Config {

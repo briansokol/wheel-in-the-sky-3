@@ -1,5 +1,5 @@
-import { Segment } from '@repo/shared/classes/segment';
 import { type FC, type ReactNode, useMemo, useState } from 'react';
+import { Segment } from '@/classes/segment';
 import { SegmentContext } from '@/contexts/segment';
 
 interface SegmentProviderProps {

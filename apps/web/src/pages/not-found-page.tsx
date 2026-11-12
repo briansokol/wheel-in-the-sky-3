@@ -1,4 +1,4 @@
-import { defaultPageColorConfig } from '@repo/shared/constants/colors';
+import { defaultPageColorConfig } from '@/constants/colors';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 
 export default function NotFoundPage() {

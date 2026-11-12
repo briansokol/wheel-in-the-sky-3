@@ -1,5 +1,4 @@
 import { Link } from '@heroui/react';
-import { defaultPageColorConfig } from '@repo/shared/constants/colors';
 import {
     SiCloudflare,
     SiEslint,
@@ -14,6 +13,7 @@ import {
     SiVitest,
 } from 'react-icons/si';
 import Markdown from 'react-markdown';
+import { defaultPageColorConfig } from '@/constants/colors';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import changelog from '../../../../CHANGELOG.md?raw';
 

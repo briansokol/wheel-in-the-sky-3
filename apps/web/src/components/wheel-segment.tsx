@@ -1,5 +1,5 @@
-import { Segment } from '@repo/shared/classes/segment';
 import { type CSSProperties, type FC, memo, useMemo } from 'react';
+import { Segment } from '@/classes/segment';
 
 interface WheelSegmentProps {
     segment: Segment;

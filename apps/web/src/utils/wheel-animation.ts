@@ -1,5 +1,5 @@
-import { type Coordinates, InteractionSource } from '@repo/shared/types/wheel';
 import { type MouseEvent as ReactMouseEvent, type TouchEvent as ReactTouchEvent, type RefObject } from 'react';
+import { type Coordinates, InteractionSource } from '@/types/wheel';
 
 /**
  * Calculates the angle between the mouse/touch position and the center of the wheel

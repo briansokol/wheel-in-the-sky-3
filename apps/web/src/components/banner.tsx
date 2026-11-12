@@ -1,7 +1,7 @@
 import { TinyColor } from '@ctrl/tinycolor';
-import { Segment } from '@repo/shared/classes/segment';
-import { WheelManager } from '@repo/shared/classes/wheel-manager';
 import { RefObject, useEffect, useMemo } from 'react';
+import { Segment } from '@/classes/segment';
+import { WheelManager } from '@/classes/wheel-manager';
 
 interface BannerProps {
     bannerRef: RefObject<HTMLCanvasElement | null>;

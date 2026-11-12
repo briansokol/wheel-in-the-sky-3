@@ -1,15 +1,15 @@
 import { Button } from '@heroui/react';
-import { defaultPageColorConfig } from '@repo/shared/constants/colors';
-import { encodeConfig } from '@repo/shared/utils/encoding';
-import { configFromFormInputs } from '@repo/shared/utils/form-config';
 import { useEffect, useState } from 'react';
 import { FaCircleChevronUp } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router';
 import { Encoder } from '@/compatibility/v2/classes/encoder';
 import { ConfigV2QueryParams } from '@/compatibility/v2/types';
 import { convertConfigV2ToConfigV3 } from '@/compatibility/v2/utils';
+import { defaultPageColorConfig } from '@/constants/colors';
 import { PageBaseRoute } from '@/constants/routes';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
+import { encodeConfig } from '@/utils/encoding';
+import { configFromFormInputs } from '@/utils/form-config';
 import { buildConfigHash } from '@/utils/routes';
 
 export default function LegacyPage() {

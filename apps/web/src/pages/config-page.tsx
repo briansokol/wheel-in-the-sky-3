@@ -14,35 +14,35 @@ import {
     Tooltip,
 } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Config } from '@repo/shared/classes/config';
-import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@repo/shared/constants/colors';
-import { pageColorSelectOptions, wheelColorSelectOptions } from '@repo/shared/constants/config';
-import { PageColorType } from '@repo/shared/enums/page-colors';
-import { WheelColorType } from '@repo/shared/enums/wheel-colors';
-import { ConfigFormInputs } from '@repo/shared/types/config';
-import { defaultWheelColorConfig } from '@repo/shared/types/wheel-colors';
-import {
-    buildWheelColorConfig,
-    getPageColorSelectOptionDescription,
-    getWheelColorSelectOptionDescription,
-} from '@repo/shared/utils/configs';
-import { encodeConfig } from '@repo/shared/utils/encoding';
-import { configFromFormInputs } from '@repo/shared/utils/form-config';
-import { getGlowColors } from '@repo/shared/utils/glow-colors';
-import { configFormInputsSchema } from '@repo/shared/validators/config';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { MdClear, MdOutlineAddCircle, MdSave } from 'react-icons/md';
 import { useNavigate } from 'react-router';
+import { Config } from '@/classes/config';
 import { ColorPicker } from '@/components/color-picker';
 import { WheelGlows } from '@/components/wheel-glows';
 import { WheelPreview } from '@/components/wheel-preview';
+import { DEFAULT_BACKGROUND_COLOR, DEFAULT_BASE_COLOR, defaultPageColorConfig } from '@/constants/colors';
+import { pageColorSelectOptions, wheelColorSelectOptions } from '@/constants/config';
 import { PageBaseRoute } from '@/constants/routes';
+import { PageColorType } from '@/enums/page-colors';
+import { WheelColorType } from '@/enums/wheel-colors';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
 import { useDecodedConfig } from '@/hooks/config';
 import { useEncodedConfig } from '@/hooks/encoded-config';
+import { ConfigFormInputs } from '@/types/config';
+import { defaultWheelColorConfig } from '@/types/wheel-colors';
+import {
+    buildWheelColorConfig,
+    getPageColorSelectOptionDescription,
+    getWheelColorSelectOptionDescription,
+} from '@/utils/configs';
+import { encodeConfig } from '@/utils/encoding';
+import { configFromFormInputs } from '@/utils/form-config';
+import { getGlowColors } from '@/utils/glow-colors';
 import { buildConfigHash } from '@/utils/routes';
+import { configFormInputsSchema } from '@/validators/config';
 
 function getDefaultFormValues(config: Config | undefined): ConfigFormInputs {
     return {

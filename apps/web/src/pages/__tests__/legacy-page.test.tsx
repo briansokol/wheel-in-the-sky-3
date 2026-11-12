@@ -1,11 +1,11 @@
-import { encodeConfig } from '@repo/shared/utils/encoding';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import { Encoder } from '@/compatibility/v2/classes/encoder';
+import { encodeConfig } from '@/utils/encoding';
 import LegacyPage from '../legacy-page';
 
-vi.mock('@repo/shared/utils/encoding', () => ({
+vi.mock('@/utils/encoding', () => ({
     encodeConfig: vi.fn<typeof encodeConfig>().mockResolvedValue('v5.encoded'),
 }));
 

@@ -1,7 +1,7 @@
-import { Config } from '@repo/shared/classes/config';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
+import { Config } from '@/classes/config';
 import { ConfigProvider } from '@/contexts/config-provider';
 import { RemovedWinnersProvider } from '@/contexts/removed-winners-provider';
 import { SegmentProvider } from '@/contexts/segment-provider';

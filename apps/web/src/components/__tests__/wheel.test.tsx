@@ -1,10 +1,10 @@
-import type { Segment } from '@repo/shared/classes/segment';
-import { type WheelManager } from '@repo/shared/classes/wheel-manager';
 import { render, screen } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as RotationContextModule from '@/contexts/rotation';
 import * as SegmentContextModule from '@/contexts/segment';
+import type { Segment } from '@/classes/segment';
+import { type WheelManager } from '@/classes/wheel-manager';
 import { Wheel } from '../wheel';
 
 /**

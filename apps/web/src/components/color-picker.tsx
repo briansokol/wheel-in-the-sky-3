@@ -1,9 +1,9 @@
 import { Button, Input } from '@heroui/react';
-import type { FormColorNameValue } from '@repo/shared/types/config';
 import { debounce } from 'es-toolkit';
 import { type FC, useCallback, useMemo } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useFormContext, useFormState } from 'react-hook-form';
+import type { FormColorNameValue } from '@/types/config';
 
 interface ColorPickerProps {
     singleColorName: FormColorNameValue;

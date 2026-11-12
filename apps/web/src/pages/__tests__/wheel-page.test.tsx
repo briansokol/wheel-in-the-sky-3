@@ -1,8 +1,8 @@
-import { Config } from '@repo/shared/classes/config';
 import { render, screen } from '@testing-library/react';
 import { useEffect } from 'react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
+import { Config } from '@/classes/config';
 import { ConfigProvider } from '@/contexts/config-provider';
 import { RemovedWinnersProvider } from '@/contexts/removed-winners-provider';
 import { RotationProvider } from '@/contexts/rotation-provider';

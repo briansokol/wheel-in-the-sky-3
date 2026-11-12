@@ -1,5 +1,5 @@
-import { Config } from '@repo/shared/classes/config';
 import { type Dispatch, type SetStateAction, createContext, useContext } from 'react';
+import { Config } from '@/classes/config';
 
 interface ConfigContextValue {
     decodedConfig: Config | undefined;

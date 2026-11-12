@@ -1,6 +1,4 @@
 import { Button, Card } from '@heroui/react';
-import { WheelManager } from '@repo/shared/classes/wheel-manager';
-import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@repo/shared/constants/colors';
 import { useDocumentTitle, useLockBodyScroll } from '@uidotdev/usehooks';
 import confetti from 'canvas-confetti';
 import { RefObject, useEffect, useMemo, useRef } from 'react';
@@ -8,8 +6,10 @@ import { FaChevronDown } from 'react-icons/fa6';
 import { IoRemoveCircleOutline } from 'react-icons/io5';
 import { LuClipboardCopy } from 'react-icons/lu';
 import { useNavigate } from 'react-router';
+import { WheelManager } from '@/classes/wheel-manager';
 import { Banner } from '@/components/banner';
 import { Wheel } from '@/components/wheel';
+import { DEFAULT_BACKGROUND_COLOR, DEFAULT_FOREGROUND_COLOR } from '@/constants/colors';
 import { PageBaseRoute } from '@/constants/routes';
 import { useConfig } from '@/contexts/config';
 import { useRemovedWinners } from '@/contexts/removed-winners';

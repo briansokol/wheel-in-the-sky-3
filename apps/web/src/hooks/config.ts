@@ -1,6 +1,6 @@
-import { Config } from '@repo/shared/classes/config';
-import { decodeConfig } from '@repo/shared/utils/encoding';
 import { useEffect, useState } from 'react';
+import { Config } from '@/classes/config';
+import { decodeConfig } from '@/utils/encoding';
 
 interface DecodedConfigResult {
     data: Config | undefined;

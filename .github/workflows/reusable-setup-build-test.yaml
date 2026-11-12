@@ -104,13 +104,6 @@ jobs:
                   path: apps/web/dist
                   key: ${{ runner.os }}-web-dist-${{ github.sha }}
 
-            - name: Cache shared build directory
-              id: cache-shared-dist
-              uses: actions/cache@v6
-              with:
-                  path: packages/shared/dist
-                  key: ${{ runner.os }}-shared-dist-${{ github.sha }}
-
     unit-tests:
         needs: [validate, build]
         runs-on: ubuntu-latest
@@ -142,15 +135,6 @@ jobs:
               with:
                   path: apps/web/dist
                   key: ${{ runner.os }}-web-dist-${{ github.sha }}
-                  fail-on-cache-miss: true
-
-            # Restore the shared dist directory cache from the build job
-            - name: Restore shared build directory
-              id: restore-shared-dist
-              uses: actions/cache@v6
-              with:
-                  path: packages/shared/dist
-                  key: ${{ runner.os }}-shared-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
             - name: Run Tests
