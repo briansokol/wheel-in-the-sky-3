@@ -1,3 +1,2 @@
-npm run sherif
 npm run check-types
 npx lint-staged

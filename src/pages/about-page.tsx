@@ -15,7 +15,7 @@ import {
 import Markdown from 'react-markdown';
 import { defaultPageColorConfig } from '@/constants/colors';
 import { useSetDocumentBackgroundColor, useSetDocumentForegroundColor } from '@/hooks/colors';
-import changelog from '../../../../CHANGELOG.md?raw';
+import changelog from '../../CHANGELOG.md?raw';
 
 const currentYear = new Date().getFullYear();
 

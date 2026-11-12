@@ -3,7 +3,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import { configDefaults } from 'vitest/config';
+import { configDefaults, coverageConfigDefaults } from 'vitest/config';
 
 const plugins = [
     react({
@@ -37,6 +37,20 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: ['./vitest-setup.ts'],
         exclude: [...configDefaults.exclude, '**/node_modules/**', '**/coverage/**', '**/dist/**'],
+        coverage: {
+            provider: 'v8',
+            exclude: [
+                ...coverageConfigDefaults.exclude,
+                '**/dist/**',
+                '**/public/**',
+                '**/__tests__/**',
+                '**/*.config.{js,ts,mjs,mts}',
+                '**/*.d.ts',
+                '**/vitest*.{js,ts,mjs,mts}',
+                './src/components/**',
+                './src/pages/**',
+            ],
+        },
     },
     build: {
         sourcemap: true,

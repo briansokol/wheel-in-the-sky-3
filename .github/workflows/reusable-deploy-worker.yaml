@@ -24,7 +24,7 @@ jobs:
               uses: actions/cache@v6
               id: node-modules-cache
               with:
-                  path: '**/node_modules'
+                  path: node_modules
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install Dependencies
@@ -36,7 +36,7 @@ jobs:
               id: restore-web-dist
               uses: actions/cache@v6
               with:
-                  path: apps/web/dist
+                  path: dist
                   key: ${{ runner.os }}-web-dist-${{ github.sha }}
                   fail-on-cache-miss: true
 
@@ -45,4 +45,3 @@ jobs:
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  workingDirectory: 'apps/web'
