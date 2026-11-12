@@ -20,7 +20,7 @@ src/
 ├── hooks/              # Custom React hooks
 ├── pages/              # Route-level screens and their layouts
 ├── types/              # Type declarations and some runtime defaults
-├── utils/              # Helpers with no React dependency, including the share-link codec
+├── utils/              # Helpers, mostly framework-free, including the share-link pipeline
 └── validators/         # Zod schemas
 ```
 

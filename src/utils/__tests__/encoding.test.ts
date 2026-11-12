@@ -9,7 +9,7 @@ function makeConfig(names: string): Config {
 
 /**
  * Builds a syntactically valid link around an arbitrary payload. Uses Web APIs
- * only, because this package is typed without Node.
+ * only, matching the browser code under test.
  */
 async function wrap(payload: string | Uint8Array<ArrayBuffer>): Promise<string> {
     const bytes = typeof payload === 'string' ? new TextEncoder().encode(payload) : payload;

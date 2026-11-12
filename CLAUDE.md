@@ -93,7 +93,7 @@ src/
 ├── hooks/              # reusable hooks, including reading and decoding the config in the URL fragment
 ├── pages/              # route-level screens and their layouts
 ├── types/              # type declarations, plus some runtime defaults
-├── utils/              # helpers with no React dependency, including the share-link pipeline
+├── utils/              # helpers, mostly framework-free, including the share-link pipeline
 └── validators/         # Zod schemas, including hex-color.ts and wire-config.ts
 ```
 
