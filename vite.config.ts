@@ -36,7 +36,7 @@ export default defineConfig({
         globals: true,
         environment: 'jsdom',
         setupFiles: ['./vitest-setup.ts'],
-        exclude: [...configDefaults.exclude, '**/node_modules/**', '**/coverage/**', '**/dist/**'],
+        exclude: [...configDefaults.exclude, '**/node_modules/**', '**/coverage/**', '**/dist/**', '**/.claude/**'],
         coverage: {
             provider: 'v8',
             exclude: [
