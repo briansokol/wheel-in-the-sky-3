@@ -1,18 +1,12 @@
 import path from 'node:path';
+import babel from '@rolldown/plugin-babel';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { configDefaults, coverageConfigDefaults } from 'vitest/config';
 
-const plugins = [
-    react({
-        babel: {
-            plugins: ['babel-plugin-react-compiler'],
-        },
-    }),
-    tailwindcss(),
-];
+const plugins = [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()];
 if (process.env.WITH_SENTRY) {
     plugins.push(
         sentryVitePlugin({

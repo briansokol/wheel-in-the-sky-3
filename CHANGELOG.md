@@ -31,6 +31,7 @@ Complete rewrite (again). Version 3 has migrated from NextJS and is now an SPA u
 - Project is open source.
 - The project is a single Vite app instead of a Turborepo monorepo. Wheel logic lives in the app's `src/` directory.
 - The About page no longer lists Turborepo.
+- Upgraded to Vite 8, Vitest 5, and the Sentry Vite plugin 11. React Compiler now runs through `@rolldown/plugin-babel`.
 
 ### Fixed
 
