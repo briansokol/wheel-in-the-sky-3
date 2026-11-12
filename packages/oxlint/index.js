@@ -12,9 +12,7 @@ export const base = defineConfig({
         correctness: 'error',
         suspicious: 'warn',
     },
-    rules: {
-        'unicorn/prevent-abbreviations': 'off',
-    },
+    rules: {},
     env: {
         builtin: true,
     },
@@ -38,7 +36,6 @@ export const react = defineConfig({
     plugins: ['typescript', 'unicorn', 'react'],
     rules: {
         'react/react-in-jsx-scope': 'off',
-        'react/prop-types': 'off',
     },
     env: {
         browser: true,

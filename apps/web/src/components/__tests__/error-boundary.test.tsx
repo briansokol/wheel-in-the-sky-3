@@ -23,7 +23,7 @@ describe('ErrorBoundary', () => {
     // Suppress console errors during tests
     const originalError = console.error;
     beforeEach(() => {
-        console.error = vi.fn();
+        console.error = vi.fn<typeof console.error>();
     });
 
     afterEach(() => {
@@ -101,7 +101,7 @@ describe('ErrorBoundary', () => {
     });
 
     it('should reload page when Reload Page button is clicked', () => {
-        const reloadMock = vi.fn();
+        const reloadMock = vi.fn<() => void>();
         Object.defineProperty(window, 'location', {
             value: { reload: reloadMock },
             writable: true,

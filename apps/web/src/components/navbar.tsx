@@ -38,9 +38,12 @@ export function AppNavBar() {
     }, [setIsMenuOpen]);
 
     // The inert targets are chosen once on open, so a route change (e.g. browser Back) must close the menu.
-    useEffect(() => {
+    const routeKey = `${pathname}${configQuery}`;
+    const [menuRouteKey, setMenuRouteKey] = useState(routeKey);
+    if (menuRouteKey !== routeKey) {
+        setMenuRouteKey(routeKey);
         setIsMenuOpen(false);
-    }, [pathname, currentEncodedConfig]);
+    }
 
     useEffect(() => {
         if (!isMenuOpen) return;

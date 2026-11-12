@@ -8,21 +8,21 @@ const localStorageMock = (() => {
     let store: Record<string, string> = {};
 
     return {
-        getItem: vi.fn((key: string) => store[key] || null),
-        setItem: vi.fn((key: string, value: string) => {
+        getItem: vi.fn<(key: string) => string | null>((key: string) => store[key] || null),
+        setItem: vi.fn<(key: string, value: string) => void>((key: string, value: string) => {
             store[key] = value;
         }),
-        removeItem: vi.fn((key: string) => {
+        removeItem: vi.fn<(key: string) => void>((key: string) => {
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete store[key];
         }),
-        clear: vi.fn(() => {
+        clear: vi.fn<() => void>(() => {
             store = {};
         }),
         get length() {
             return Object.keys(store).length;
         },
-        key: vi.fn((index: number) => Object.keys(store)[index] || null),
+        key: vi.fn<(index: number) => string | null>((index: number) => Object.keys(store)[index] || null),
     };
 })();
 
@@ -32,7 +32,7 @@ Object.defineProperty(window, 'localStorage', {
 
 // Mock nanoid for consistent test results
 vi.mock('nanoid', () => ({
-    nanoid: vi.fn(() => 'test-id-123'),
+    nanoid: vi.fn<() => string>(() => 'test-id-123'),
 }));
 
 /**
@@ -105,7 +105,7 @@ describe('getSavedWheels', () => {
     it('should return empty object when localStorage contains invalid JSON', () => {
         localStorageMock.setItem('savedWheels', 'invalid-json');
 
-        expect(() => getSavedWheels()).toThrow();
+        expect(() => getSavedWheels()).toThrow(SyntaxError);
     });
 });
 

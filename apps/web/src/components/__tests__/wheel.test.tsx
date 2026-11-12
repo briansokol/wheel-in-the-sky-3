@@ -1,3 +1,4 @@
+import type { Segment } from '@repo/shared/classes/segment';
 import { type WheelManager } from '@repo/shared/classes/wheel-manager';
 import { render, screen } from '@testing-library/react';
 import { ReactNode } from 'react';
@@ -27,9 +28,9 @@ function createMockWheelManager(): WheelManager {
  */
 function createTestWrapper(): React.FC<{ children: ReactNode }> {
     const TestWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
-        const mockSetRotation = vi.fn();
-        const mockSetSegment = vi.fn();
-        const mockSetHasWinner = vi.fn();
+        const mockSetRotation = vi.fn<React.Dispatch<React.SetStateAction<number>>>();
+        const mockSetSegment = vi.fn<React.Dispatch<React.SetStateAction<Segment | undefined>>>();
+        const mockSetHasWinner = vi.fn<React.Dispatch<React.SetStateAction<boolean>>>();
 
         const RotationContextValue = {
             rotation: 0,

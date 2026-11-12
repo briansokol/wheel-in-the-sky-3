@@ -1,3 +1,4 @@
+import { ZodError } from 'zod';
 import {
     DEFAULT_FOREGROUND_COLOR,
     INVERSE_FOREGROUND_COLOR,
@@ -104,6 +105,6 @@ describe('configFromFormInputs', () => {
         ['too many names', { names: Array.from({ length: MAX_NAMES + 1 }, () => 'A').join('\n') }],
         ['an over-long title', { title: 'T'.repeat(MAX_TITLE_LENGTH + 1) }],
     ])('rejects %s', (_label, override) => {
-        expect(() => configFromFormInputs({ ...valid, ...override })).toThrow();
+        expect(() => configFromFormInputs({ ...valid, ...override })).toThrow(ZodError);
     });
 });

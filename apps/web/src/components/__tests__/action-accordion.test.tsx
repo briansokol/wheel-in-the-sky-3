@@ -21,7 +21,7 @@ function renderAccordion() {
             <ConfigProvider>
                 <SegmentProvider>
                     <RemovedWinnersProvider>
-                        <ActionAccordion pathname="/wheel" closeDrawer={vi.fn()} />
+                        <ActionAccordion pathname="/wheel" closeDrawer={vi.fn<() => void>()} />
                     </RemovedWinnersProvider>
                 </SegmentProvider>
             </ConfigProvider>

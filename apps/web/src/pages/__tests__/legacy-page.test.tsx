@@ -5,7 +5,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { Encoder } from '@/compatibility/v2/classes/encoder';
 import LegacyPage from '../legacy-page';
 
-vi.mock('@repo/shared/utils/encoding', () => ({ encodeConfig: vi.fn().mockResolvedValue('v5.encoded') }));
+vi.mock('@repo/shared/utils/encoding', () => ({
+    encodeConfig: vi.fn<typeof encodeConfig>().mockResolvedValue('v5.encoded'),
+}));
 
 function legacyId(names: string): string {
     const oldId = Encoder.urlEncode({

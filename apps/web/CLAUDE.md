@@ -165,8 +165,8 @@ combines the oxlint, prettier, and vitest configs from `@repo/lint-staged`.
    plugin list when `WITH_SENTRY` is set, so a plain `build` produces sourcemaps
    but uploads nothing.
 8. `react-aria` and `react-aria-components` are pinned as an exact pair matching
-   what the installed `@heroui/react` was tested against (currently 3.52.1 /
-   1.21.1 for 3.2.6). `react-aria-components` pins `react-aria` exactly, so bump
+   what the installed `@heroui/react` was tested against (currently 3.53.1 /
+   1.22.1 for 3.2.7). `react-aria-components` pins `react-aria` exactly, so bump
    the three together or a second copy of React Aria ends up in the tree.
    `@internationalized/date`, `@react-aria/ssr`, and `@react-aria/utils` are
    HeroUI peer deps, hence direct dependencies.

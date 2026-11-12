@@ -18,7 +18,7 @@ vi.mock('@/hooks/config', () => {
     };
 });
 
-vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
+vi.mock('canvas-confetti', () => ({ default: vi.fn<() => void>() }));
 
 function WinnerSetter() {
     const { setHasWinner } = useSegment();

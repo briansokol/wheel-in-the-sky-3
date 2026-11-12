@@ -2,12 +2,7 @@ import { pageThemeDawn, pageThemeDay, pageThemeNight, pageThemeTwilight } from '
 import { PageColorType } from '@/enums/page-colors.js';
 
 type LinearGradientDirection =
-    | 'to top'
-    | 'to bottom'
-    | 'to top right'
-    | 'to top left'
-    | 'to bottom right'
-    | 'to bottom left';
+    'to top' | 'to bottom' | 'to top right' | 'to top left' | 'to bottom right' | 'to bottom left';
 
 export function buildBackgroundGradient(direction: LinearGradientDirection, colors: string[]): string {
     return `linear-gradient(${direction}, ${colors.join(', ')})`;

@@ -46,15 +46,15 @@ currently enables by default.
 
 ## Current integration surface
 
-| Location                                       | What it does                                                  |
-| ---------------------------------------------- | ------------------------------------------------------------- |
-| `apps/web/src/main.tsx:9`                      | `sentryInit` with browser tracing and replay integrations     |
-| `packages/api-handlers/src/server/index.ts:31` | `withSentry<Env>(optionsCallback, honoApp)`                   |
-| `apps/web/vite.config.ts:18`                   | `sentryVitePlugin`, gated behind the `WITH_SENTRY` env var    |
-| `packages/api-handlers/package.json`           | `sentry:sourcemaps` script calling `sentry-cli`               |
-| `packages/shared/package.json`                 | `sentry:sourcemaps` script calling `sentry-cli`               |
-| `.github/workflows/reusable-sentry-operations.yaml` | `sentry-cli releases new` and `releases finalize`        |
-| `package.json` `allowScripts`                  | pins exact `@sentry/cli` versions permitted to run installs   |
+| Location                                            | What it does                                                |
+| --------------------------------------------------- | ----------------------------------------------------------- |
+| `apps/web/src/main.tsx:9`                           | `sentryInit` with browser tracing and replay integrations   |
+| `packages/api-handlers/src/server/index.ts:31`      | `withSentry<Env>(optionsCallback, honoApp)`                 |
+| `apps/web/vite.config.ts:18`                        | `sentryVitePlugin`, gated behind the `WITH_SENTRY` env var  |
+| `packages/api-handlers/package.json`                | `sentry:sourcemaps` script calling `sentry-cli`             |
+| `packages/shared/package.json`                      | `sentry:sourcemaps` script calling `sentry-cli`             |
+| `.github/workflows/reusable-sentry-operations.yaml` | `sentry-cli releases new` and `releases finalize`           |
+| `package.json` `allowScripts`                       | pins exact `@sentry/cli` versions permitted to run installs |
 
 ## Design
 
@@ -126,18 +126,18 @@ import { AppEnv } from '@/types.js';
 const honoApp = new Hono<AppEnv>().basePath('/api');
 
 honoApp.use(
-    sentry(honoApp, (sentryEnv) => ({
-        dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
-        tracesSampleRate: 1.0,
-        enabled: sentryEnv.APP_ENV !== 'local',
-    }))
+  sentry(honoApp, (sentryEnv) => ({
+    dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
+    tracesSampleRate: 1.0,
+    enabled: sentryEnv.APP_ENV !== 'local',
+  }))
 );
 
-honoApp.use('*', cors({ /* unchanged */ }));
+honoApp.use('*', cors({/* unchanged */}));
 
 honoApp.notFound((c) => {
-    const { ASSETS } = env(c);
-    return ASSETS.fetch(c.req.url);
+  const { ASSETS } = env(c);
+  return ASSETS.fetch(c.req.url);
 });
 
 export const routes = honoApp.route('/config', encodingApi);
@@ -200,10 +200,10 @@ runs outside Turbo, so a stale `dist` makes a passing run meaningless.
 
 For Commit 2, additionally run `npm run dev` and probe the Worker:
 
-| Probe                                                        | Establishes                                             |
-| ------------------------------------------------------------ | ------------------------------------------------------- |
-| `POST /api/config/decode` with `{"encodedConfig":"garbage"}` | route resolution and handler execution survive          |
-| `POST /api/config/decode` with `{}`                          | `zValidator` still runs beneath `sentry()`              |
+| Probe                                                        | Establishes                                              |
+| ------------------------------------------------------------ | -------------------------------------------------------- |
+| `POST /api/config/decode` with `{"encodedConfig":"garbage"}` | route resolution and handler execution survive           |
+| `POST /api/config/decode` with `{}`                          | `zValidator` still runs beneath `sentry()`               |
 | `OPTIONS /api/config/decode` with an `Origin` header         | `cors()` still functions now that `sentry()` precedes it |
 | `GET /api/nope`                                              | `notFound` and the `ASSETS` fallback are intact          |
 

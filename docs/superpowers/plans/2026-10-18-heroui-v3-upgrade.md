@@ -23,28 +23,28 @@
 
 ### v2 → v3 cheat sheet (applies to every task)
 
-| v2 | v3 |
-|---|---|
-| `onPress` on Button | unchanged |
-| `color="primary"` (solid) | `variant="primary"` |
-| `color="primary" variant="flat"` | `variant="tertiary"` |
-| `color="secondary"` | `variant="secondary"` |
-| `color="danger" variant="flat"` | `variant="danger-soft"` |
-| `color="default"` (solid/flat), `variant="light"` | `variant="tertiary"` / `variant="ghost"` |
-| `variant="shadow"`, `shadow="lg"` | drop it; add class `shadow-lg` |
-| `startContent` / `endContent` | icon as first or last child |
-| `radius="lg"` | drop it (class `rounded-lg` if needed) |
-| `Button as={Link} href=…` | react-router `<Link to=… className={buttonVariants({ variant, size })}>`, with `buttonVariants` from `@heroui/react` |
-| `Card isBlurred` | classes `backdrop-blur-md backdrop-saturate-150` |
-| `CardHeader` / `CardBody` / `CardFooter` | `Card.Header` / `Card.Content` / `Card.Footer` |
-| `Divider` | `Separator` |
-| `useDisclosure` | `useOverlayState` (`.isOpen`, `.open`, `.close`, `.toggle`) |
-| `Link showAnchorIcon` | `<Link href>text<Link.Icon /></Link>` |
-| `text-medium` / `text-small` / `text-default-500` | `text-base` / `text-sm` / `text-muted` |
-| `text-primary` / `bg-primary` | `text-accent` / `bg-accent` |
-| `dark:bg-default-100/50` | `dark:bg-default/50` |
-| `bg-secondary text-secondary-foreground hover:bg-secondary/80` | `bg-default text-default-foreground hover:bg-default-hover` |
-| `bg-primary text-primary-foreground hover:bg-primary/90` | `bg-accent text-accent-foreground hover:bg-accent-hover` |
+| v2                                                             | v3                                                                                                                   |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `onPress` on Button                                            | unchanged                                                                                                            |
+| `color="primary"` (solid)                                      | `variant="primary"`                                                                                                  |
+| `color="primary" variant="flat"`                               | `variant="tertiary"`                                                                                                 |
+| `color="secondary"`                                            | `variant="secondary"`                                                                                                |
+| `color="danger" variant="flat"`                                | `variant="danger-soft"`                                                                                              |
+| `color="default"` (solid/flat), `variant="light"`              | `variant="tertiary"` / `variant="ghost"`                                                                             |
+| `variant="shadow"`, `shadow="lg"`                              | drop it; add class `shadow-lg`                                                                                       |
+| `startContent` / `endContent`                                  | icon as first or last child                                                                                          |
+| `radius="lg"`                                                  | drop it (class `rounded-lg` if needed)                                                                               |
+| `Button as={Link} href=…`                                      | react-router `<Link to=… className={buttonVariants({ variant, size })}>`, with `buttonVariants` from `@heroui/react` |
+| `Card isBlurred`                                               | classes `backdrop-blur-md backdrop-saturate-150`                                                                     |
+| `CardHeader` / `CardBody` / `CardFooter`                       | `Card.Header` / `Card.Content` / `Card.Footer`                                                                       |
+| `Divider`                                                      | `Separator`                                                                                                          |
+| `useDisclosure`                                                | `useOverlayState` (`.isOpen`, `.open`, `.close`, `.toggle`)                                                          |
+| `Link showAnchorIcon`                                          | `<Link href>text<Link.Icon /></Link>`                                                                                |
+| `text-medium` / `text-small` / `text-default-500`              | `text-base` / `text-sm` / `text-muted`                                                                               |
+| `text-primary` / `bg-primary`                                  | `text-accent` / `bg-accent`                                                                                          |
+| `dark:bg-default-100/50`                                       | `dark:bg-default/50`                                                                                                 |
+| `bg-secondary text-secondary-foreground hover:bg-secondary/80` | `bg-default text-default-foreground hover:bg-default-hover`                                                          |
+| `bg-primary text-primary-foreground hover:bg-primary/90`       | `bg-accent text-accent-foreground hover:bg-accent-hover`                                                             |
 
 ## Review Focus
 
@@ -61,11 +61,13 @@
 v3 owns `--background` and `--foreground`. The app writes a gradient and user colors into them, so give the app its own names first. This still works on v2, so it commits through the hook.
 
 **Files:**
+
 - Modify: `apps/web/src/globals.css` (the `:root` block and the `html, body` rule in `@layer utilities`)
 - Modify: `apps/web/src/hooks/colors.ts` (`useSetDocumentBackgroundColor`, `useSetDocumentForegroundColor`)
 - Test: `apps/web/src/hooks/__tests__/colors.test.ts`
 
 **Interfaces:**
+
 - Produces: CSS custom properties `--page-background` and `--page-foreground` on `document.documentElement`. Hook signatures are unchanged.
 
 - [ ] **Step 1: Update the tests.** In `colors.test.ts`, change the two assertions (around lines 60 and 67) to read `--page-background` / `--page-foreground`. To each, add `expect(document.documentElement.style.getPropertyValue('--background')).toBe('')` (or `'--foreground'` respectively).
@@ -79,11 +81,13 @@ v3 owns `--background` and `--foreground`. The app writes a gradient and user co
 ### Task 2: Swap dependencies, theme, and routing provider
 
 **Files:**
+
 - Modify: `apps/web/package.json`, `package-lock.json`, and the root `package.json` (remove the `allowScripts` entry `"@heroui/shared-utils@2.1.12"`)
 - Delete: `apps/web/src/hero.ts`
 - Modify: `apps/web/src/globals.css`, `apps/web/index.html`, `apps/web/src/providers.tsx`, `apps/web/CLAUDE.md`
 
 **Interfaces:**
+
 - Produces: v3 installed, the `dark-purple` theme via CSS, and `RouterProvider` wrapping the app. Later tasks rely on `RouterProvider` so that HeroUI `Link href` navigates client-side.
 
 - [ ] **Step 1: Swap packages** from the repo root:
@@ -111,13 +115,16 @@ v3 owns `--background` and `--foreground`. The app writes a gradient and user co
 ### Task 3: Port the static pages and simple components
 
 **Files:**
+
 - Modify: `apps/web/src/pages/home-page.tsx`, `legacy-page.tsx`, `about-page.tsx`, `wheel-page.tsx`, `apps/web/src/components/wheel-preview.tsx`, `color-picker.tsx`, `error-boundary.tsx` (only the two `bg-secondary…` / `bg-primary…` class strings; leave the pre-existing `bg-card`/`destructive` classes alone and mention them in the PR)
 - Test: `apps/web/src/pages/__tests__/home-page.test.tsx` (new), `apps/web/src/pages/__tests__/legacy-page.test.tsx` (new), and the existing `wheel-page.test.tsx`
 
 **Interfaces:**
+
 - Consumes: the cheat sheet; `buttonVariants` from `@heroui/react`.
 
 Decisions:
+
 - **home-page:** the CTA becomes a react-router `Link` styled with `buttonVariants({ variant: 'primary', size: 'lg' })` plus `shadow-lg`.
 - **legacy-page:** the CTA becomes `<Button variant="primary" size="lg" isDisabled={!newConfig} onPress={() => navigate(<same target as today>)}>`. A link can't be disabled, so it is a button.
 - **wheel-page:** the blurred winner card gets `backdrop-blur-md backdrop-saturate-150 shadow-lg`.
@@ -137,13 +144,16 @@ Decisions:
 ### Task 4: Port the Actions drawer contents
 
 **Files:**
+
 - Modify: `apps/web/src/components/action-accordion.tsx`, `saved-wheels-list.tsx`, `removed-winners-list.tsx`
 - Test: `apps/web/src/components/__tests__/action-accordion.test.tsx` (new)
 
 **Interfaces:**
+
 - Produces: `ActionAccordion({ pathname, closeDrawer }: ActionAccordionProps)`, with the signature unchanged. `closeDrawer: () => void` is called after an action that should dismiss the drawer, exactly where it is called today.
 
 Decisions:
+
 - **Accordion:**
   - Use `allowsMultipleExpanded` and `defaultExpandedKeys={['saved-wheels', 'removed-winners']}` (keep today's default keys).
   - Each item is `Accordion.Item id=…` › `Accordion.Heading` › `Accordion.Trigger` (title text + `Accordion.Indicator`) › `Accordion.Panel` › `Accordion.Body`.
@@ -167,14 +177,17 @@ Decisions:
 v3 has no Navbar. Rebuild `AppNavBar` in `components/navbar.tsx` from plain markup, keeping today's layout and behavior.
 
 **Files:**
+
 - Modify: `apps/web/src/components/navbar.tsx`
 - Test: `apps/web/src/components/__tests__/navbar.test.tsx` (new)
 
 **Interfaces:**
+
 - Consumes: `ActionAccordion` (Task 4); `RouterProvider` (Task 2) for the test wrapper.
 - Produces: `export function AppNavBar(): JSX.Element`, with the export name unchanged.
 
 Behavior to keep (from the current component):
+
 - Sticky bar, `h-16`, content max width `max-w-5xl`, translucent background with `backdrop-blur-lg`.
 - Left: a hamburger toggle, visible below `sm` only. It is a native `<button>` with `aria-expanded`, and its `aria-label` switches between "Open Menu" and "Close Menu".
 - Brand: a link to `/` labelled "Wheel in the Sky".
@@ -209,14 +222,17 @@ Behavior to keep (from the current component):
 This is the riskiest file. v3 fields are React-controlled, so every field registered with `register` moves to react-hook-form `Controller`. The `setValue` effect, `useWatch`, and `onSubmit` stay as they are.
 
 **Files:**
+
 - Modify: `apps/web/src/pages/config-page.tsx`
 - Test: `apps/web/src/pages/__tests__/config-page.test.tsx` (new)
 
 **Interfaces:**
+
 - Consumes: `useDecodedConfig`, `useEncodeConfigMutation` from `@/hooks/config` (mocked in tests, as `wheel-page.test.tsx` does).
 - Produces: none new. The submit payload `ConfigFormInputs` is unchanged.
 
 Field mapping (all fields go through `<Controller control={control} name=… rules=…>`):
+
 - **title, description:**
   - `TextField` with `name`, `value`, `onChange`, and `onBlur` from `field`
   - inside it: `Label`, `Input placeholder`, and `Description` where one exists today
@@ -258,6 +274,7 @@ Field mapping (all fields go through `<Controller control={control} name=… rul
   - "changing the color scheme updates its description": open the wheel color select, choose another option, and assert that the new description text is shown.
   - "requires at least one segment": clear the segments, submit, assert the error text is shown, and assert `mutateAsync` was not called.
   - "Reset restores the loaded values": edit the title, click Reset Form, and expect the title to be "Team Lunch" again.
+
 - [ ] **Step 2: Run** `npx vitest run apps/web/src/pages/__tests__/config-page.test.tsx`. Expected: FAIL.
 - [ ] **Step 3: Port** `config-page.tsx`. Remove `register` from the destructure if it ends up unused.
 - [ ] **Step 4: Run** the test. Expected: PASS. Run `npm run check-types`. Expected: **zero errors in the whole repo**, since this is the last file to port.
@@ -268,6 +285,7 @@ Field mapping (all fields go through `<Controller control={control} name=… rul
 ### Task 7: Whole-branch verification, screenshots, changelog
 
 **Files:**
+
 - Modify: `CHANGELOG.md` (under `## [3.0.0] … Unreleased` › `### Changed`)
 
 - [ ] **Step 1:** `grep -rn "@heroui/system\|@heroui/theme\|HeroUIProvider\|useDisclosure\|CardBody\|Divider\|startContent\|endContent\|isBlurred" apps/web/src`. Expected: no matches.
@@ -284,6 +302,7 @@ Field mapping (all fields go through `<Controller control={control} name=… rul
   - links navigate without a full reload (the Network tab shows no document request)
 
   Note anything broken and fix it before continuing.
+
 - [ ] **Step 4:** Take screenshots of home, wheel, config, about, legacy and not-found at 1440×900 and 390×844. Save them **outside the repo** and hand the paths to the owner.
 - [ ] **Step 5:** Add to `CHANGELOG.md`: `- Upgraded the UI library to HeroUI v3; components use its new default styling.`
 - [ ] **Step 6:** Commit with the hook enabled: `docs: changelog entry for HeroUI v3 upgrade`
