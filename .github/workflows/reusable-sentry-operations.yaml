@@ -38,7 +38,7 @@ jobs:
               uses: actions/cache@v6
               id: node-modules-cache
               with:
-                  path: '**/node_modules'
+                  path: node_modules
                   key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
             - name: Install Dependencies
