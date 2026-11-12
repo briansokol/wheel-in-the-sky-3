@@ -46,11 +46,11 @@ not change, so the typed client contract consumed by `apps/web` is untouched.
 
 ## File Structure
 
-| File | Responsibility | Change |
-| --- | --- | --- |
-| `packages/api-handlers/src/server/index.ts` | Hono app assembly and Sentry middleware registration | Modify: add `enableLogs` and `environment` to the `sentry()` options callback (lines 11-15) |
-| `packages/api-handlers/src/server/encoding.ts` | `/encode` and `/decode` routes | Modify: add `logger` import; add a `logger.error` call to each of the two catch blocks (lines 82-84 and 99-101) |
-| `packages/api-handlers/src/server/__tests__/encoding.test.ts` | Route-level tests for the above | Modify: mock `@sentry/cloudflare`; assert `logger.error` in the two existing error-path tests (lines 82-98 and 123-141) |
+| File                                                          | Responsibility                                       | Change                                                                                                                  |
+| ------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `packages/api-handlers/src/server/index.ts`                   | Hono app assembly and Sentry middleware registration | Modify: add `enableLogs` and `environment` to the `sentry()` options callback (lines 11-15)                             |
+| `packages/api-handlers/src/server/encoding.ts`                | `/encode` and `/decode` routes                       | Modify: add `logger` import; add a `logger.error` call to each of the two catch blocks (lines 82-84 and 99-101)         |
+| `packages/api-handlers/src/server/__tests__/encoding.test.ts` | Route-level tests for the above                      | Modify: mock `@sentry/cloudflare`; assert `logger.error` in the two existing error-path tests (lines 82-98 and 123-141) |
 
 No files are created. No test file is created; both failure paths already have
 tests that force the rejection, and those tests gain assertions.
@@ -65,9 +65,11 @@ verified by "still builds, still green", not by a new assertion. The live proof
 comes in Task 4.
 
 **Files:**
+
 - Modify: `packages/api-handlers/src/server/index.ts:11-15`
 
 **Interfaces:**
+
 - Consumes: nothing from earlier tasks.
 - Produces: an initialized Sentry client with `enableLogs: true`, which is the
   precondition for the `logger.error` calls in Tasks 2 and 3 producing anything
@@ -80,13 +82,13 @@ it reads exactly:
 
 ```typescript
 honoApp.use(
-    sentry(honoApp, (sentryEnv) => ({
-        dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
-        tracesSampleRate: 1.0,
-        enableLogs: true,
-        environment: sentryEnv.APP_ENV ?? 'production',
-        enabled: sentryEnv.APP_ENV !== 'local',
-    }))
+  sentry(honoApp, (sentryEnv) => ({
+    dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
+    tracesSampleRate: 1.0,
+    enableLogs: true,
+    environment: sentryEnv.APP_ENV ?? 'production',
+    enabled: sentryEnv.APP_ENV !== 'local',
+  }))
 );
 ```
 
@@ -141,10 +143,12 @@ the failure produces no issue, no log, and no trace error. This task makes it
 emit a log.
 
 **Files:**
+
 - Modify: `packages/api-handlers/src/server/encoding.ts` (import block, and the catch at lines 82-84)
 - Test: `packages/api-handlers/src/server/__tests__/encoding.test.ts` (import block, module mocks, and the test at lines 82-98)
 
 **Interfaces:**
+
 - Consumes: `enableLogs: true` from Task 1.
 - Produces: the `vi.mock('@sentry/cloudflare', ...)` block and the `logger`
   import in the test file, both of which Task 3 reuses as-is. The runtime
@@ -166,9 +170,9 @@ top of the file (after the `@/utils/encoding` mock and the
 
 ```typescript
 vi.mock('@sentry/cloudflare', () => ({
-    logger: {
-        error: vi.fn(),
-    },
+  logger: {
+    error: vi.fn(),
+  },
 }));
 ```
 
@@ -186,25 +190,25 @@ at the end. The test already builds `mockError` as `new Error('Encoding failed')
 and rejects `encodeConfig` with it; leave all of that alone. The test becomes:
 
 ```typescript
-        it('should handle errors during encoding', async () => {
-            const mockError = new Error('Encoding failed');
-            vi.mocked(encodeConfig).mockRejectedValue(mockError);
+it('should handle errors during encoding', async () => {
+  const mockError = new Error('Encoding failed');
+  vi.mocked(encodeConfig).mockRejectedValue(mockError);
 
-            const response = await encodingApi.request('/encode', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(mockFormData),
-            });
-            const responseData = await response.json();
+  const response = await encodingApi.request('/encode', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(mockFormData),
+  });
+  const responseData = await response.json();
 
-            expect(response.status).toBe(400);
-            expect(responseData).toEqual({ error: mockError.message });
-            expect(vi.mocked(logger.error)).toHaveBeenCalledWith('Failed to encode config', {
-                error: 'Encoding failed',
-            });
-        });
+  expect(response.status).toBe(400);
+  expect(responseData).toEqual({ error: mockError.message });
+  expect(vi.mocked(logger.error)).toHaveBeenCalledWith('Failed to encode config', {
+    error: 'Encoding failed',
+  });
+});
 ```
 
 - [ ] **Step 3: Run the test to verify it fails**
@@ -275,10 +279,12 @@ what actually went wrong. A log carrying only that message says nothing useful.
 The real failure lives on `cause`.
 
 **Files:**
+
 - Modify: `packages/api-handlers/src/server/encoding.ts` (the catch at lines 99-101)
 - Test: `packages/api-handlers/src/server/__tests__/encoding.test.ts` (the test at lines 123-141)
 
 **Interfaces:**
+
 - Consumes: the `vi.mock('@sentry/cloudflare', ...)` block and the `logger`
   import added to the test file in Task 2, and the `logger` import added to
   `encoding.ts` in Task 2. Do not add either a second time.
@@ -291,31 +297,31 @@ so it carries the cause `decodeConfig` really attaches, and add one assertion.
 The test becomes:
 
 ```typescript
-        it('should handle errors during decoding', async () => {
-            const mockRequestData = {
-                encodedConfig: 'invalid-encoded-config',
-            };
-            const mockError = new Error('Invalid config', {
-                cause: new Error('Unsupported config encoding version'),
-            });
-            vi.mocked(decodeConfig).mockRejectedValue(mockError);
+it('should handle errors during decoding', async () => {
+  const mockRequestData = {
+    encodedConfig: 'invalid-encoded-config',
+  };
+  const mockError = new Error('Invalid config', {
+    cause: new Error('Unsupported config encoding version'),
+  });
+  vi.mocked(decodeConfig).mockRejectedValue(mockError);
 
-            const response = await encodingApi.request('/decode', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(mockRequestData),
-            });
-            const responseData = await response.json();
+  const response = await encodingApi.request('/decode', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(mockRequestData),
+  });
+  const responseData = await response.json();
 
-            expect(response.status).toBe(400);
-            expect(responseData).toEqual({ error: mockError.message });
-            expect(vi.mocked(logger.error)).toHaveBeenCalledWith('Failed to decode config', {
-                error: 'Invalid config',
-                cause: 'Unsupported config encoding version',
-            });
-        });
+  expect(response.status).toBe(400);
+  expect(responseData).toEqual({ error: mockError.message });
+  expect(vi.mocked(logger.error)).toHaveBeenCalledWith('Failed to decode config', {
+    error: 'Invalid config',
+    cause: 'Unsupported config encoding version',
+  });
+});
 ```
 
 Adding the cause is what exercises the new attribute. The existing
@@ -403,9 +409,11 @@ merge the Logs tab stays empty until something genuinely breaks.
 Nothing in this task is committed.
 
 **Files:**
+
 - Modify temporarily, never commit: `apps/api/.dev.vars`
 
 **Interfaces:**
+
 - Consumes: all three preceding tasks, merged into the working tree.
 - Produces: nothing. This is a verification gate.
 

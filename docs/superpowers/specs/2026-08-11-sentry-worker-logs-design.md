@@ -44,12 +44,12 @@ as empty as it is now.
 
 Queried against the `brian-sokol` Sentry organization on 2026-08-11:
 
-| Dataset  | Project    | Window | Result                                    |
-| -------- | ---------- | ------ | ----------------------------------------- |
-| `logs`   | `wits-api` | 90d    | no results                                |
-| `logs`   | `wits-web` | 90d    | no results                                |
+| Dataset  | Project    | Window | Result                                          |
+| -------- | ---------- | ------ | ----------------------------------------------- |
+| `logs`   | `wits-api` | 90d    | no results                                      |
+| `logs`   | `wits-web` | 90d    | no results                                      |
 | `spans`  | `wits-api` | 90d    | populated and current, latest 2026-08-12T03:28Z |
-| `errors` | `wits-api` | 90d    | no results                                |
+| `errors` | `wits-api` | 90d    | no results                                      |
 
 The span traffic rules out the transport, the DSN, and the `enabled` gate as
 possible causes. Logs is the only empty dataset while the very same SDK instance
@@ -83,13 +83,13 @@ traffic.
 
 ## Current integration surface
 
-| Location                                              | State                                               |
-| ----------------------------------------------------- | --------------------------------------------------- |
-| `packages/api-handlers/src/server/index.ts:11`        | `sentry()` middleware, no `enableLogs`, no `environment` |
-| `packages/api-handlers/src/server/encoding.ts:82`     | encode failure swallowed into a 400 response        |
-| `packages/api-handlers/src/server/encoding.ts:99`     | decode failure swallowed into a 400 response        |
-| `apps/api/.dev.vars`                                  | `APP_ENV=local`, gitignored via `apps/api/.gitignore:22` |
-| `packages/api-handlers/package.json`                  | `@sentry/cloudflare@10.70.0` is already a direct dependency |
+| Location                                          | State                                                       |
+| ------------------------------------------------- | ----------------------------------------------------------- |
+| `packages/api-handlers/src/server/index.ts:11`    | `sentry()` middleware, no `enableLogs`, no `environment`    |
+| `packages/api-handlers/src/server/encoding.ts:82` | encode failure swallowed into a 400 response                |
+| `packages/api-handlers/src/server/encoding.ts:99` | decode failure swallowed into a 400 response                |
+| `apps/api/.dev.vars`                              | `APP_ENV=local`, gitignored via `apps/api/.gitignore:22`    |
+| `packages/api-handlers/package.json`              | `@sentry/cloudflare@10.70.0` is already a direct dependency |
 
 ### Why the two catch blocks matter
 
@@ -131,13 +131,13 @@ existing options callback:
 
 ```typescript
 honoApp.use(
-    sentry(honoApp, (sentryEnv) => ({
-        dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
-        tracesSampleRate: 1.0,
-        enableLogs: true,
-        environment: sentryEnv.APP_ENV ?? 'production',
-        enabled: sentryEnv.APP_ENV !== 'local',
-    }))
+  sentry(honoApp, (sentryEnv) => ({
+    dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
+    tracesSampleRate: 1.0,
+    enableLogs: true,
+    environment: sentryEnv.APP_ENV ?? 'production',
+    enabled: sentryEnv.APP_ENV !== 'local',
+  }))
 );
 ```
 
@@ -231,9 +231,9 @@ the top of the file alongside the existing `vi.mock` calls:
 
 ```typescript
 vi.mock('@sentry/cloudflare', () => ({
-    logger: {
-        error: vi.fn(),
-    },
+  logger: {
+    error: vi.fn(),
+  },
 }));
 ```
 
@@ -244,7 +244,7 @@ In the encoding test, whose `mockError` is `new Error('Encoding failed')`:
 
 ```typescript
 expect(logger.error).toHaveBeenCalledWith('Failed to encode config', {
-    error: 'Encoding failed',
+  error: 'Encoding failed',
 });
 ```
 
@@ -253,12 +253,12 @@ to carry the cause that `decodeConfig` really attaches:
 
 ```typescript
 const mockError = new Error('Invalid config', {
-    cause: new Error('Unsupported config encoding version'),
+  cause: new Error('Unsupported config encoding version'),
 });
 
 expect(logger.error).toHaveBeenCalledWith('Failed to decode config', {
-    error: 'Invalid config',
-    cause: 'Unsupported config encoding version',
+  error: 'Invalid config',
+  cause: 'Unsupported config encoding version',
 });
 ```
 

@@ -40,14 +40,14 @@ Existing tests are expected to pass unmodified throughout. If any test needs edi
 
 ## File structure
 
-| File | Responsibility | Task |
-| --- | --- | --- |
-| `apps/web/package.json` | `@sentry/react` and `@sentry/vite-plugin` version pins | 1 |
-| `packages/api-handlers/package.json` | `@sentry/cloudflare`, `@sentry/cli`, then `@sentry/hono` pins | 1, 2 |
-| `packages/shared/package.json` | `@sentry/cli` version pin | 1 |
-| `package.json` (root) | `allowScripts` keys permitting `@sentry/cli` install scripts | 1 |
-| `package-lock.json` | resolved dependency graph | 1, 2 |
-| `packages/api-handlers/src/server/index.ts` | Hono app construction and Sentry wiring | 2 |
+| File                                        | Responsibility                                                | Task |
+| ------------------------------------------- | ------------------------------------------------------------- | ---- |
+| `apps/web/package.json`                     | `@sentry/react` and `@sentry/vite-plugin` version pins        | 1    |
+| `packages/api-handlers/package.json`        | `@sentry/cloudflare`, `@sentry/cli`, then `@sentry/hono` pins | 1, 2 |
+| `packages/shared/package.json`              | `@sentry/cli` version pin                                     | 1    |
+| `package.json` (root)                       | `allowScripts` keys permitting `@sentry/cli` install scripts  | 1    |
+| `package-lock.json`                         | resolved dependency graph                                     | 1, 2 |
+| `packages/api-handlers/src/server/index.ts` | Hono app construction and Sentry wiring                       | 2    |
 
 Files explicitly **not** modified: `apps/api/src/index.ts` (the `export default app` remains valid because `HonoBase` satisfies `ExportedHandler<Env>`), `apps/web/src/main.tsx`, `apps/web/vite.config.ts`, `packages/api-handlers/src/client/index.ts`, and every existing test file.
 
@@ -56,6 +56,7 @@ Files explicitly **not** modified: `apps/api/src/index.ts` (the `export default 
 ### Task 1: Dependency bump
 
 **Files:**
+
 - Modify: `apps/web/package.json` (`dependencies["@sentry/react"]`, `devDependencies["@sentry/vite-plugin"]`)
 - Modify: `packages/api-handlers/package.json` (`dependencies["@sentry/cloudflare"]`, `dependencies["@sentry/cli"]`)
 - Modify: `packages/shared/package.json` (`dependencies["@sentry/cli"]`)
@@ -64,12 +65,13 @@ Files explicitly **not** modified: `apps/api/src/index.ts` (the `export default 
 - Test: no new tests; existing suites must pass unmodified
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces: `@sentry/cloudflare` at exactly `10.70.0` in `packages/api-handlers`, which Task 2 requires because `@sentry/hono@10.70.0` declares it as an exact-version peer.
 
 - [ ] **Step 1: Confirm branch and establish a green baseline**
 
-Verify you are on the right branch and that everything passes *before* any change. If the baseline is red, stop and report rather than proceeding, because you will not be able to attribute later failures.
+Verify you are on the right branch and that everything passes _before_ any change. If the baseline is red, stop and report rather than proceeding, because you will not be able to attribute later failures.
 
 ```bash
 git branch --show-current   # expect: chore/sentry-upgrade-10.70
@@ -188,12 +190,14 @@ moved when @sentry/vite-plugin restructured onto @sentry/bundler-plugins."
 ### Task 2: Adopt `@sentry/hono`
 
 **Files:**
+
 - Modify: `packages/api-handlers/package.json` (add `dependencies["@sentry/hono"]`)
 - Modify: `packages/api-handlers/src/server/index.ts` (full Sentry wiring rewrite, currently lines 1 and 31-38)
 - Modify: `package-lock.json`
 - Test: no new tests; existing suites must pass unmodified, plus manual Worker probes
 
 **Interfaces:**
+
 - Consumes: `@sentry/cloudflare@10.70.0` from Task 1, required as an exact-version peer.
 - Produces: `export const app` changes static type from `ExportedHandler<Env, unknown, unknown>` to `HonoBase<AppEnv, BlankSchema, '/api', '/api'>`. Both satisfy `ExportedHandler<Env>`, so `apps/api/src/index.ts` needs no change. `export const routes` keeps a byte-identical type, so `hc<ApiAppType>` in `apps/web/src/utils/api.ts` is unaffected.
 
@@ -228,30 +232,30 @@ import { AppEnv } from '@/types.js';
 const honoApp = new Hono<AppEnv>().basePath('/api');
 
 honoApp.use(
-    sentry(honoApp, (sentryEnv) => ({
-        dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
-        tracesSampleRate: 1.0,
-        enabled: sentryEnv.APP_ENV !== 'local',
-    }))
+  sentry(honoApp, (sentryEnv) => ({
+    dsn: 'https://895c486a1e653f07201b20658156b954@o4508580787781632.ingest.us.sentry.io/4509040320970752',
+    tracesSampleRate: 1.0,
+    enabled: sentryEnv.APP_ENV !== 'local',
+  }))
 );
 
 honoApp.use(
-    '*',
-    cors({
-        origin: (origin, c) => {
-            const { APP_ENV } = env(c);
-            return APP_ENV === 'local' || origin.endsWith('wheel-in-the-sky.bri-9c5.workers.dev') ? origin : undefined;
-        },
-        allowMethods: ['POST', 'GET'],
-        allowHeaders: ['Content-Type', 'Accept-Encoding', 'sentry-trace', 'baggage'],
-        exposeHeaders: ['Content-Length'],
-        maxAge: 86400,
-    })
+  '*',
+  cors({
+    origin: (origin, c) => {
+      const { APP_ENV } = env(c);
+      return APP_ENV === 'local' || origin.endsWith('wheel-in-the-sky.bri-9c5.workers.dev') ? origin : undefined;
+    },
+    allowMethods: ['POST', 'GET'],
+    allowHeaders: ['Content-Type', 'Accept-Encoding', 'sentry-trace', 'baggage'],
+    exposeHeaders: ['Content-Length'],
+    maxAge: 86400,
+  })
 );
 
 honoApp.notFound((c) => {
-    const { ASSETS } = env(c);
-    return ASSETS.fetch(c.req.url);
+  const { ASSETS } = env(c);
+  return ASSETS.fetch(c.req.url);
 });
 
 export const routes = honoApp.route('/config', encodingApi);
