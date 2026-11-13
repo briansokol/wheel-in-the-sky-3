@@ -14,22 +14,25 @@ jobs:
             - name: Checkout Repo
               uses: actions/checkout@v7
 
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v6
+
             - name: Setup Node.js
               uses: actions/setup-node@v7
               with:
                   node-version-file: '.nvmrc'
-                  cache: 'npm'
+                  cache: 'pnpm'
 
             - name: Cache node_modules
               uses: actions/cache@v6
               id: node-modules-cache
               with:
                   path: node_modules
-                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+                  key: ${{ runner.os }}-pnpm-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
 
             - name: Install Dependencies
               if: steps.node-modules-cache.outputs.cache-hit != 'true'
-              run: npm ci
+              run: pnpm install --frozen-lockfile
 
             # Restore the web dist directory cache from the build job
             - name: Restore web dist directory

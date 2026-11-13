@@ -82,7 +82,7 @@ URLs before events are sent.
 
 ## Deployment model
 
-1. `npm run build` bundles the web app with Vite into `dist`.
+1. `pnpm run build` bundles the web app with Vite into `dist`.
 2. `wrangler deploy`, run from the repository root, publishes those files as
    static assets.
 3. SPA fallback routing is configured in `wrangler.jsonc`.

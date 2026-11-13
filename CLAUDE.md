@@ -68,11 +68,16 @@ Never add Redux, MobX, or Zustand. Context is sufficient here.
 `@trivago/prettier-plugin-sort-imports` via `prettier.config.js`. Do not
 hand-order imports or work around the formatter.
 
-**Dependencies**: Install pinned to an exact version.
+**Dependencies**: Install pinned to an exact version. `saveExact: true` in
+`pnpm-workspace.yaml` makes `pnpm add` write exact versions.
 
 ```bash
-npm install --save-exact <package>
+pnpm add <package>
 ```
+
+pnpm refuses versions published less than 7 days ago (`minimumReleaseAge`), and
+runs a dependency's install script only if the package is listed in
+`allowBuilds`. Both live in `pnpm-workspace.yaml`.
 
 ## Layout
 
@@ -121,22 +126,22 @@ The same split holds for rotation, segment, and removed-winners.
 
 Run every command from the repository root.
 
-| Task              | Command                     | Notes                                                               |
-| ----------------- | --------------------------- | ------------------------------------------------------------------- |
-| Dev server        | `npm run dev`               | `vite --host`; serves from memory and writes nothing to `dist`      |
-| Build             | `npm run build`             | `tsc -b && vite build`; writes to `dist`                            |
-| Build with Sentry | `npm run build:with-sentry` | Sets `WITH_SENTRY`, which adds the Sentry Vite plugin               |
-| Typecheck         | `npm run check-types`       | `tsc --noEmit` on `tsconfig.app.json`, then on `tsconfig.node.json` |
-| Lint              | `npm run lint`              | `oxlint .`                                                          |
-| Format            | `npm run format`            | `prettier --write` over `ts`, `tsx`, `md`, and `css` files          |
-| Test, watch       | `npm run test`              | `vitest`                                                            |
-| Test, once        | `npm run test:ci`           | `vitest run --coverage`                                             |
-| Preview build     | `npm run preview`           | `vite preview`                                                      |
-| Deploy            | `npm run deploy`            | `wrangler deploy` of `dist` as static assets; build first           |
-| Update deps       | `npm run ncu`               | Interactive npm-check-updates; installs nothing                     |
-| Install hooks     | `npm run prepare`           | `husky`; npm runs it after `npm install`                            |
+| Task              | Command                      | Notes                                                               |
+| ----------------- | ---------------------------- | ------------------------------------------------------------------- |
+| Dev server        | `pnpm run dev`               | `vite --host`; serves from memory and writes nothing to `dist`      |
+| Build             | `pnpm run build`             | `tsc -b && vite build`; writes to `dist`                            |
+| Build with Sentry | `pnpm run build:with-sentry` | Sets `WITH_SENTRY`, which adds the Sentry Vite plugin               |
+| Typecheck         | `pnpm run check-types`       | `tsc --noEmit` on `tsconfig.app.json`, then on `tsconfig.node.json` |
+| Lint              | `pnpm run lint`              | `oxlint .`                                                          |
+| Format            | `pnpm run format`            | `prettier --write` over `ts`, `tsx`, `md`, and `css` files          |
+| Test, watch       | `pnpm run test`              | `vitest`                                                            |
+| Test, once        | `pnpm run test:ci`           | `vitest run --coverage`                                             |
+| Preview build     | `pnpm run preview`           | `vite preview`                                                      |
+| Deploy            | `pnpm run deploy`            | `wrangler deploy` of `dist` as static assets; build first           |
+| Update deps       | `pnpm run ncu`               | Interactive npm-check-updates via `pnpm dlx`; installs nothing      |
+| Install hooks     | `pnpm run prepare`           | `husky`; pnpm runs it after `pnpm install`                          |
 
-In `npm run build`, `tsc -b` is a pure typecheck because both referenced
+In `pnpm run build`, `tsc -b` is a pure typecheck because both referenced
 projects set `noEmit`, and `vite build` then emits the bundle into `dist`.
 `wrangler.jsonc` points `assets.directory` at `dist`, with
 `not_found_handling: "single-page-application"` so client routes and legacy
@@ -193,12 +198,12 @@ Work on a feature branch. Write tests alongside the implementation. Update
 
 The husky `pre-commit` hook runs, in order:
 
-1. `npm run check-types`
-2. `npx lint-staged`, which applies `oxlint --fix`, `prettier --write`, and
+1. `pnpm run check-types`
+2. `pnpm exec lint-staged`, which applies `oxlint --fix`, `prettier --write`, and
    `vitest related --run` to staged files
 
 A commit therefore runs the tests related to your staged changes. Run
-`npm run test` yourself for the full suite.
+`pnpm run test` yourself for the full suite.
 
 ## Gotchas
 
