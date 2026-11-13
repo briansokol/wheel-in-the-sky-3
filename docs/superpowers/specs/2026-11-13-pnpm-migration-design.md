@@ -47,6 +47,12 @@ and how, not which versions run.
 
 - **Release-age delay: 7 days** (`minimumReleaseAge: 10080`, in minutes). An
   urgent patch can be exempted per package through `minimumReleaseAgeExclude`.
+- **Temporary exact-version exemptions.** On 2026-11-13, 96 locked packages
+  were under 7 days old, and pnpm 12 rejects them both in `pnpm import` and
+  in `pnpm install --frozen-lockfile`. Each one is listed by exact version
+  (`name@version`) in `minimumReleaseAgeExclude`, so only the builds already
+  in use pass and newer versions are still delayed. A follow-up commit on or
+  after 2026-11-19 removes the list.
 - **Dependabot cooldown matches**: 7 days on the `npm` ecosystem entry, so it
   doesn't open PRs that pnpm would reject. The ecosystem stays `npm`, which
   covers pnpm lockfiles.
