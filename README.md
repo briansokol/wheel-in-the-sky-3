@@ -25,7 +25,7 @@ VITE_APP_ENV=local
 To install dependencies, run:
 
 ```bash
-npm install
+pnpm install
 ```
 
 #### Running a Local Dev Server
@@ -33,7 +33,7 @@ npm install
 To run the dev server, run the following command:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 This starts the web app at [localhost:5173](http://localhost:5173/).
@@ -43,7 +43,7 @@ This starts the web app at [localhost:5173](http://localhost:5173/).
 To run unit tests in watch-mode using [Vitest](https://vitest.dev/), run the following command:
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 #### Updating Dependencies
@@ -51,7 +51,7 @@ npm run test
 With the following command, you can run [npm-check-updates](https://github.com/raineorshine/npm-check-updates) over the project. This will provide a console UI to update dependencies.
 
 ```bash
-npm run ncu
+pnpm run ncu
 ```
 
 ### Release Process

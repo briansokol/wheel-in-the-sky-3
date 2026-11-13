@@ -27,7 +27,7 @@ We welcome code contributions! To ensure a smooth review process:
 - Ensure you have **git hooks enabled** for pre-commit checks. If you're unsure, run the following command:
 
   ```bash
-  npm run prepare
+  pnpm run prepare
   ```
 
   - Make sure your IDE is set up to run git hooks if you're using a GUI to handle commits (We recommend using Visual Studio Code).
