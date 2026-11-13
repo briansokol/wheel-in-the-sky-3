@@ -6,23 +6,17 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
-    "build:with-sentry": "cross-env WITH_SENTRY=true npm run build",
+    "build:with-sentry": "cross-env WITH_SENTRY=true pnpm run build",
     "check-types": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "deploy": "wrangler deploy",
     "dev": "vite --host",
     "format": "prettier --write \"**/*.{ts,tsx,md,css}\"",
     "lint": "oxlint .",
-    "ncu": "npx ncu --interactive --install=never",
+    "ncu": "pnpm dlx npm-check-updates --interactive --install=never",
     "prepare": "husky",
     "preview": "vite preview",
     "test": "vitest",
     "test:ci": "vitest run --coverage"
-  },
-  "allowScripts": {
-    "@sentry/cli@3.8.2": true,
-    "esbuild@0.28.2": true,
-    "fsevents@2.3.3": true,
-    "workerd@1.20261110.1": true
   },
   "dependencies": {
     "@ctrl/tinycolor": "4.3.0",
@@ -83,7 +77,7 @@
     "vitest": "5.1.0",
     "wrangler": "4.160.0"
   },
-  "packageManager": "npm@11.10.1",
+  "packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3",
   "engines": {
     "node": "24.x"
   }
