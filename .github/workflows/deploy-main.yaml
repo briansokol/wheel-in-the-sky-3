@@ -10,26 +10,29 @@ jobs:
             - name: Checkout Repo
               uses: actions/checkout@v7
 
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v6
+
             - name: Setup Node.js
               uses: actions/setup-node@v7
               with:
                   node-version-file: '.nvmrc'
-                  cache: 'npm'
+                  cache: 'pnpm'
 
             - name: Cache node_modules
               uses: actions/cache@v6
               id: node-modules-cache
               with:
                   path: node_modules
-                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+                  key: ${{ runner.os }}-pnpm-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
 
             - name: Install Dependencies
               if: steps.node-modules-cache.outputs.cache-hit != 'true'
-              run: npm ci
+              run: pnpm install --frozen-lockfile
 
             - name: Get Release Name
               id: release
-              run: echo "VERSION=$(node -p "require('./package.json').version")-$(npx sentry-cli releases propose-version)" >> $GITHUB_OUTPUT
+              run: echo "VERSION=$(node -p "require('./package.json').version")-$(pnpm exec sentry-cli releases propose-version)" >> $GITHUB_OUTPUT
         outputs:
             version: ${{ steps.release.outputs.VERSION }}
 
@@ -49,7 +52,7 @@ jobs:
         uses: ./.github/workflows/reusable-setup-build-test.yaml
         with:
             build_command: |
-                npm run build:with-sentry
+                pnpm run build:with-sentry
         secrets:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 

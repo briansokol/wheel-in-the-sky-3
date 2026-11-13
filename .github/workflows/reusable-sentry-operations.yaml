@@ -26,12 +26,16 @@ jobs:
               if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
               uses: actions/checkout@v7
 
+            - name: Setup pnpm
+              if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
+              uses: pnpm/action-setup@v6
+
             - name: Setup Node.js
               if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
               uses: actions/setup-node@v7
               with:
                   node-version-file: '.nvmrc'
-                  cache: 'npm'
+                  cache: 'pnpm'
 
             - name: Cache node_modules
               if: inputs.operation == 'prepare' || inputs.operation == 'finalize'
@@ -39,22 +43,22 @@ jobs:
               id: node-modules-cache
               with:
                   path: node_modules
-                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+                  key: ${{ runner.os }}-pnpm-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
 
             - name: Install Dependencies
               if: (inputs.operation == 'prepare' || inputs.operation == 'finalize') && steps.node-modules-cache.outputs.cache-hit != 'true'
-              run: npm ci
+              run: pnpm install --frozen-lockfile
 
             - name: Prepare Sentry Release
               if: inputs.operation == 'prepare'
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
               run: |
-                  npx sentry-cli releases new -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
+                  pnpm exec sentry-cli releases new -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
 
             - name: Finalize Sentry Release
               if: inputs.operation == 'finalize'
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
               run: |
-                  npx sentry-cli releases finalize -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
+                  pnpm exec sentry-cli releases finalize -p ${{ secrets.SENTRY_WEB_PROJECT }} -o ${{ secrets.SENTRY_ORG }} ${{ inputs.version }}
